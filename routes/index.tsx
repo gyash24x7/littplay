@@ -1,25 +1,18 @@
 import "react-native-gesture-handler";
 
-import { NavigationContainer } from "@react-navigation/native";
-import { createStackNavigator } from "@react-navigation/stack";
-import React from "react";
+import { createBrowserApp } from "@react-navigation/web";
+import { Platform } from "react-native";
+import { createAppContainer } from "react-navigation";
+import { createStackNavigator } from "react-navigation-stack";
 
 import { HomeScreen } from "../screens/Home";
 import { LoginScreen } from "../screens/Login";
 
-const { Navigator, Screen } = createStackNavigator();
+const AppNavigator = createStackNavigator(
+	{ home: HomeScreen, login: LoginScreen },
+	{ initialRouteName: "Login", headerMode: "none" }
+);
 
-export const AppRoutes = () => {
-	return (
-		<NavigationContainer>
-			<Navigator initialRouteName="Home" headerMode="none">
-				<Screen
-					name="Home"
-					component={HomeScreen}
-					options={{ title: "Literature" }}
-				/>
-				<Screen name="Login" component={LoginScreen} />
-			</Navigator>
-		</NavigationContainer>
-	);
-};
+export default Platform.OS === "web"
+	? createBrowserApp(AppNavigator)
+	: createAppContainer(AppNavigator);
