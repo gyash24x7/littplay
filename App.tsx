@@ -4,7 +4,7 @@ import { EvaIconsPack } from "@ui-kitten/eva-icons";
 import * as Font from "expo-font";
 import React, { useEffect, useState } from "react";
 
-import AppRoutes from "./routes";
+import { AppRoutes } from "./routes";
 import { customMapping, customTheme } from "./utils/theme";
 
 const theme = { ...light, ...customTheme };

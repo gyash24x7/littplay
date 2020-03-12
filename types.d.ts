@@ -1,1 +1,1 @@
-declare module "@react-navigation/web";
+declare module "short-id";
