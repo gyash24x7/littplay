@@ -3,14 +3,14 @@ import { ActivityIndicator } from "react-native";
 import LinearGradient from "react-native-linear-gradient";
 import { useHistory } from "react-router-dom";
 
-import { appState } from "../store";
 import styles from "../styles";
 
 export const LoadingScreen = () => {
 	const history = useHistory();
+	const loggedIn = !!localStorage.getItem("user");
 
 	useEffect(() => {
-		history.push(appState.loggedIn ? "/" : "/login");
+		history.push(loggedIn ? "/" : "/login");
 	});
 
 	return (

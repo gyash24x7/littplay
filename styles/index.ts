@@ -35,5 +35,17 @@ export default StyleSheet.create({
 	paragraph: {
 		fontSize: 20,
 		marginBottom: 15
+	},
+
+	labelStyle: {
+		textAlign: "center",
+		textTransform: "uppercase"
+	},
+
+	bottomText: {
+		fontWeight: "bold",
+		position: "absolute",
+		bottom: "-9vh",
+		lineHeight: 24
 	}
 });

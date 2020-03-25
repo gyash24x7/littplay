@@ -6,8 +6,8 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { useHistory } from "react-router-dom";
 
 import { GoogleIcon } from "../icons";
-import { appState } from "../store";
 import styles from "../styles";
+import { User } from "../typings";
 import firebase, { AuthProvider } from "../utils/firebase";
 
 export const LoginScreen = () => {
@@ -16,15 +16,13 @@ export const LoginScreen = () => {
 	const login = async () => {
 		const result: any = await firebase.auth().signInWithPopup(AuthProvider);
 		const token = result.credential.accessToken;
-		const user = result.user;
-		appState.loggedIn = true;
-		appState.user = {
-			displayName: user.displayName,
-			email: user.email,
-			phoneNumber: user.phoneNumber,
-			photoURL: user.photoURL
+		const user: User = {
+			displayName: result.user.displayName,
+			photoUrl: result.user.photoUrl,
+			phoneNumber: result.user.phoneNumber,
+			email: result.user.email
 		};
-		localStorage.setItem("user", JSON.stringify(appState.user));
+		localStorage.setItem("user", JSON.stringify(user));
 		localStorage.setItem("token", token);
 
 		history.push("/");
