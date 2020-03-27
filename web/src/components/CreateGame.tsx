@@ -1,5 +1,5 @@
 import { Button, Layout, Modal, Text } from "@ui-kitten/components";
-import React from "react";
+import React, { useState } from "react";
 import { useHistory } from "react-router-dom";
 
 import styles from "../styles";
@@ -17,16 +17,20 @@ export const CreateGame = (props: CreateGameProps) => {
 		props.setVisible(!props.visible);
 	};
 
+	const [loading, setLoading] = useState(false);
+
 	const user: User = JSON.parse(localStorage.getItem("user")!);
 
 	const history = useHistory();
 	const goToGame = async () => {
+		setLoading(true);
 		await db
 			.collection("games")
 			.doc(props.gameId)
 			.collection("players")
 			.doc(user.email)
 			.set({ name: user.displayName });
+		setLoading(false);
 		history.push(`/play/${props.gameId}`);
 	};
 
@@ -42,8 +46,8 @@ export const CreateGame = (props: CreateGameProps) => {
 				<Text style={styles.paragraph}>
 					Ask Players to join the game with this ID
 				</Text>
-				<Button style={styles.button} onPress={goToGame}>
-					Join Game
+				<Button style={styles.button} onPress={goToGame} disabled={loading}>
+					{loading ? "Loading..." : "Join Game"}
 				</Button>
 			</Layout>
 		</Modal>

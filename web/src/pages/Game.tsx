@@ -1,15 +1,27 @@
 import { Button, Card, Layout, Text } from "@ui-kitten/components";
 import React, { useEffect, useState } from "react";
-import { SafeAreaView } from "react-native";
 import LinearGradient from "react-native-linear-gradient";
 import { useParams } from "react-router-dom";
 
 import styles from "../styles";
+import { Game, Player } from "../typings";
 import { db } from "../utils/firebase";
 
 export const GameScreen = () => {
 	const { gameId } = useParams();
-	const [players, setPlayers] = useState<any[]>([]);
+	const [players, setPlayers] = useState<Player[]>([]);
+	const [gameData, setGameData] = useState<Game>();
+
+	const startGame = () => {
+		players.forEach(async (player, index) => {
+			await db
+				.collection("games")
+				.doc(gameId)
+				.collection("players")
+				.doc(player.id)
+				.update({ cards: gameData?.deck.slice(8 * index, 8 * index + 8) });
+		});
+	};
 
 	useEffect(() => {
 		const unsubscribeFromGame = db
@@ -17,7 +29,7 @@ export const GameScreen = () => {
 			.doc(gameId)
 			.onSnapshot(snapshot => {
 				if (snapshot.exists) {
-					console.log(snapshot.data());
+					setGameData(snapshot.data() as any);
 				}
 			});
 
@@ -27,11 +39,14 @@ export const GameScreen = () => {
 			.collection("players")
 			.onSnapshot(snapshot => {
 				if (!snapshot.empty) {
-					setPlayers(
-						snapshot.docs.map(doc => ({ data: doc.data(), id: doc.id }))
-					);
+					const players = snapshot.docs.map(doc => {
+						let data = doc.data();
+						return { name: data.name, id: doc.id };
+					});
+					setPlayers(players);
 				}
 			});
+
 		return () => {
 			unsubscribeFromGame();
 			unsubscribeFromPlayers();
@@ -39,20 +54,22 @@ export const GameScreen = () => {
 	}, [gameId]);
 
 	return (
-		<SafeAreaView style={{ height: "100%" }}>
-			<LinearGradient
-				colors={["#c6ffdd", "#fbd786", "#f7797d"]}
-				style={styles.wrapper}
-			>
-				<Card style={styles.card}>
-					<Layout>
-						{players.map(player => (
-							<Text key={player.id}>{player.data.name} joined</Text>
-						))}
-					</Layout>
-					{players.length === 1 && <Button>Start Game</Button>}
-				</Card>
-			</LinearGradient>
-		</SafeAreaView>
+		<LinearGradient
+			colors={["#c6ffdd", "#fbd786", "#f7797d"]}
+			style={styles.wrapper}
+		>
+			<Card style={styles.card}>
+				<Layout>
+					{players.map(player => (
+						<Text key={player.id}>{player.name} joined</Text>
+					))}
+				</Layout>
+				{players.length === 2 && (
+					<Button disabled={gameData?.started} onPress={startGame}>
+						Start Game
+					</Button>
+				)}
+			</Card>
+		</LinearGradient>
 	);
 };

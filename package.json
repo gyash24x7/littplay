@@ -5,7 +5,8 @@
 	"description": "Literature Card Game Cross Platform monorepo",
 	"main": "index.js",
 	"scripts": {
-		"test": "echo \"Error: no test specified\" && exit 1"
+		"dev:web": "yarn workspace web dev",
+		"build:web": "yarn workspce web build"
 	},
 	"repository": {
 		"type": "git",

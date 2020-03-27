@@ -1,15 +1,15 @@
 import { light, mapping } from "@eva-design/eva";
-import { ApplicationProvider, IconRegistry } from "@ui-kitten/components";
-import { EvaIconsPack } from "@ui-kitten/eva-icons";
+import { ApplicationProvider } from "@ui-kitten/components";
 import * as Font from "expo-font";
 import React, { useEffect, useState } from "react";
+import { hot } from "react-hot-loader/root";
 
 import { AppRoutes } from "./routes";
 import { customMapping, customTheme } from "./utils/theme";
 
 const theme = { ...light, ...customTheme };
 
-const App = () => {
+const App = hot(() => {
 	const [loading, setLoading] = useState(true);
 
 	useEffect(() => {
@@ -26,10 +26,9 @@ const App = () => {
 			mapping={mapping}
 			customMapping={customMapping}
 		>
-			<IconRegistry icons={EvaIconsPack} />
 			{!loading && <AppRoutes />}
 		</ApplicationProvider>
 	);
-};
+});
 
 export default App;

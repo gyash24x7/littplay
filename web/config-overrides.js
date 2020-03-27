@@ -7,6 +7,7 @@ module.exports = override(
 			process.env.NODE_ENV === "production"
 				? "react-dom"
 				: "@hot-loader/react-dom",
-		"react-native": "react-native-web"
+		"react-native": "react-native-web",
+		"react-native-linear-gradient": "react-native-web-linear-gradient"
 	})
 );

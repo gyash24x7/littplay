@@ -1,4 +1,4 @@
-import { Button, Input, Layout, Modal } from "@ui-kitten/components";
+import { Button, Input, Layout, Modal, Text } from "@ui-kitten/components";
 import React, { useState } from "react";
 import { useHistory } from "react-router-dom";
 
@@ -13,6 +13,7 @@ interface JoinGameProps {
 
 export const JoinGame = (props: JoinGameProps) => {
 	const [gameId, setGameId] = useState("");
+	const [loading, setLoading] = useState(false);
 
 	const toggleModal = () => {
 		props.setVisible(!props.visible);
@@ -29,6 +30,7 @@ export const JoinGame = (props: JoinGameProps) => {
 	const history = useHistory();
 
 	const goToGame = async () => {
+		setLoading(true);
 		await db
 			.collection("games")
 			.doc(gameId)
@@ -36,6 +38,7 @@ export const JoinGame = (props: JoinGameProps) => {
 			.doc(user.email)
 			.set({ name: user.displayName });
 
+		setLoading(false);
 		history.push(`/play/${gameId}`);
 	};
 
@@ -46,15 +49,14 @@ export const JoinGame = (props: JoinGameProps) => {
 			visible={props.visible}
 		>
 			<Layout style={styles.card}>
+				<Text style={styles.labelStyle}>Enter Game ID</Text>
 				<Input
 					value={gameId}
 					onChangeText={handleTextChange}
 					textStyle={{ textAlign: "center" }}
-					label="Enter gameId"
-					labelStyle={styles.labelStyle}
 				/>
-				<Button style={styles.button} onPress={goToGame}>
-					Join Game
+				<Button style={styles.button} onPress={goToGame} disabled={loading}>
+					{loading ? "Loading..." : "Join Game"}
 				</Button>
 			</Layout>
 		</Modal>

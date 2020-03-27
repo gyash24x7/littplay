@@ -2,20 +2,21 @@ import { StyleSheet } from "react-native";
 
 export default StyleSheet.create({
 	wrapper: {
-		flex: 1,
+		display: "flex",
 		justifyContent: "center",
-		alignItems: "center"
+		alignItems: "center",
+		height: "100vh"
 	},
 
 	card: {
-		padding: "10vh",
-		textAlign: "center"
+		padding: "5vh"
 	},
 
 	logo: {
 		width: 250,
 		height: 250
 	},
+
 	backdrop: {
 		backgroundColor: "rgba(0, 0, 0, 0.5)"
 	},
@@ -29,23 +30,28 @@ export default StyleSheet.create({
 		fontSize: 48,
 		fontFamily: "montserrat-bold",
 		margin: 15,
-		marginBottom: 30
+		marginBottom: 30,
+		textAlign: "center"
 	},
 
 	paragraph: {
 		fontSize: 20,
-		marginBottom: 15
+		marginBottom: 15,
+		textAlign: "center"
 	},
 
 	labelStyle: {
 		textAlign: "center",
-		textTransform: "uppercase"
+		fontWeight: "bold",
+		color: "#7A869A",
+		marginBottom: 5
 	},
 
 	bottomText: {
 		fontWeight: "bold",
+		textAlign: "center",
+		lineHeight: 24,
 		position: "absolute",
-		bottom: "-9vh",
-		lineHeight: 24
+		bottom: 0
 	}
 });
