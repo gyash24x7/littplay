@@ -1,7 +1,6 @@
-import { Button, Card } from "@ui-kitten/components";
+import { Button, Card, Layout } from "@ui-kitten/components";
 import React, { useState } from "react";
 import { Image } from "react-native";
-import LinearGradient from "react-native-linear-gradient";
 import { useHistory } from "react-router-dom";
 
 import styles from "../styles";
@@ -29,10 +28,7 @@ export const LoginScreen = () => {
 	};
 
 	return (
-		<LinearGradient
-			colors={["#c6ffdd", "#fbd786", "#f7797d"]}
-			style={styles.wrapper}
-		>
+		<Layout style={styles.wrapper}>
 			<Card style={styles.card}>
 				<Image
 					source={{ uri: require("../assets/icon.png") }}
@@ -42,6 +38,6 @@ export const LoginScreen = () => {
 					{loading ? "Loading..." : "Log in with Google"}
 				</Button>
 			</Card>
-		</LinearGradient>
+		</Layout>
 	);
 };

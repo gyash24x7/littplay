@@ -9,6 +9,12 @@ export default StyleSheet.create({
 	},
 
 	card: {
+		padding: "5vh",
+		backgroundColor: "transparent",
+		borderColor: "transparent"
+	},
+
+	modal: {
 		padding: "5vh"
 	},
 
@@ -66,7 +72,7 @@ export default StyleSheet.create({
 	playingCard: {
 		margin: 5,
 		padding: 5,
-		border: 3,
+		borderWidth: 3,
 		borderColor: "#172b4d",
 		display: "flex",
 		flexDirection: "column",

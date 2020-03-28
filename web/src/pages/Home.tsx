@@ -1,7 +1,6 @@
 import { Button, Card, Layout, Text } from "@ui-kitten/components";
 import React, { useState } from "react";
 import { Image } from "react-native";
-import LinearGradient from "react-native-linear-gradient";
 import { useHistory } from "react-router-dom";
 
 import { CreateGame } from "../components/CreateGame";
@@ -54,26 +53,21 @@ export const HomeScreen = () => {
 	};
 
 	return (
-		<LinearGradient
-			colors={["#c6ffdd", "#fbd786", "#f7797d"]}
-			style={styles.wrapper}
-		>
+		<Layout style={styles.wrapper}>
 			<Card style={styles.card}>
 				<Image
 					source={{ uri: require("../assets/icon.png") }}
 					style={styles.logo}
 				/>
-				<Layout>
-					<Button style={styles.button} onPress={createGame} disabled={loading}>
-						{loading ? "Loading..." : "Create Game"}
-					</Button>
-					<Button style={styles.button} onPress={() => setVisibleJoin(true)}>
-						Join a Game
-					</Button>
-					<Button style={styles.button} status="danger" onPress={logOut}>
-						Logout
-					</Button>
-				</Layout>
+				<Button style={styles.button} onPress={createGame} disabled={loading}>
+					{loading ? "Loading..." : "Create Game"}
+				</Button>
+				<Button style={styles.button} onPress={() => setVisibleJoin(true)}>
+					Join a Game
+				</Button>
+				<Button style={styles.button} status="danger" onPress={logOut}>
+					Logout
+				</Button>
 			</Card>
 			<Text style={styles.bottomText}>Logged in as {user.email}</Text>
 			<CreateGame
@@ -82,6 +76,6 @@ export const HomeScreen = () => {
 				gameId={gameId}
 			/>
 			<JoinGame visible={visibleJoin} setVisible={setVisibleJoin} />
-		</LinearGradient>
+		</Layout>
 	);
 };

@@ -48,7 +48,7 @@ export const JoinGame = (props: JoinGameProps) => {
 			onBackdropPress={toggleModal}
 			visible={props.visible}
 		>
-			<Layout style={styles.card}>
+			<Layout style={styles.modal}>
 				<Text style={styles.labelStyle}>Enter Game ID</Text>
 				<Input
 					value={gameId}

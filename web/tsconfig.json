@@ -29,7 +29,7 @@
 		"noUnusedLocals": true,
 		"noUnusedParameters": true,
 		"noImplicitReturns": true,
-		"noFallthroughCasesInSwitch": true,
+		"noFallthroughCasesInSwitch": false,
 		"experimentalDecorators": true,
 		"emitDecoratorMetadata": true
 	},

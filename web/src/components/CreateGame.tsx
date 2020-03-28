@@ -40,7 +40,7 @@ export const CreateGame = (props: CreateGameProps) => {
 			onBackdropPress={toggleModal}
 			visible={props.visible}
 		>
-			<Layout style={styles.card}>
+			<Layout style={styles.modal}>
 				<Text style={styles.paragraph}>Your Game ID is</Text>
 				<Text style={styles.heading}>{props.gameId}</Text>
 				<Text style={styles.paragraph}>

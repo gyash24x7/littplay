@@ -1,12 +1,11 @@
 import { Button, Card, Layout, Text } from "@ui-kitten/components";
 import React, { Fragment, useEffect, useState } from "react";
 import { ActivityIndicator } from "react-native";
-import LinearGradient from "react-native-linear-gradient";
 import { useParams } from "react-router-dom";
 
 import { GameCardComponent } from "../components/GameCard";
 import styles from "../styles";
-import { Game, Player } from "../typings";
+import { Game, Player, User } from "../typings";
 import { GameCard } from "../utils/deck";
 import { db } from "../utils/firebase";
 
@@ -14,10 +13,16 @@ export const GameScreen = () => {
 	const { gameId } = useParams();
 	const [players, setPlayers] = useState<Player[]>([]);
 	const [gameData, setGameData] = useState<Game>();
-	const [loading, setLoading] = useState(true);
+	const [loading, setLoading] = useState(false);
+	const activePLayer: User = JSON.parse(localStorage.getItem("user")!);
 
-	const startGame = () => {
+	const startGame = async () => {
 		setLoading(true);
+
+		await db
+			.collection("games")
+			.doc(gameId)
+			.update({ started: true });
 
 		players.forEach(async (player, index) => {
 			await db
@@ -49,16 +54,14 @@ export const GameScreen = () => {
 				if (!snapshot.empty) {
 					const players = snapshot.docs.map(doc => {
 						let data = doc.data();
-						console.log(data);
 						return {
 							name: data.name,
 							id: doc.id,
-							cards: data.cards.map((cardString: string) =>
+							cards: data.cards?.map((cardString: string) =>
 								GameCard.fromString(cardString)
 							)
 						};
 					});
-					console.log(players);
 					setPlayers(players);
 				}
 			});
@@ -70,34 +73,32 @@ export const GameScreen = () => {
 	}, [gameId]);
 
 	return (
-		<LinearGradient
-			colors={["#c6ffdd", "#fbd786", "#f7797d"]}
-			style={styles.wrapper}
-		>
+		<Layout style={styles.wrapper}>
 			{!gameData ? (
 				<ActivityIndicator />
 			) : (
 				<Card style={styles.card}>
-					{!gameData.started && (
+					{!gameData.started ? (
 						<Fragment>
-							<Layout>
-								{players.map(player => (
-									<Text key={player.id}>{player.name} joined</Text>
-								))}
-							</Layout>
-							{players.length === 1 && (
+							{players.map(player => (
+								<Text key={player.id}>{player.name} joined</Text>
+							))}
+							{players.length === 2 && (
 								<Button disabled={loading} onPress={startGame}>
 									{loading ? "Starting..." : "Start Game"}
 								</Button>
 							)}
 						</Fragment>
+					) : (
+						<Layout style={styles.playingCardContainer}>
+							{players.length > 0 &&
+								players
+									.find(player => player.id === activePLayer.email)!
+									.cards?.map(card => <GameCardComponent card={card} />)}
+						</Layout>
 					)}
-					<Layout style={styles.playingCardContainer}>
-						{players.length > 0 &&
-							players[0].cards?.map(card => <GameCardComponent card={card} />)}
-					</Layout>
 				</Card>
 			)}
-		</LinearGradient>
+		</Layout>
 	);
 };
