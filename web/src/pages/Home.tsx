@@ -34,6 +34,7 @@ export const HomeScreen = () => {
 			.toUpperCase();
 
 		const deck = new Deck();
+		deck.removeCardsOfRank("Seven");
 
 		await db
 			.collection("games")

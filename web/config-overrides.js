@@ -9,5 +9,6 @@ module.exports = override(
 				: "@hot-loader/react-dom",
 		"react-native": "react-native-web",
 		"react-native-linear-gradient": "react-native-web-linear-gradient"
-	})
+	}),
+	addBabelPlugin("@babel/plugin-proposal-class-properties")
 );

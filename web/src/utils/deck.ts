@@ -1,6 +1,6 @@
 import { RANKS, SUITS } from "./constants";
 
-export class Card {
+export class GameCard {
 	rank: string;
 	suit: string;
 
@@ -12,14 +12,20 @@ export class Card {
 	toString() {
 		return `${this.rank} of ${this.suit}`;
 	}
+
+	static fromString(cardString: string) {
+		const rank = cardString.split(" of ")[0];
+		const suit = cardString.split(" of ")[1];
+		return new GameCard({ rank, suit });
+	}
 }
 
 export class Deck {
-	cards: Card[] = [];
+	cards: GameCard[] = [];
 
 	constructor() {
 		this.cards = RANKS.flatMap(rank =>
-			SUITS.map(suit => new Card({ suit, rank }))
+			SUITS.map(suit => new GameCard({ suit, rank }))
 		);
 
 		this.shuffle();

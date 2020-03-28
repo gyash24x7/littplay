@@ -1,4 +1,4 @@
-import { Card } from "../utils/deck";
+import { GameCard } from "../utils/deck";
 
 export interface User {
 	displayName: string;
@@ -10,7 +10,7 @@ export interface User {
 export interface Player {
 	id: string;
 	name: string;
-	hand?: Card[];
+	cards?: GameCard[];
 }
 
 export interface Game {
