@@ -1,9 +1,10 @@
 import { Button, Card, Layout, Text } from "@ui-kitten/components";
-import React, { Fragment, useEffect, useState } from "react";
-import { ActivityIndicator } from "react-native";
+import React, { useEffect, useState } from "react";
+import { ActivityIndicator, Image } from "react-native";
 import { useParams } from "react-router-dom";
 
 import { GameCardComponent } from "../components/GameCard";
+import { GamePlay } from "../components/GamePlay";
 import styles from "../styles";
 import { Game, Player, User } from "../typings";
 import { GameCard } from "../utils/deck";
@@ -14,7 +15,7 @@ export const GameScreen = () => {
 	const [players, setPlayers] = useState<Player[]>([]);
 	const [gameData, setGameData] = useState<Game>();
 	const [loading, setLoading] = useState(false);
-	const activePLayer: User = JSON.parse(localStorage.getItem("user")!);
+	const user: User = JSON.parse(localStorage.getItem("user")!);
 
 	const startGame = async () => {
 		setLoading(true);
@@ -22,7 +23,7 @@ export const GameScreen = () => {
 		await db
 			.collection("games")
 			.doc(gameId)
-			.update({ started: true });
+			.update({ started: true, moves: [`Turn: ${user.displayName}`] });
 
 		players.forEach(async (player, index) => {
 			await db
@@ -74,12 +75,13 @@ export const GameScreen = () => {
 
 	return (
 		<Layout style={styles.wrapper}>
+			<Image source={require("../assets/icon.png")} style={styles.logoMark} />
 			{!gameData ? (
 				<ActivityIndicator />
 			) : (
 				<Card style={styles.card}>
 					{!gameData.started ? (
-						<Fragment>
+						<Layout>
 							{players.map(player => (
 								<Text key={player.id}>{player.name} joined</Text>
 							))}
@@ -88,17 +90,22 @@ export const GameScreen = () => {
 									{loading ? "Starting..." : "Start Game"}
 								</Button>
 							)}
-						</Fragment>
+						</Layout>
 					) : (
-						<Layout style={styles.playingCardContainer}>
-							{players.length > 0 &&
-								players
-									.find(player => player.id === activePLayer.email)!
-									.cards?.map(card => <GameCardComponent card={card} />)}
+						<Layout>
+							<Layout style={styles.playingCardContainer}>
+								{players.length > 0 &&
+									players
+										.find(player => player.id === user.email)!
+										.cards?.map(card => <GameCardComponent card={card} />)}
+							</Layout>
+							<GamePlay gameData={gameData} players={players} />
 						</Layout>
 					)}
 				</Card>
 			)}
+
+			<Text style={styles.bottomText}>Logged in as {user.email}</Text>
 		</Layout>
 	);
 };

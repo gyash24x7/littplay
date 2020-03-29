@@ -25,3 +25,7 @@ export const getCardColor = (suit: string) => {
 			return "#172b4d";
 	}
 };
+
+export const SMALL_RANKS = RANKS.slice(0, 6);
+
+export const BIG_RANKS = RANKS.slice(7);

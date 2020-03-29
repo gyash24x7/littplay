@@ -1,4 +1,4 @@
-import { RANKS, SUITS } from "./constants";
+import { BIG_RANKS, RANKS, SMALL_RANKS, SUITS } from "./constants";
 
 export class GameCard {
 	rank: string;
@@ -49,4 +49,24 @@ export class Deck {
 	removeCardsOfRank(rank: string) {
 		this.cards = this.cards.filter(card => card.rank !== rank);
 	}
+
+	static getSetWiseCards(cards: GameCard[], validSuits: Set<string>) {
+		const setWiseCards: { [key: string]: GameCard[] } = {};
+
+		validSuits.forEach(suit => {
+			setWiseCards[`Small ${suit}`] = cards.filter(
+				card => suit === card.suit && SMALL_RANKS.includes(card.rank)
+			);
+
+			setWiseCards[`Big ${suit}`] = cards.filter(
+				card => suit === card.suit && BIG_RANKS.includes(card.rank)
+			);
+		});
+
+		return setWiseCards;
+	}
+
+	// static getSetWiseCallableCards( setWiseCards: { [ key: string ]: GameCard[]; } ) {
+
+	// }
 }

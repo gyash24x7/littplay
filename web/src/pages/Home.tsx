@@ -41,6 +41,8 @@ export const HomeScreen = () => {
 			.set({
 				started: false,
 				completed: false,
+				moves: [],
+				createdBy: user.displayName,
 				deck: deck.cards.map(card => card.toString())
 			})
 			.catch(err => {
@@ -55,10 +57,7 @@ export const HomeScreen = () => {
 	return (
 		<Layout style={styles.wrapper}>
 			<Card style={styles.card}>
-				<Image
-					source={{ uri: require("../assets/icon.png") }}
-					style={styles.logo}
-				/>
+				<Image source={require("../assets/icon.png")} style={styles.logo} />
 				<Button style={styles.button} onPress={createGame} disabled={loading}>
 					{loading ? "Loading..." : "Create Game"}
 				</Button>

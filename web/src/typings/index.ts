@@ -16,6 +16,7 @@ export interface Player {
 export interface Game {
 	started: boolean;
 	completed: boolean;
-	moves?: string[];
+	moves: string[];
 	deck: string[];
+	createdBy: string;
 }

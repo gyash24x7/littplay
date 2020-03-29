@@ -15,12 +15,19 @@ export default StyleSheet.create({
 	},
 
 	modal: {
-		padding: "5vh"
+		padding: "5vh",
+		minWidth: "50vw"
 	},
 
 	logo: {
 		width: 250,
 		height: 250
+	},
+
+	logoMark: {
+		width: 100,
+		height: 100,
+		marginTop: "-10vh"
 	},
 
 	backdrop: {
@@ -90,5 +97,16 @@ export default StyleSheet.create({
 		fontWeight: "900",
 		fontSize: 50,
 		lineHeight: 70
+	},
+
+	gamePlayContainer: {
+		display: "flex",
+		flexDirection: "row",
+		justifyContent: "center",
+		alignItems: "center"
+	},
+
+	select: {
+		margin: 5
 	}
 });
