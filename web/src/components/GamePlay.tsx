@@ -11,16 +11,17 @@ import { GiveCard } from "./GiveCard";
 interface GamePlayProps {
 	players: Player[];
 	gameData: Game;
+	activePlayer?: Player;
 }
 
-export const GamePlay = ({ gameData, players }: GamePlayProps) => {
+export const GamePlay = ({
+	gameData,
+	players,
+	activePlayer
+}: GamePlayProps) => {
 	const [visible, setVisible] = useState(false);
 
 	const user: User = JSON.parse(localStorage.getItem("user")!);
-
-	const activePlayer: Player = players.find(
-		player => player.id === user.email
-	)!;
 
 	let moveDescription = "";
 	switch (gameData.lastMove.type) {
@@ -34,18 +35,6 @@ export const GamePlay = ({ gameData, players }: GamePlayProps) => {
 			} for ${GameCard.toString(gameData.lastMove.card!)}`;
 			break;
 	}
-
-	const haveCard: boolean = !!(
-		gameData &&
-		players.length > 0 &&
-		activePlayer &&
-		activePlayer.cards &&
-		activePlayer.cards.findIndex(card => {
-			const rank = gameData.lastMove.card?.rank;
-			const suit = gameData.lastMove.card?.suit;
-			return card.suit === suit && card.rank === rank;
-		}) > -1
-	);
 
 	return (
 		<Layout style={styles.gamePlayContainer}>
@@ -69,10 +58,24 @@ export const GamePlay = ({ gameData, players }: GamePlayProps) => {
 						<Layout style={styles.moveAction}>
 							<GiveCard
 								players={players}
-								haveCard={haveCard}
+								haveCard={
+									activePlayer!.cards!.findIndex(card => {
+										const rank = gameData.lastMove.card?.rank;
+										const suit = gameData.lastMove.card?.suit;
+										return card.suit === suit && card.rank === rank;
+									}) > -1
+								}
 								gameData={gameData}
 							/>
-							<DeclineCard haveCard={haveCard} />
+							<DeclineCard
+								haveCard={
+									activePlayer!.cards!.findIndex(card => {
+										const rank = gameData.lastMove.card?.rank;
+										const suit = gameData.lastMove.card?.suit;
+										return card.suit === suit && card.rank === rank;
+									}) > -1
+								}
+							/>
 						</Layout>
 					)}
 				</Fragment>

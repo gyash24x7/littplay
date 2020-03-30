@@ -19,7 +19,7 @@ interface AskPlayerProps {
 	visible: boolean;
 	setVisible: (val: boolean) => void;
 	players: Player[];
-	activePlayer: Player;
+	activePlayer?: Player;
 }
 
 export const AskPlayer = (props: AskPlayerProps) => {
@@ -38,8 +38,8 @@ export const AskPlayer = (props: AskPlayerProps) => {
 		props.activePlayer?.cards?.map(card => card.suit)
 	);
 	const setWiseCards = Deck.getSetWiseCards(
-		props.activePlayer.cards!,
-		validCardSuits
+		props.activePlayer?.cards!,
+		validCardSuits || []
 	);
 
 	const setData = Array.from(validCardSuits)

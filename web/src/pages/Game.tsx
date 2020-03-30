@@ -17,6 +17,11 @@ export const GameScreen = () => {
 	const [loading, setLoading] = useState(false);
 	const user: User = JSON.parse(localStorage.getItem("user")!);
 
+	const activePlayer =
+		players.length > 0
+			? players.find(player => player.id === user.email)
+			: undefined;
+
 	const startGame = async () => {
 		setLoading(true);
 
@@ -95,12 +100,15 @@ export const GameScreen = () => {
 			{gameData && gameData.started && (
 				<Fragment>
 					<Layout style={styles.playingCardContainer}>
-						{players.length > 0 &&
-							players
-								.find(player => player.id === user.email)!
-								.cards?.map(card => <GameCardComponent card={card} />)}
+						{activePlayer?.cards?.map(card => (
+							<GameCardComponent card={card} />
+						))}
 					</Layout>
-					<GamePlay gameData={gameData} players={players} />
+					<GamePlay
+						gameData={gameData}
+						players={players}
+						activePlayer={activePlayer}
+					/>
 				</Fragment>
 			)}
 
