@@ -1,5 +1,5 @@
 import { Button, Card, Layout, Text } from "@ui-kitten/components";
-import React, { useEffect, useState } from "react";
+import React, { Fragment, useEffect, useState } from "react";
 import { ActivityIndicator, Image } from "react-native";
 import { useParams } from "react-router-dom";
 
@@ -76,34 +76,32 @@ export const GameScreen = () => {
 
 	return (
 		<Layout style={styles.wrapper}>
-			<Image source={require("../assets/icon.png")} style={styles.logoMark} />
-			{!gameData ? (
-				<ActivityIndicator />
-			) : (
+			<Layout>
+				<Image source={require("../assets/icon.png")} style={styles.logoMark} />
+				{!gameData && <ActivityIndicator />}
+			</Layout>
+			{gameData && !gameData.started && (
 				<Card style={styles.card}>
-					{!gameData.started ? (
-						<Layout>
-							{players.map(player => (
-								<Text key={player.id}>{player.name} joined</Text>
-							))}
-							{players.length === 2 && (
-								<Button disabled={loading} onPress={startGame}>
-									{loading ? "Starting..." : "Start Game"}
-								</Button>
-							)}
-						</Layout>
-					) : (
-						<Layout>
-							<Layout style={styles.playingCardContainer}>
-								{players.length > 0 &&
-									players
-										.find(player => player.id === user.email)!
-										.cards?.map(card => <GameCardComponent card={card} />)}
-							</Layout>
-							<GamePlay gameData={gameData} players={players} />
-						</Layout>
+					{players.map(player => (
+						<Text key={player.id}>{player.name} joined</Text>
+					))}
+					{players.length === 6 && (
+						<Button disabled={loading} onPress={startGame}>
+							{loading ? "Starting..." : "Start Game"}
+						</Button>
 					)}
 				</Card>
+			)}
+			{gameData && gameData.started && (
+				<Fragment>
+					<Layout style={styles.playingCardContainer}>
+						{players.length > 0 &&
+							players
+								.find(player => player.id === user.email)!
+								.cards?.map(card => <GameCardComponent card={card} />)}
+					</Layout>
+					<GamePlay gameData={gameData} players={players} />
+				</Fragment>
 			)}
 
 			<Text style={styles.bottomText}>Logged in as {user.email}</Text>

@@ -3,9 +3,9 @@ import { StyleSheet } from "react-native";
 export default StyleSheet.create({
 	wrapper: {
 		display: "flex",
-		justifyContent: "center",
+		justifyContent: "space-between",
 		alignItems: "center",
-		height: "100vh"
+		minHeight: "100vh"
 	},
 
 	card: {
@@ -26,8 +26,7 @@ export default StyleSheet.create({
 
 	logoMark: {
 		width: 100,
-		height: 100,
-		marginTop: "-10vh"
+		height: 100
 	},
 
 	backdrop: {
@@ -72,14 +71,13 @@ export default StyleSheet.create({
 		display: "flex",
 		flexDirection: "row",
 		flexWrap: "wrap",
-		padding: 5,
+		padding: "5vh",
 		justifyContent: "center"
 	},
 
 	playingCard: {
 		margin: 5,
-		padding: 5,
-		borderWidth: 3,
+		borderWidth: 2,
 		borderColor: "#172b4d",
 		display: "flex",
 		flexDirection: "column",
@@ -89,20 +87,22 @@ export default StyleSheet.create({
 	},
 
 	suitIcon: {
-		width: 50,
-		height: 50
+		width: 30,
+		height: 30
 	},
 
 	rankIcon: {
 		fontWeight: "900",
-		fontSize: 50,
-		lineHeight: 70
+		fontSize: 30,
+		lineHeight: 40
 	},
 
 	gamePlayContainer: {
 		display: "flex",
 		justifyContent: "center",
-		alignItems: "center"
+		alignItems: "center",
+		padding: "5vh",
+		margin: "5vh"
 	},
 
 	select: {

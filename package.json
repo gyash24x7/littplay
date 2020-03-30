@@ -6,7 +6,8 @@
 	"main": "index.js",
 	"scripts": {
 		"dev:web": "yarn workspace web dev",
-		"build:web": "yarn workspce web build"
+		"build:web": "yarn workspace web build",
+		"deploy:web": "cd web && firebase deploy"
 	},
 	"repository": {
 		"type": "git",
