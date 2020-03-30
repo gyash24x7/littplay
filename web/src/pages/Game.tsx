@@ -23,7 +23,10 @@ export const GameScreen = () => {
 		await db
 			.collection("games")
 			.doc(gameId)
-			.update({ started: true, moves: [`Turn: ${user.displayName}`] });
+			.update({
+				started: true,
+				lastMove: { type: "TURN", turn: user.displayName }
+			});
 
 		players.forEach(async (player, index) => {
 			await db
@@ -58,9 +61,7 @@ export const GameScreen = () => {
 						return {
 							name: data.name,
 							id: doc.id,
-							cards: data.cards?.map((cardString: string) =>
-								GameCard.fromString(cardString)
-							)
+							cards: data.cards as GameCard[]
 						};
 					});
 					setPlayers(players);

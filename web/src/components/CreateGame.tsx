@@ -22,14 +22,17 @@ export const CreateGame = (props: CreateGameProps) => {
 	const user: User = JSON.parse(localStorage.getItem("user")!);
 
 	const history = useHistory();
+
 	const goToGame = async () => {
 		setLoading(true);
+
 		await db
 			.collection("games")
 			.doc(props.gameId)
 			.collection("players")
 			.doc(user.email)
 			.set({ name: user.displayName });
+
 		setLoading(false);
 		history.push(`/play/${props.gameId}`);
 	};

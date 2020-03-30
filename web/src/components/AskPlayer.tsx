@@ -19,6 +19,7 @@ interface AskPlayerProps {
 	visible: boolean;
 	setVisible: (val: boolean) => void;
 	players: Player[];
+	activePlayer: Player;
 }
 
 export const AskPlayer = (props: AskPlayerProps) => {
@@ -33,13 +34,11 @@ export const AskPlayer = (props: AskPlayerProps) => {
 
 	const toggleModal = () => props.setVisible(!props.visible);
 
-	const activePlayer: Player = props.players.find(
-		player => player.id === user.email
-	)!;
-
-	const validCardSuits = new Set(activePlayer?.cards?.map(card => card.suit));
+	const validCardSuits = new Set(
+		props.activePlayer?.cards?.map(card => card.suit)
+	);
 	const setWiseCards = Deck.getSetWiseCards(
-		activePlayer.cards!,
+		props.activePlayer.cards!,
 		validCardSuits
 	);
 
@@ -51,6 +50,7 @@ export const AskPlayer = (props: AskPlayerProps) => {
 	const [selectedSet, setSelectedSet] = useState<SelectOptionType>();
 	const [rankData, setRankData] = useState<SelectOptionType[]>([]);
 	const [selectedRank, setSelectedRank] = useState<SelectOptionType>();
+	const [loading, setLoading] = useState(false);
 
 	const handleSelectedSetSelection = ({ text }: SelectOptionType) => {
 		let VALID_RANKS = [] as string[];
@@ -70,10 +70,25 @@ export const AskPlayer = (props: AskPlayerProps) => {
 	};
 
 	const handleAsking = async () => {
+		setLoading(true);
 		await db
 			.collection("games")
 			.doc(gameId)
-			.update({});
+			.update({
+				lastMove: {
+					type: "ASK",
+					from: selectedPlayer?.text.split(" (")[0],
+					by: user.displayName,
+					card: {
+						rank: selectedRank?.text,
+						suit: selectedSet?.text.split(" ")[1]
+					}
+				}
+			})
+			.catch(err => console.log("Error: ", err));
+
+		setLoading(false);
+		toggleModal();
 	};
 
 	return (
@@ -111,7 +126,7 @@ export const AskPlayer = (props: AskPlayerProps) => {
 					style={styles.button}
 					onPress={handleAsking}
 				>
-					Ask
+					{loading ? "Loading..." : "Ask"}
 				</Button>
 			</Layout>
 		</Modal>

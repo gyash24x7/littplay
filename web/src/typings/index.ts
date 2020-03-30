@@ -16,7 +16,15 @@ export interface Player {
 export interface Game {
 	started: boolean;
 	completed: boolean;
-	moves: string[];
-	deck: string[];
-	createdBy: string;
+	lastMove: Move;
+	secondLastMove: Move;
+	deck: GameCard[];
+}
+
+export interface Move {
+	type: string;
+	from?: string;
+	by?: string;
+	card?: GameCard;
+	turn?: string;
 }

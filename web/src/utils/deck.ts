@@ -9,14 +9,12 @@ export class GameCard {
 		this.rank = rank;
 	}
 
-	toString() {
-		return `${this.rank} of ${this.suit}`;
+	static toMap({ rank, suit }: GameCard) {
+		return { rank, suit };
 	}
 
-	static fromString(cardString: string) {
-		const rank = cardString.split(" of ")[0];
-		const suit = cardString.split(" of ")[1];
-		return new GameCard({ rank, suit });
+	static toString({ rank, suit }: GameCard) {
+		return `${rank} of ${suit}`;
 	}
 }
 

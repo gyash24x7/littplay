@@ -7,7 +7,7 @@ import { CreateGame } from "../components/CreateGame";
 import { JoinGame } from "../components/JoinGame";
 import styles from "../styles";
 import { User } from "../typings";
-import { Deck } from "../utils/deck";
+import { Deck, GameCard } from "../utils/deck";
 import firebase, { db } from "../utils/firebase";
 
 export const HomeScreen = () => {
@@ -41,9 +41,10 @@ export const HomeScreen = () => {
 			.set({
 				started: false,
 				completed: false,
-				moves: [],
+				lastMove: "",
+				secondLastMove: "",
 				createdBy: user.displayName,
-				deck: deck.cards.map(card => card.toString())
+				deck: deck.cards.map(GameCard.toMap)
 			})
 			.catch(err => {
 				console.log("Some Error Occurred: ", err);

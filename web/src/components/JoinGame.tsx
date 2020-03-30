@@ -31,6 +31,7 @@ export const JoinGame = (props: JoinGameProps) => {
 
 	const goToGame = async () => {
 		setLoading(true);
+
 		await db
 			.collection("games")
 			.doc(gameId)

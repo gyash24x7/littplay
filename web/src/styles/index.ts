@@ -101,12 +101,16 @@ export default StyleSheet.create({
 
 	gamePlayContainer: {
 		display: "flex",
-		flexDirection: "row",
 		justifyContent: "center",
 		alignItems: "center"
 	},
 
 	select: {
 		margin: 5
+	},
+
+	moveAction: {
+		display: "flex",
+		flexDirection: "row"
 	}
 });
