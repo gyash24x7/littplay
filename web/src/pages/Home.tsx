@@ -1,11 +1,10 @@
-import { Button, Card, Layout, Text } from "@ui-kitten/components";
+import Button from "@atlaskit/button";
 import React, { useState } from "react";
-import { Image } from "react-native";
 import { useHistory } from "react-router-dom";
 
+import Logo from "../assets/icon.png";
 import { CreateGame } from "../components/CreateGame";
 import { JoinGame } from "../components/JoinGame";
-import styles from "../styles";
 import { User } from "../typings";
 import { Deck, GameCard } from "../utils/deck";
 import firebase, { db } from "../utils/firebase";
@@ -56,26 +55,36 @@ export const HomeScreen = () => {
 	};
 
 	return (
-		<Layout style={styles.wrapper}>
-			<Card style={styles.card}>
-				<Image source={require("../assets/icon.png")} style={styles.logo} />
-				<Button style={styles.button} onPress={createGame} disabled={loading}>
-					{loading ? "Loading..." : "Create Game"}
+		<div className="wrapper">
+			<div className="card">
+				<img src={Logo} alt="" className="logo" />
+				<Button
+					className="button"
+					onClick={createGame}
+					isDisabled={loading}
+					isLoading={loading}
+					appearance="primary"
+				>
+					Create Game
 				</Button>
-				<Button style={styles.button} onPress={() => setVisibleJoin(true)}>
+				<Button
+					className="button"
+					onClick={() => setVisibleJoin(true)}
+					appearance="primary"
+				>
 					Join a Game
 				</Button>
-				<Button style={styles.button} status="danger" onPress={logOut}>
+				<Button className="button" appearance="danger" onClick={logOut}>
 					Logout
 				</Button>
-			</Card>
-			<Text style={styles.bottomText}>Logged in as {user.email}</Text>
+			</div>
+			<div className="bottom-text">Logged in as {user.email}</div>
 			<CreateGame
 				visible={visibleCreate}
 				setVisible={setVisibleCreate}
 				gameId={gameId}
 			/>
 			<JoinGame visible={visibleJoin} setVisible={setVisibleJoin} />
-		</Layout>
+		</div>
 	);
 };

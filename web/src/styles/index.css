@@ -1,0 +1,179 @@
+@font-face {
+	font-family: "montserrat-bold";
+	src: local("montserrat-bold"),
+		url("../assets/fonts/montserrat-bold.ttf") format("truetype");
+}
+@font-face {
+	font-family: "montserrat";
+	src: local("montserrat"),
+		url("../assets/fonts/montserrat-regular.ttf") format("truetype");
+}
+@font-face {
+	font-family: "montserrat-light";
+	src: local("montserrat-light"),
+		url("../assets/fonts/montserrat-light.ttf") format("truetype");
+}
+
+body {
+	font-family: "montserrat" !important;
+}
+
+.wrapper {
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+	align-items: center;
+	min-height: 100vh;
+}
+
+.card {
+	padding: 5vh;
+	margin-bottom: 5vh;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	background-color: transparent;
+	border-color: transparent;
+	min-width: 50vw;
+}
+
+.modal {
+	min-width: 50vw;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	height: calc(100vh - 200px);
+}
+
+.modal-content {
+	padding: 5vh;
+	background-color: #fff;
+	text-align: center;
+}
+
+.logo {
+	width: 250px;
+	height: 250px;
+}
+
+.logo-mark img {
+	width: 100px;
+	height: 100px;
+}
+
+.button {
+	margin: 5px;
+	padding: 20px 50px !important;
+	display: flex;
+	flex-direction: column;
+	align-items: center !important;
+	text-align: center;
+	justify-content: center;
+	text-transform: uppercase;
+	font-family: "montserrat-bold";
+	width: calc(100% - 10px) !important ;
+}
+
+.input-wrapper {
+	margin: 5px;
+}
+
+.input {
+	text-align: center;
+	font-size: 24px !important;
+	font-family: "montserrat-bold" !important;
+}
+
+.heading {
+	font-size: 48px;
+	font-family: "montserrat-bold";
+	margin: 15px;
+	text-align: center;
+}
+
+.sub-heading {
+	font-size: 36px;
+	font-family: "montserrat-bold";
+}
+
+.paragraph {
+	font-size: 20px;
+	text-align: center;
+	text-transform: lowercase;
+	font-variant: small-caps;
+}
+
+.bottom-text {
+	font-family: "montserrat-bold";
+	text-align: center;
+	line-height: 24px;
+}
+
+.playing-card {
+	margin: 5px;
+	padding: 30px;
+	border: 3px solid;
+	border-radius: 10px;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	text-align: center;
+}
+
+.playing-card-container {
+	display: flex;
+	flex-direction: row;
+	flex-wrap: wrap;
+	padding: 20px 10vw;
+	justify-content: center;
+}
+
+.suit-icon {
+	width: 40px;
+	height: 40px;
+}
+
+.rank-icon {
+	font-size: 40px;
+	line-height: 50px;
+	font-family: "montserrat-bold";
+}
+
+.game-play-container {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	padding: 5vh 10vw;
+	width: 80vw;
+}
+
+.select {
+	margin: 5px;
+}
+
+.move-action {
+	display: flex;
+	flex-direction: row;
+}
+
+.flag-wrapper {
+	margin: 5px;
+	width: calc(100% - 10px);
+}
+
+.flag-wrapper > * {
+	max-height: unset;
+}
+
+.flag-wrapper > * > * {
+	overflow: hidden !important;
+}
+
+.banner-content {
+	font-family: "montserrat-bold";
+	font-size: 18px;
+	display: flex;
+	flex-direction: column;
+}

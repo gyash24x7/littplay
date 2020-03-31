@@ -1,11 +1,14 @@
-import { Button, Card, Layout, Text } from "@ui-kitten/components";
+import Button from "@atlaskit/button";
+import Flag from "@atlaskit/flag";
+import TickIcon from "@atlaskit/icon/glyph/check-circle";
+import Spinner from "@atlaskit/spinner";
+import { colors } from "@atlaskit/theme";
 import React, { Fragment, useEffect, useState } from "react";
-import { ActivityIndicator, Image } from "react-native";
 import { useParams } from "react-router-dom";
 
+import Logo from "../assets/icon.png";
 import { GameCardComponent } from "../components/GameCard";
 import { GamePlay } from "../components/GamePlay";
-import styles from "../styles";
 import { Game, Player, User } from "../typings";
 import { GameCard } from "../utils/deck";
 import { db } from "../utils/firebase";
@@ -80,30 +83,46 @@ export const GameScreen = () => {
 	}, [gameId]);
 
 	return (
-		<Layout style={styles.wrapper}>
-			<Layout>
-				<Image source={require("../assets/icon.png")} style={styles.logoMark} />
-				{!gameData && <ActivityIndicator />}
-			</Layout>
+		<div className="wrapper">
+			<div className="logo-mark">
+				<img src={Logo} alt="" />
+				{!gameData && <Spinner />}
+			</div>
 			{gameData && !gameData.started && (
-				<Card style={styles.card}>
+				<div className="card">
 					{players.map(player => (
-						<Text key={player.id}>{player.name} joined</Text>
+						<div className="flag-wrapper" key={player.id}>
+							<Flag
+								appearance="success"
+								title={`${player.name} Joined`}
+								isDismissAllowed={false}
+								id={player.id}
+								icon={
+									<TickIcon label="Check Icon" secondaryColor={colors.G400} />
+								}
+							/>
+						</div>
 					))}
-					{players.length === 6 && (
-						<Button disabled={loading} onPress={startGame}>
-							{loading ? "Starting..." : "Start Game"}
+					{players.length === 2 && (
+						<Button
+							appearance="primary"
+							className="button"
+							isDisabled={loading}
+							onClick={startGame}
+							isLoading={loading}
+						>
+							Start Game
 						</Button>
 					)}
-				</Card>
+				</div>
 			)}
 			{gameData && gameData.started && (
 				<Fragment>
-					<Layout style={styles.playingCardContainer}>
+					<div className="playing-card-container">
 						{activePlayer?.cards?.map(card => (
-							<GameCardComponent card={card} />
+							<GameCardComponent card={card} key={card.rank + card.suit} />
 						))}
-					</Layout>
+					</div>
 					<GamePlay
 						gameData={gameData}
 						players={players}
@@ -111,8 +130,7 @@ export const GameScreen = () => {
 					/>
 				</Fragment>
 			)}
-
-			<Text style={styles.bottomText}>Logged in as {user.email}</Text>
-		</Layout>
+			<div className="bottom-text">Logged in as {user.email}</div>
+		</div>
 	);
 };

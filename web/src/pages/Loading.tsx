@@ -1,9 +1,6 @@
-import { Layout } from "@ui-kitten/components";
+import Spinner from "@atlaskit/spinner";
 import React, { useEffect } from "react";
-import { ActivityIndicator } from "react-native";
 import { useHistory } from "react-router-dom";
-
-import styles from "../styles";
 
 export const LoadingScreen = () => {
 	const history = useHistory();
@@ -14,8 +11,8 @@ export const LoadingScreen = () => {
 	});
 
 	return (
-		<Layout style={styles.wrapper}>
-			<ActivityIndicator />
-		</Layout>
+		<div className="wrapper">
+			<Spinner />
+		</div>
 	);
 };

@@ -1,7 +1,7 @@
-import { Button, Layout, Text } from "@ui-kitten/components";
+import Banner from "@atlaskit/banner";
+import Button from "@atlaskit/button";
 import React, { Fragment, useState } from "react";
 
-import styles from "../styles";
 import { Game, Player, User } from "../typings";
 import { GameCard } from "../utils/deck";
 import { AskPlayer } from "./AskPlayer";
@@ -37,25 +37,33 @@ export const GamePlay = ({
 	}
 
 	return (
-		<Layout style={styles.gamePlayContainer}>
+		<div className="game-play-container">
 			{gameData && players.length > 0 && (
 				<Fragment>
-					<Layout style={styles.moveAction}>
-						<Text>{moveDescription}</Text>
-					</Layout>
+					<div className="flag-wrapper">
+						<Banner appearance="announcement" isOpen>
+							<div className="banner-content">{moveDescription}</div>
+						</Banner>
+					</div>
 					{gameData.lastMove.turn === user.displayName && (
-						<Layout style={styles.moveAction}>
-							<Button onPress={() => setVisible(true)}>Ask Player</Button>
+						<div className="move-action">
+							<Button
+								onClick={() => setVisible(true)}
+								appearance="primary"
+								className="button"
+							>
+								Ask Player
+							</Button>
 							<AskPlayer
 								visible={visible}
 								setVisible={setVisible}
 								players={players}
 								activePlayer={activePlayer}
 							/>
-						</Layout>
+						</div>
 					)}
 					{gameData.lastMove.from === user.displayName && (
-						<Layout style={styles.moveAction}>
+						<div className="move-action">
 							<GiveCard
 								players={players}
 								haveCard={
@@ -76,10 +84,10 @@ export const GamePlay = ({
 									}) > -1
 								}
 							/>
-						</Layout>
+						</div>
 					)}
 				</Fragment>
 			)}
-		</Layout>
+		</div>
 	);
 };

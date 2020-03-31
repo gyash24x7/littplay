@@ -6,9 +6,6 @@ module.exports = override(
 		"react-dom":
 			process.env.NODE_ENV === "production"
 				? "react-dom"
-				: "@hot-loader/react-dom",
-		"react-native": "react-native-web",
-		"react-native-linear-gradient": "react-native-web-linear-gradient"
-	}),
-	addBabelPlugin("@babel/plugin-proposal-class-properties")
+				: "@hot-loader/react-dom"
+	})
 );

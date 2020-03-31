@@ -1,8 +1,7 @@
-import { Button } from "@ui-kitten/components";
+import Button from "@atlaskit/button";
 import React, { useState } from "react";
 import { useParams } from "react-router-dom";
 
-import styles from "../styles";
 import { Game, Player, User } from "../typings";
 import firebase, { db } from "../utils/firebase";
 
@@ -50,8 +49,14 @@ export const GiveCard = ({ players, gameData, haveCard }: GiveCardProps) => {
 	};
 
 	return (
-		<Button style={styles.button} onPress={giveCard} disabled={!haveCard}>
-			{loading ? "Loading..." : "Give Card"}
+		<Button
+			className="button"
+			onClick={giveCard}
+			isDisabled={!haveCard}
+			isLoading={loading}
+			appearance="primary"
+		>
+			Give Card
 		</Button>
 	);
 };

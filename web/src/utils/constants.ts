@@ -1,3 +1,5 @@
+import { colors } from "@atlaskit/theme";
+
 export const RANKS = [
 	"Ace",
 	"Two",
@@ -20,9 +22,9 @@ export const getCardColor = (suit: string) => {
 	switch (suit) {
 		case "Hearts":
 		case "Diamonds":
-			return "#de350b";
+			return colors.R400;
 		default:
-			return "#172b4d";
+			return colors.N900;
 	}
 };
 

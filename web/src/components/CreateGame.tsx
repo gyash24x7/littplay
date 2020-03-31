@@ -1,8 +1,8 @@
-import { Button, Layout, Modal, Text } from "@ui-kitten/components";
+import Button from "@atlaskit/button";
+import Modal, { ModalTransition } from "@atlaskit/modal-dialog";
 import React, { useState } from "react";
 import { useHistory } from "react-router-dom";
 
-import styles from "../styles";
 import { User } from "../typings";
 import { db } from "../utils/firebase";
 
@@ -13,10 +13,6 @@ interface CreateGameProps {
 }
 
 export const CreateGame = (props: CreateGameProps) => {
-	const toggleModal = () => {
-		props.setVisible(!props.visible);
-	};
-
 	const [loading, setLoading] = useState(false);
 
 	const user: User = JSON.parse(localStorage.getItem("user")!);
@@ -38,21 +34,28 @@ export const CreateGame = (props: CreateGameProps) => {
 	};
 
 	return (
-		<Modal
-			backdropStyle={styles.backdrop}
-			onBackdropPress={toggleModal}
-			visible={props.visible}
-		>
-			<Layout style={styles.modal}>
-				<Text style={styles.paragraph}>Your Game ID is</Text>
-				<Text style={styles.heading}>{props.gameId}</Text>
-				<Text style={styles.paragraph}>
-					Ask Players to join the game with this ID
-				</Text>
-				<Button style={styles.button} onPress={goToGame} disabled={loading}>
-					{loading ? "Loading..." : "Join Game"}
-				</Button>
-			</Layout>
-		</Modal>
+		<ModalTransition>
+			{props.visible && (
+				<Modal onClose={() => props.setVisible(false)} isChromeless>
+					<div className="modal">
+						<div className="modal-content">
+							<div className="paragraph">Your Game ID is</div>
+							<div className="heading">{props.gameId}</div>
+							<div className="paragraph">
+								Ask Players to join the game with this ID
+							</div>
+							<Button
+								className="button"
+								onClick={goToGame}
+								isDisabled={loading}
+								isLoading={loading}
+							>
+								Join Game
+							</Button>
+						</div>
+					</div>
+				</Modal>
+			)}
+		</ModalTransition>
 	);
 };

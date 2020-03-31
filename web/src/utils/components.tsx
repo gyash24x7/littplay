@@ -1,44 +1,25 @@
-import { Text } from "@ui-kitten/components";
 import React from "react";
-import { Image } from "react-native";
 
-import styles from "../styles";
+import Club from "../assets/club.png";
+import Diamond from "../assets/diamond.png";
+import Heart from "../assets/heart.png";
+import Spade from "../assets/spade.png";
 import { getCardColor } from "./constants";
 import { GameCard } from "./deck";
 
 export const getSuitComponent = (suit: string) => {
 	switch (suit) {
 		case "Hearts":
-			return () => (
-				<Image
-					source={require("../assets/heart.png")}
-					style={styles.suitIcon}
-				/>
-			);
+			return () => <img className="suit-icon" src={Heart} alt="" />;
 		case "Clubs":
-			return () => (
-				<Image source={require("../assets/club.png")} style={styles.suitIcon} />
-			);
+			return () => <img className="suit-icon" src={Club} alt="" />;
 		case "Spades":
-			return () => (
-				<Image
-					source={require("../assets/spade.png")}
-					style={styles.suitIcon}
-				/>
-			);
+			return () => <img className="suit-icon" src={Spade} alt="" />;
 		case "Diamonds":
-			return () => (
-				<Image
-					source={require("../assets/diamond.png")}
-					style={styles.suitIcon}
-				/>
-			);
+			return () => <img className="suit-icon" src={Diamond} alt="" />;
 		default:
 			return () => (
-				<Image
-					source={require("../assets/heart.png")}
-					style={styles.suitIcon}
-				/>
+				<img className="suit-icon" src="../assets/icon.png" alt="" />
 			);
 	}
 };
@@ -48,32 +29,84 @@ export const getRankComponent = (card: GameCard) => {
 
 	switch (card.rank) {
 		case "Ace":
-			return () => <Text style={[styles.rankIcon, { color }]}>A</Text>;
+			return () => (
+				<div style={{ color }} className="rank-icon">
+					A
+				</div>
+			);
 		case "Two":
-			return () => <Text style={[styles.rankIcon, { color }]}>2</Text>;
+			return () => (
+				<div style={{ color }} className="rank-icon">
+					2
+				</div>
+			);
 		case "Three":
-			return () => <Text style={[styles.rankIcon, { color }]}>3</Text>;
+			return () => (
+				<div style={{ color }} className="rank-icon">
+					3
+				</div>
+			);
 		case "Four":
-			return () => <Text style={[styles.rankIcon, { color }]}>4</Text>;
+			return () => (
+				<div style={{ color }} className="rank-icon">
+					4
+				</div>
+			);
 		case "Five":
-			return () => <Text style={[styles.rankIcon, { color }]}>5</Text>;
+			return () => (
+				<div style={{ color }} className="rank-icon">
+					5
+				</div>
+			);
 		case "Six":
-			return () => <Text style={[styles.rankIcon, { color }]}>6</Text>;
+			return () => (
+				<div style={{ color }} className="rank-icon">
+					6
+				</div>
+			);
 		case "Seven":
-			return () => <Text style={[styles.rankIcon, { color }]}>7</Text>;
+			return () => (
+				<div style={{ color }} className="rank-icon">
+					7
+				</div>
+			);
 		case "Eight":
-			return () => <Text style={[styles.rankIcon, { color }]}>8</Text>;
+			return () => (
+				<div style={{ color }} className="rank-icon">
+					8
+				</div>
+			);
 		case "Nine":
-			return () => <Text style={[styles.rankIcon, { color }]}>9</Text>;
+			return () => (
+				<div style={{ color }} className="rank-icon">
+					9
+				</div>
+			);
 		case "Ten":
-			return () => <Text style={[styles.rankIcon, { color }]}>10</Text>;
+			return () => (
+				<div style={{ color }} className="rank-icon">
+					10
+				</div>
+			);
 		case "Jack":
-			return () => <Text style={[styles.rankIcon, { color }]}>J</Text>;
+			return () => (
+				<div style={{ color }} className="rank-icon">
+					J
+				</div>
+			);
 		case "Queen":
-			return () => <Text style={[styles.rankIcon, { color }]}>Q</Text>;
+			return () => (
+				<div style={{ color }} className="rank-icon">
+					Q
+				</div>
+			);
 		case "King":
-			return () => <Text style={[styles.rankIcon, { color }]}>K</Text>;
+			return () => (
+				<div style={{ color }} className="rank-icon">
+					K
+				</div>
+			);
 		default:
-			return () => <Text>Joker</Text>;
+			return () => <div>Joker</div>;
 	}
 };

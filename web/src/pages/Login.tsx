@@ -1,9 +1,8 @@
-import { Button, Card, Layout } from "@ui-kitten/components";
+import Button from "@atlaskit/button";
 import React, { useState } from "react";
-import { Image } from "react-native";
 import { useHistory } from "react-router-dom";
 
-import styles from "../styles";
+import Logo from "../assets/icon.png";
 import { User } from "../typings";
 import firebase, { AuthProvider } from "../utils/firebase";
 
@@ -28,16 +27,19 @@ export const LoginScreen = () => {
 	};
 
 	return (
-		<Layout style={styles.wrapper}>
-			<Card style={styles.card}>
-				<Image
-					source={{ uri: require("../assets/icon.png") }}
-					style={styles.logo}
-				/>
-				<Button onPress={login} disabled={loading}>
-					{loading ? "Loading..." : "Log in with Google"}
+		<div className="wrapper">
+			<div className="card">
+				<img src={Logo} alt="" className="logo" />
+				<Button
+					onClick={login}
+					isDisabled={loading}
+					isLoading={loading}
+					appearance="primary"
+					className="button"
+				>
+					Log in with Google
 				</Button>
-			</Card>
-		</Layout>
+			</div>
+		</div>
 	);
 };

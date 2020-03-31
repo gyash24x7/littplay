@@ -1,8 +1,9 @@
-import { Button, Input, Layout, Modal, Text } from "@ui-kitten/components";
+import Button from "@atlaskit/button";
+import Modal, { ModalTransition } from "@atlaskit/modal-dialog";
+import Textfield from "@atlaskit/textfield";
 import React, { useState } from "react";
 import { useHistory } from "react-router-dom";
 
-import styles from "../styles";
 import { User } from "../typings";
 import { db } from "../utils/firebase";
 
@@ -14,10 +15,6 @@ interface JoinGameProps {
 export const JoinGame = (props: JoinGameProps) => {
 	const [gameId, setGameId] = useState("");
 	const [loading, setLoading] = useState(false);
-
-	const toggleModal = () => {
-		props.setVisible(!props.visible);
-	};
 
 	const user: User = JSON.parse(localStorage.getItem("user")!);
 
@@ -44,22 +41,37 @@ export const JoinGame = (props: JoinGameProps) => {
 	};
 
 	return (
-		<Modal
-			backdropStyle={styles.backdrop}
-			onBackdropPress={toggleModal}
-			visible={props.visible}
-		>
-			<Layout style={styles.modal}>
-				<Text style={styles.labelStyle}>Enter Game ID</Text>
-				<Input
-					value={gameId}
-					onChangeText={handleTextChange}
-					textStyle={{ textAlign: "center" }}
-				/>
-				<Button style={styles.button} onPress={goToGame} disabled={loading}>
-					{loading ? "Loading..." : "Join Game"}
-				</Button>
-			</Layout>
-		</Modal>
+		<ModalTransition>
+			{props.visible && (
+				<Modal isChromeless onClose={() => props.setVisible(false)}>
+					<div className="modal">
+						<div className="modal-content">
+							<div className="input-wrapper">
+								<Textfield
+									appearance="none"
+									value={gameId}
+									label="Enter Game ID"
+									onChange={(e: any) => {
+										e.persist();
+										handleTextChange(e.target.value);
+									}}
+									className="input"
+									placeholder="ENTER GAME ID"
+								/>
+							</div>
+							<Button
+								className="button"
+								appearance="primary"
+								onClick={goToGame}
+								isDisabled={loading}
+								isLoading={loading}
+							>
+								Join Game
+							</Button>
+						</div>
+					</div>
+				</Modal>
+			)}
+		</ModalTransition>
 	);
 };
