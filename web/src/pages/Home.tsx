@@ -1,11 +1,11 @@
 import Button from "@atlaskit/button";
-import React, { useState } from "react";
+import React, { Fragment, useState } from "react";
 import { useHistory } from "react-router-dom";
 
 import Logo from "../assets/icon.png";
 import { CreateGame } from "../components/CreateGame";
 import { JoinGame } from "../components/JoinGame";
-import { User } from "../typings";
+import { Player } from "../typings";
 import { Deck, GameCard } from "../utils/deck";
 import firebase, { db } from "../utils/firebase";
 
@@ -16,7 +16,7 @@ export const HomeScreen = () => {
 	const [loading, setLoading] = useState(false);
 	const history = useHistory();
 
-	const user: User = JSON.parse(localStorage.getItem("user")!);
+	const user: Player = JSON.parse(localStorage.getItem("user")!);
 
 	const logOut = async () => {
 		await firebase.auth().signOut();
@@ -40,10 +40,11 @@ export const HomeScreen = () => {
 			.set({
 				started: false,
 				completed: false,
-				lastMove: "",
-				secondLastMove: "",
-				createdBy: user.displayName,
-				deck: deck.cards.map(GameCard.toMap)
+				currentMove: "",
+				players: [],
+				createdBy: user.email,
+				deck: deck.cards.map(GameCard.toMap),
+				teams: []
 			})
 			.catch(err => {
 				console.log("Some Error Occurred: ", err);
@@ -55,36 +56,46 @@ export const HomeScreen = () => {
 	};
 
 	return (
-		<div className="wrapper">
-			<div className="card">
-				<img src={Logo} alt="" className="logo" />
-				<Button
-					className="button"
-					onClick={createGame}
-					isDisabled={loading}
-					isLoading={loading}
-					appearance="primary"
-				>
-					Create Game
-				</Button>
-				<Button
-					className="button"
-					onClick={() => setVisibleJoin(true)}
-					appearance="primary"
-				>
-					Join a Game
-				</Button>
-				<Button className="button" appearance="danger" onClick={logOut}>
-					Logout
-				</Button>
+		<Fragment>
+			<div
+				className="wrapper"
+				style={{
+					justifyContent: "center",
+					marginBottom: "10vh",
+					minHeight: "90vh"
+				}}
+			>
+				<div className="card">
+					<img src={Logo} alt="" className="logo" />
+					<Button
+						className="button"
+						onClick={createGame}
+						isDisabled={loading}
+						isLoading={loading}
+						appearance="primary"
+					>
+						Create Game
+					</Button>
+					<Button
+						className="button"
+						onClick={() => setVisibleJoin(true)}
+						appearance="primary"
+					>
+						Join a Game
+					</Button>
+					<Button className="button" appearance="danger" onClick={logOut}>
+						Logout
+					</Button>
+					<h4 className="paragraph">Logged in as {user.email}</h4>
+				</div>
 			</div>
-			<div className="bottom-text">Logged in as {user.email}</div>
+
 			<CreateGame
 				visible={visibleCreate}
 				setVisible={setVisibleCreate}
 				gameId={gameId}
 			/>
 			<JoinGame visible={visibleJoin} setVisible={setVisibleJoin} />
-		</div>
+		</Fragment>
 	);
 };

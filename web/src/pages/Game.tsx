@@ -9,41 +9,45 @@ import { useParams } from "react-router-dom";
 import Logo from "../assets/icon.png";
 import { GameCardComponent } from "../components/GameCard";
 import { GamePlay } from "../components/GamePlay";
-import { Game, Player, User } from "../typings";
-import { GameCard } from "../utils/deck";
-import { db } from "../utils/firebase";
+import { Game, Player } from "../typings";
+import firebase, { db } from "../utils/firebase";
 
 export const GameScreen = () => {
 	const { gameId } = useParams();
-	const [players, setPlayers] = useState<Player[]>([]);
 	const [gameData, setGameData] = useState<Game>();
 	const [loading, setLoading] = useState(false);
-	const user: User = JSON.parse(localStorage.getItem("user")!);
+	const user: Player = JSON.parse(localStorage.getItem("user")!);
 
-	const activePlayer =
-		players.length > 0
-			? players.find(player => player.id === user.email)
-			: undefined;
+	const activePlayer = gameData?.players.find(
+		player => player.email === user.email
+	);
 
 	const startGame = async () => {
 		setLoading(true);
+
+		let team1: Record<string, Player> = {};
+		let team2: Record<string, Player> = {};
+
+		gameData?.players.slice(0, 3).forEach(player => {
+			team1[player.email] = player;
+		});
+
+		gameData?.players.slice(3).forEach(player => {
+			team2[player.email] = player;
+		});
 
 		await db
 			.collection("games")
 			.doc(gameId)
 			.update({
 				started: true,
-				lastMove: { type: "TURN", turn: user.displayName }
+				currentMove: { type: "TURN", turn: user.name },
+				teams: firebase.firestore.FieldValue.arrayUnion(team1, team2),
+				players: gameData?.players.map((player, index) => ({
+					...player,
+					cards: gameData.deck.slice(index * 8, index * 8 + 8)
+				}))
 			});
-
-		players.forEach(async (player, index) => {
-			await db
-				.collection("games")
-				.doc(gameId)
-				.collection("players")
-				.doc(player.id)
-				.update({ cards: gameData?.deck.slice(8 * index, 8 * index + 8) });
-		});
 
 		setLoading(false);
 	};
@@ -58,52 +62,31 @@ export const GameScreen = () => {
 				}
 			});
 
-		const unsubscribeFromPlayers = db
-			.collection("games")
-			.doc(gameId)
-			.collection("players")
-			.onSnapshot(snapshot => {
-				if (!snapshot.empty) {
-					const players = snapshot.docs.map(doc => {
-						let data = doc.data();
-						return {
-							name: data.name,
-							id: doc.id,
-							cards: data.cards as GameCard[]
-						};
-					});
-					setPlayers(players);
-				}
-			});
-
-		return () => {
-			unsubscribeFromGame();
-			unsubscribeFromPlayers();
-		};
+		return () => unsubscribeFromGame();
 	}, [gameId]);
 
 	return (
 		<div className="wrapper">
 			<div className="logo-mark">
 				<img src={Logo} alt="" />
-				{!gameData && <Spinner />}
 			</div>
+			{!gameData && <Spinner />}
 			{gameData && !gameData.started && (
 				<div className="card">
-					{players.map(player => (
-						<div className="flag-wrapper" key={player.id}>
+					{gameData.players.map(player => (
+						<div className="flag-wrapper" key={player.email}>
 							<Flag
 								appearance="success"
-								title={`${player.name} Joined`}
+								title={player.name + " JOINED"}
 								isDismissAllowed={false}
-								id={player.id}
+								id={player.email}
 								icon={
 									<TickIcon label="Check Icon" secondaryColor={colors.G400} />
 								}
 							/>
 						</div>
 					))}
-					{players.length === 2 && (
+					{gameData.players.length === 2 && (
 						<Button
 							appearance="primary"
 							className="button"
@@ -123,14 +106,10 @@ export const GameScreen = () => {
 							<GameCardComponent card={card} key={card.rank + card.suit} />
 						))}
 					</div>
-					<GamePlay
-						gameData={gameData}
-						players={players}
-						activePlayer={activePlayer}
-					/>
+					<GamePlay gameData={gameData} activePlayer={activePlayer} />
 				</Fragment>
 			)}
-			<div className="bottom-text">Logged in as {user.email}</div>
+			<h4 className="paragraph">Logged in as {user.email}</h4>
 		</div>
 	);
 };

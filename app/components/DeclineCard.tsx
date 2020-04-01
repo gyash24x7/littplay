@@ -21,7 +21,7 @@ export const DeclineCard = ({ haveCard }: DeclineCardProps) => {
 		await db
 			.collection("games")
 			.doc(gameId)
-			.update({ lastMove: { type: "TURN", turn: user.displayName } });
+			.update({ currentMove: { type: "TURN", turn: user.displayName } });
 
 		setLoading(false);
 	};

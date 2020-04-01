@@ -3,8 +3,8 @@ import Modal, { ModalTransition } from "@atlaskit/modal-dialog";
 import React, { useState } from "react";
 import { useHistory } from "react-router-dom";
 
-import { User } from "../typings";
-import { db } from "../utils/firebase";
+import { Player } from "../typings";
+import firebase, { db } from "../utils/firebase";
 
 interface CreateGameProps {
 	visible: boolean;
@@ -15,7 +15,7 @@ interface CreateGameProps {
 export const CreateGame = (props: CreateGameProps) => {
 	const [loading, setLoading] = useState(false);
 
-	const user: User = JSON.parse(localStorage.getItem("user")!);
+	const user: Player = JSON.parse(localStorage.getItem("user")!);
 
 	const history = useHistory();
 
@@ -25,9 +25,9 @@ export const CreateGame = (props: CreateGameProps) => {
 		await db
 			.collection("games")
 			.doc(props.gameId)
-			.collection("players")
-			.doc(user.email)
-			.set({ name: user.displayName });
+			.update({
+				players: firebase.firestore.FieldValue.arrayUnion(user)
+			});
 
 		setLoading(false);
 		history.push(`/play/${props.gameId}`);
@@ -39,16 +39,18 @@ export const CreateGame = (props: CreateGameProps) => {
 				<Modal onClose={() => props.setVisible(false)} isChromeless>
 					<div className="modal">
 						<div className="modal-content">
-							<div className="paragraph">Your Game ID is</div>
-							<div className="heading">{props.gameId}</div>
-							<div className="paragraph">
+							<h3 className="paragraph">Your Game ID is</h3>
+							<h1 className="heading">{props.gameId}</h1>
+							<h3 className="paragraph">
 								Ask Players to join the game with this ID
-							</div>
+							</h3>
+							<br />
 							<Button
 								className="button"
 								onClick={goToGame}
 								isDisabled={loading}
 								isLoading={loading}
+								appearance="primary"
 							>
 								Join Game
 							</Button>

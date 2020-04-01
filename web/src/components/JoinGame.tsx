@@ -4,8 +4,8 @@ import Textfield from "@atlaskit/textfield";
 import React, { useState } from "react";
 import { useHistory } from "react-router-dom";
 
-import { User } from "../typings";
-import { db } from "../utils/firebase";
+import { Player } from "../typings";
+import firebase, { db } from "../utils/firebase";
 
 interface JoinGameProps {
 	visible: boolean;
@@ -16,7 +16,7 @@ export const JoinGame = (props: JoinGameProps) => {
 	const [gameId, setGameId] = useState("");
 	const [loading, setLoading] = useState(false);
 
-	const user: User = JSON.parse(localStorage.getItem("user")!);
+	const user: Player = JSON.parse(localStorage.getItem("user")!);
 
 	const handleTextChange = (text: string) => {
 		if (text.length < 7) {
@@ -32,9 +32,9 @@ export const JoinGame = (props: JoinGameProps) => {
 		await db
 			.collection("games")
 			.doc(gameId)
-			.collection("players")
-			.doc(user.email)
-			.set({ name: user.displayName });
+			.update({
+				players: firebase.firestore.FieldValue.arrayUnion(user)
+			});
 
 		setLoading(false);
 		history.push(`/play/${gameId}`);

@@ -4,7 +4,7 @@ import Select from "@atlaskit/select";
 import React, { useState } from "react";
 import { useParams } from "react-router-dom";
 
-import { Player, User } from "../typings";
+import { Player } from "../typings";
 import { BIG_RANKS, SMALL_RANKS } from "../utils/constants";
 import { Deck } from "../utils/deck";
 import { db } from "../utils/firebase";
@@ -22,14 +22,14 @@ interface AskPlayerProps {
 }
 
 export const AskPlayer = (props: AskPlayerProps) => {
-	const user: User = JSON.parse(localStorage.getItem("user")!);
+	const user: Player = JSON.parse(localStorage.getItem("user")!);
 	const { gameId } = useParams();
 
 	const playerData = props.players
-		.filter(player => player.id !== user.email)
+		.filter(player => player.email !== user.email)
 		.map(player => ({
 			label: `${player.name} (${player.cards?.length} cards left)`,
-			value: player.id
+			value: player.email
 		}));
 
 	const toggleModal = () => props.setVisible(!props.visible);
@@ -78,10 +78,10 @@ export const AskPlayer = (props: AskPlayerProps) => {
 			.collection("games")
 			.doc(gameId)
 			.update({
-				lastMove: {
+				currentMove: {
 					type: "ASK",
 					from: selectedPlayer?.label.split(" (")[0],
-					by: user.displayName,
+					by: user.name,
 					card: {
 						rank: selectedRank?.value,
 						suit: selectedSet?.value.split(" ")[1]

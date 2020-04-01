@@ -41,7 +41,7 @@ export const HomeScreen = () => {
 			.set({
 				started: false,
 				completed: false,
-				lastMove: "",
+				currentMove: "",
 				secondLastMove: "",
 				createdBy: user.displayName,
 				deck: deck.cards.map(GameCard.toMap)

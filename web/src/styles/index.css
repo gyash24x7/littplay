@@ -76,6 +76,7 @@ body {
 
 .input-wrapper {
 	margin: 5px;
+	width: calc(100% - 10px);
 }
 
 .input {
@@ -87,8 +88,8 @@ body {
 .heading {
 	font-size: 48px;
 	font-family: "montserrat-bold";
-	margin: 15px;
 	text-align: center;
+	margin-top: 20px;
 }
 
 .sub-heading {
@@ -97,16 +98,9 @@ body {
 }
 
 .paragraph {
-	font-size: 20px;
+	/* font-size: 20px; */
 	text-align: center;
-	text-transform: lowercase;
-	font-variant: small-caps;
-}
-
-.bottom-text {
-	font-family: "montserrat-bold";
-	text-align: center;
-	line-height: 24px;
+	text-transform: uppercase;
 }
 
 .playing-card {

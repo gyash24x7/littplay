@@ -30,7 +30,7 @@ export const GameScreen = () => {
 			.doc(gameId)
 			.update({
 				started: true,
-				lastMove: { type: "TURN", turn: user.displayName }
+				currentMove: { type: "TURN", turn: user.displayName }
 			});
 
 		players.forEach(async (player, index) => {

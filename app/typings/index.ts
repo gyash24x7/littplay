@@ -16,7 +16,7 @@ export interface Player {
 export interface Game {
 	started: boolean;
 	completed: boolean;
-	lastMove: Move;
+	currentMove: Move;
 	secondLastMove: Move;
 	deck: GameCard[];
 }

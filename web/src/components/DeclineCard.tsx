@@ -2,7 +2,7 @@ import Button from "@atlaskit/button";
 import React, { useState } from "react";
 import { useParams } from "react-router-dom";
 
-import { User } from "../typings";
+import { Player } from "../typings";
 import { db } from "../utils/firebase";
 
 interface DeclineCardProps {
@@ -12,7 +12,7 @@ interface DeclineCardProps {
 export const DeclineCard = ({ haveCard }: DeclineCardProps) => {
 	const [loading, setLoading] = useState(false);
 	const { gameId } = useParams();
-	const user: User = JSON.parse(localStorage.getItem("user")!);
+	const user: Player = JSON.parse(localStorage.getItem("user")!);
 
 	const declineCard = async () => {
 		setLoading(true);
@@ -20,7 +20,7 @@ export const DeclineCard = ({ haveCard }: DeclineCardProps) => {
 		await db
 			.collection("games")
 			.doc(gameId)
-			.update({ lastMove: { type: "TURN", turn: user.displayName } });
+			.update({ currentMove: { type: "TURN", turn: user.name } });
 
 		setLoading(false);
 	};

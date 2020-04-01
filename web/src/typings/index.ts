@@ -1,24 +1,19 @@
 import { GameCard } from "../utils/deck";
 
-export interface User {
-	displayName: string;
-	email: string;
-	phoneNumber?: string;
-	photoUrl: string;
-}
-
 export interface Player {
-	id: string;
 	name: string;
+	email: string;
 	cards?: GameCard[];
 }
 
 export interface Game {
 	started: boolean;
 	completed: boolean;
-	lastMove: Move;
-	secondLastMove: Move;
+	currentMove: Move;
 	deck: GameCard[];
+	teams: Record<string, Player>[];
+	createdBy: string;
+	players: Player[];
 }
 
 export interface Move {

@@ -20,7 +20,7 @@ export const GiveCard = ({ players, gameData, haveCard }: GiveCardProps) => {
 	const giveCard = async () => {
 		setLoading(true);
 		const takingPlayer = players.find(
-			player => player.name === gameData.lastMove.by
+			player => player.name === gameData.currentMove.by
 		);
 
 		await db
@@ -29,7 +29,9 @@ export const GiveCard = ({ players, gameData, haveCard }: GiveCardProps) => {
 			.collection("players")
 			.doc(user.email)
 			.update({
-				cards: firebase.firestore.FieldValue.arrayRemove(gameData.lastMove.card)
+				cards: firebase.firestore.FieldValue.arrayRemove(
+					gameData.currentMove.card
+				)
 			});
 
 		await db
@@ -38,13 +40,15 @@ export const GiveCard = ({ players, gameData, haveCard }: GiveCardProps) => {
 			.collection("players")
 			.doc(takingPlayer?.id)
 			.update({
-				cards: firebase.firestore.FieldValue.arrayUnion(gameData.lastMove.card)
+				cards: firebase.firestore.FieldValue.arrayUnion(
+					gameData.currentMove.card
+				)
 			});
 
 		await db
 			.collection("games")
 			.doc(gameId)
-			.update({ lastMove: { type: "TURN", turn: takingPlayer?.name } });
+			.update({ currentMove: { type: "TURN", turn: takingPlayer?.name } });
 
 		setLoading(false);
 	};

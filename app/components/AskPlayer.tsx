@@ -75,7 +75,7 @@ export const AskPlayer = (props: AskPlayerProps) => {
 			.collection("games")
 			.doc(gameId)
 			.update({
-				lastMove: {
+				currentMove: {
 					type: "ASK",
 					from: selectedPlayer?.text.split(" (")[0],
 					by: user.displayName,

@@ -24,15 +24,15 @@ export const GamePlay = ({
 	const user: User = JSON.parse(localStorage.getItem("user")!);
 
 	let moveDescription = "";
-	switch (gameData.lastMove.type) {
+	switch (gameData.currentMove.type) {
 		case "TURN":
-			moveDescription = `${gameData.lastMove.turn}'s Turn`;
+			moveDescription = `${gameData.currentMove.turn}'s Turn`;
 			break;
 
 		case "ASK":
-			moveDescription = `${gameData.lastMove.by} asked ${
-				gameData.lastMove.from
-			} for ${GameCard.toString(gameData.lastMove.card!)}`;
+			moveDescription = `${gameData.currentMove.by} asked ${
+				gameData.currentMove.from
+			} for ${GameCard.toString(gameData.currentMove.card!)}`;
 			break;
 	}
 
@@ -43,7 +43,7 @@ export const GamePlay = ({
 					<Layout style={styles.moveAction}>
 						<Text>{moveDescription}</Text>
 					</Layout>
-					{gameData.lastMove.turn === user.displayName && (
+					{gameData.currentMove.turn === user.displayName && (
 						<Layout style={styles.moveAction}>
 							<Button onPress={() => setVisible(true)}>Ask Player</Button>
 							<AskPlayer
@@ -54,14 +54,14 @@ export const GamePlay = ({
 							/>
 						</Layout>
 					)}
-					{gameData.lastMove.from === user.displayName && (
+					{gameData.currentMove.from === user.displayName && (
 						<Layout style={styles.moveAction}>
 							<GiveCard
 								players={players}
 								haveCard={
 									activePlayer!.cards!.findIndex(card => {
-										const rank = gameData.lastMove.card?.rank;
-										const suit = gameData.lastMove.card?.suit;
+										const rank = gameData.currentMove.card?.rank;
+										const suit = gameData.currentMove.card?.suit;
 										return card.suit === suit && card.rank === rank;
 									}) > -1
 								}
@@ -70,8 +70,8 @@ export const GamePlay = ({
 							<DeclineCard
 								haveCard={
 									activePlayer!.cards!.findIndex(card => {
-										const rank = gameData.lastMove.card?.rank;
-										const suit = gameData.lastMove.card?.suit;
+										const rank = gameData.currentMove.card?.rank;
+										const suit = gameData.currentMove.card?.suit;
 										return card.suit === suit && card.rank === rank;
 									}) > -1
 								}
