@@ -1,0 +1,10 @@
+export const LOGIN = "LOGIN";
+export const CREATE_GAME = "CREATE_GAME";
+export const JOIN_GAME = "JOIN_GAME";
+export const START_GAME = "START_GAME";
+export const ASK_CARD = "ASK_CARD";
+export const GIVE_CARD = "GIVE_CARD";
+export const DECLINE_CARD = "DECLINE_CARD";
+export const CALL_SET = "CALL_SET";
+export const COMPLETE_GAME = "COMPLETE_GAME";
+export const LOGOUT = "LOGOUT";

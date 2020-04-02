@@ -37,8 +37,8 @@ export const GameScreen = () => {
 				started: true,
 				currentMove: { type: "TURN", turn: user.name },
 				teams: {
-					A: players?.slice(0, 1).map(player => player.email),
-					B: players?.slice(1).map(player => player.email)
+					A: players?.slice(0, 3).map(player => player.email),
+					B: players?.slice(3).map(player => player.email)
 				},
 				players
 			});
@@ -80,7 +80,7 @@ export const GameScreen = () => {
 							/>
 						</div>
 					))}
-					{gameData.players.length === 2 && (
+					{gameData.players.length === 6 && (
 						<Button
 							appearance="primary"
 							className="button"
