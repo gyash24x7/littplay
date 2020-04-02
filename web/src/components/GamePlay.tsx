@@ -3,6 +3,7 @@ import Button from "@atlaskit/button";
 import React, { Fragment, useState } from "react";
 
 import { Game, Player } from "../typings";
+import { getTeam, getTeamName } from "../utils/constants";
 import { GameCard } from "../utils/deck";
 import { AskPlayer } from "./AskPlayer";
 import { DeclineCard } from "./DeclineCard";
@@ -35,6 +36,9 @@ export const GamePlay = ({ gameData, activePlayer }: GamePlayProps) => {
 		<div className="game-play-container">
 			{gameData?.players.length > 0 && (
 				<Fragment>
+					<h2 className="sub-heading">
+						TEAM {getTeamName(user.email, gameData.teams)}
+					</h2>
 					<div className="flag-wrapper">
 						<Banner appearance="announcement" isOpen>
 							<div className="banner-content">{moveDescription}</div>
@@ -52,8 +56,9 @@ export const GamePlay = ({ gameData, activePlayer }: GamePlayProps) => {
 							<AskPlayer
 								visible={visible}
 								setVisible={setVisible}
-								players={gameData.players}
+								team={getTeam(user.email, gameData.teams, true)}
 								activePlayer={activePlayer}
+								players={gameData.players}
 							/>
 						</div>
 					)}

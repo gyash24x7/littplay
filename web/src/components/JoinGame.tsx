@@ -29,12 +29,21 @@ export const JoinGame = (props: JoinGameProps) => {
 	const goToGame = async () => {
 		setLoading(true);
 
-		await db
-			.collection("games")
-			.doc(gameId)
-			.update({
-				players: firebase.firestore.FieldValue.arrayUnion(user)
-			});
+		const data = (
+			await db
+				.collection("games")
+				.doc(gameId)
+				.get()
+		).data();
+
+		if (!data?.players.find(({ email }: Player) => email === user.email)) {
+			await db
+				.collection("games")
+				.doc(gameId)
+				.update({
+					players: firebase.firestore.FieldValue.arrayUnion(user)
+				});
+		}
 
 		setLoading(false);
 		history.push(`/play/${gameId}`);

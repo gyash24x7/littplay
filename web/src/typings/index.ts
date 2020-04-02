@@ -4,6 +4,7 @@ export interface Player {
 	name: string;
 	email: string;
 	cards?: GameCard[];
+	team?: string;
 }
 
 export interface Game {
@@ -11,7 +12,7 @@ export interface Game {
 	completed: boolean;
 	currentMove: Move;
 	deck: GameCard[];
-	teams: Record<string, Player>[];
+	teams: Record<string, string[]>;
 	createdBy: string;
 	players: Player[];
 }

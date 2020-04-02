@@ -10,7 +10,7 @@ import Logo from "../assets/icon.png";
 import { GameCardComponent } from "../components/GameCard";
 import { GamePlay } from "../components/GamePlay";
 import { Game, Player } from "../typings";
-import firebase, { db } from "../utils/firebase";
+import { db } from "../utils/firebase";
 
 export const GameScreen = () => {
 	const { gameId } = useParams();
@@ -25,16 +25,10 @@ export const GameScreen = () => {
 	const startGame = async () => {
 		setLoading(true);
 
-		let team1: Record<string, Player> = {};
-		let team2: Record<string, Player> = {};
-
-		gameData?.players.slice(0, 3).forEach(player => {
-			team1[player.email] = player;
-		});
-
-		gameData?.players.slice(3).forEach(player => {
-			team2[player.email] = player;
-		});
+		const players = gameData?.players.map((player, index) => ({
+			...player,
+			cards: gameData.deck.slice(index * 8, index * 8 + 8)
+		}));
 
 		await db
 			.collection("games")
@@ -42,11 +36,11 @@ export const GameScreen = () => {
 			.update({
 				started: true,
 				currentMove: { type: "TURN", turn: user.name },
-				teams: firebase.firestore.FieldValue.arrayUnion(team1, team2),
-				players: gameData?.players.map((player, index) => ({
-					...player,
-					cards: gameData.deck.slice(index * 8, index * 8 + 8)
-				}))
+				teams: {
+					A: players?.slice(0, 1).map(player => player.email),
+					B: players?.slice(1).map(player => player.email)
+				},
+				players
 			});
 
 		setLoading(false);

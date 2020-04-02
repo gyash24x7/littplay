@@ -44,7 +44,7 @@ export const HomeScreen = () => {
 				players: [],
 				createdBy: user.email,
 				deck: deck.cards.map(GameCard.toMap),
-				teams: []
+				teams: {}
 			})
 			.catch(err => {
 				console.log("Some Error Occurred: ", err);

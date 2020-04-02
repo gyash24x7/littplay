@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import { useParams } from "react-router-dom";
 
 import { Game, Player } from "../typings";
-import firebase, { db } from "../utils/firebase";
+import { db } from "../utils/firebase";
 
 interface GiveCardProps {
 	gameData: Game;
@@ -17,36 +17,34 @@ export const GiveCard = ({ gameData, haveCard }: GiveCardProps) => {
 
 	const giveCard = async () => {
 		setLoading(true);
+
+		const { players, currentMove, ...data } = gameData;
+
 		const takingPlayer = gameData.players.find(
-			player => player.name === gameData.currentMove.by
+			player => player.name === currentMove.by
 		);
 
-		await db
-			.collection("games")
-			.doc(gameId)
-			.collection("players")
-			.doc(user.email)
-			.update({
-				cards: firebase.firestore.FieldValue.arrayRemove(
-					gameData.currentMove.card
-				)
-			});
+		players.forEach((player, index) => {
+			if (player.email === user.email) {
+				players[index].cards = player.cards!.filter(
+					({ rank, suit }) =>
+						rank !== currentMove.card?.rank || suit !== currentMove.card.suit
+				);
+			}
+
+			if (player.email === takingPlayer?.email) {
+				players[index].cards?.push(currentMove.card!);
+			}
+		});
 
 		await db
 			.collection("games")
 			.doc(gameId)
-			.collection("players")
-			.doc(takingPlayer?.email)
 			.update({
-				cards: firebase.firestore.FieldValue.arrayUnion(
-					gameData.currentMove.card
-				)
+				...data,
+				players,
+				currentMove: { type: "TURN", turn: takingPlayer?.name }
 			});
-
-		await db
-			.collection("games")
-			.doc(gameId)
-			.update({ currentMove: { type: "TURN", turn: takingPlayer?.name } });
 
 		setLoading(false);
 	};

@@ -17,8 +17,9 @@ interface SelectOption {
 interface AskPlayerProps {
 	visible: boolean;
 	setVisible: (val: boolean) => void;
-	players: Player[];
+	team: string[];
 	activePlayer?: Player;
+	players: Player[];
 }
 
 export const AskPlayer = (props: AskPlayerProps) => {
@@ -26,7 +27,7 @@ export const AskPlayer = (props: AskPlayerProps) => {
 	const { gameId } = useParams();
 
 	const playerData = props.players
-		.filter(player => player.email !== user.email)
+		.filter(player => props.team.includes(player.email))
 		.map(player => ({
 			label: `${player.name} (${player.cards?.length} cards left)`,
 			value: player.email
