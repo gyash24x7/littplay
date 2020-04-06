@@ -1,18 +1,11 @@
 import Button from "@atlaskit/button";
 import Modal, { ModalTransition } from "@atlaskit/modal-dialog";
-import Select from "@atlaskit/select";
 import Textfield from "@atlaskit/textfield";
 import React, { useState } from "react";
 import { useParams } from "react-router-dom";
 
 import { Team } from "../typings";
 import { db } from "../utils/firebase";
-
-
-interface SelectOption {
-	label: string;
-	value: string;
-}
 
 interface CreateTeamProps {
 	visible: boolean;
@@ -22,37 +15,25 @@ interface CreateTeamProps {
 
 export const CreateTeams = (props: CreateTeamProps) => {
 	const { gameId } = useParams();
-
 	const [loading, setLoading] = useState(false);
-	const [teams, setTeams] = useState<string[]>([]);
-	const [teamMembers, setTeamMembers] = useState<string[][]>([[], []]);
-	const [playerData, setPlayerData] = useState(props.players);
-
-	const handleSelection = (index: number) => (opts: SelectOption[]) => {
-		let members = [...teamMembers];
-		members[index] = opts.map((opt) => opt.value);
-		setTeamMembers(members);
-
-		setPlayerData(
-			playerData.filter((player) => !members.flat().includes(player))
-		);
-	};
+	const [teamA, setTeamA] = useState("");
+	const [teamB, setTeamB] = useState("");
 
 	const handleTextInput = (index: number) => (e: any) => {
 		e.persist();
-		let teamNames = [...teams];
-		teamNames[index] = e.target.value;
-		setTeams(teamNames);
+		if (index === 0) setTeamA(e.target.value.toUpperCase());
+		else setTeamB(e.target.value.toUpperCase());
 	};
 
 	const createTeams = async () => {
 		setLoading(true);
-		let teamData: Record<string, Team> = {};
-		teamData[teams[0]] = { score: 0, members: teamMembers[0] };
-		teamData[teams[1]] = { score: 0, members: teamMembers[1] };
+		let teams: Record<string, Team> = {};
+		teams[teamA] = { score: 0, members: props.players.slice(0, 1) };
+		teams[teamB] = { score: 0, members: props.players.slice(1) };
 
-		await db.collection("games").doc(gameId).update({ teams: teamData });
+		await db.collection("games").doc(gameId).update({ teams });
 		setLoading(false);
+		props.setVisible(false);
 	};
 
 	return (
@@ -61,39 +42,31 @@ export const CreateTeams = (props: CreateTeamProps) => {
 				<Modal onClose={() => props.setVisible(false)} isChromeless>
 					<div className="modal">
 						<div className="modal-content">
-							<h2 className="sub-heading">Create Team</h2>
-							{[0, 1].map((i) => (
-								<div key={i} className="flex-container">
-									<h4>Team {i + 1}</h4>
-									<div className="input-wrapper">
-										<Textfield
-											value={teams[i]}
-											onChange={handleTextInput(1)}
-											className="input"
-											placeholder={`ENTER TEAM ${i} NAME`}
-										/>
-									</div>
-									<Select
-										data={playerData.map((name) => ({
-											label: name,
-											value: name
-										}))}
-										placeholder="Select Team Member"
-										className="select"
-										isMulti
-										value={teamMembers[i].map((name) => ({
-											label: name,
-											value: name
-										}))}
-										onChange={handleSelection(i) as any}
+							<h2 className="sub-heading">Create Teams</h2>
+							<br />
+							<div className="flex-container">
+								<div className="input-wrapper">
+									<Textfield
+										value={teamA}
+										onChange={handleTextInput(0)}
+										className="input"
+										placeholder={`ENTER TEAM A NAME`}
 									/>
 								</div>
-							))}
+								<div className="input-wrapper">
+									<Textfield
+										value={teamB}
+										onChange={handleTextInput(1)}
+										className="input"
+										placeholder={`ENTER TEAM B NAME`}
+									/>
+								</div>
+							</div>
 							<Button
 								className="button"
 								appearance="primary"
 								onClick={createTeams}
-								isDisabled={loading}
+								isDisabled={loading || !teamA || !teamB}
 								isLoading={loading}
 							>
 								Create Teams

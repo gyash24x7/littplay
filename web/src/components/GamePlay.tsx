@@ -36,7 +36,7 @@ export const GamePlay = ({ gameData }: GamePlayProps) => {
 			{Object.keys(gameData.players).length > 0 && (
 				<Fragment>
 					<h2 className="sub-heading">
-						TEAM {getTeamName(user.email, gameData.teams)}
+						{getTeamName(user.name, gameData.teams)}
 					</h2>
 					<div className="flag-wrapper">
 						<Banner appearance="announcement" isOpen>

@@ -31,8 +31,12 @@ export const AskPlayer = (props: AskPlayerProps) => {
 	);
 	const setWiseCards: Record<string, GameCard[]> = {};
 
+	Array.from(validCardSets).forEach((set) => {
+		setWiseCards[set] = [];
+	});
+
 	props.players[user.name].forEach((card) => {
-		setWiseCards[card.set] = [...setWiseCards[card.set], card];
+		setWiseCards[card.set].push(card);
 	});
 
 	const setData = Array.from(validCardSets)
@@ -97,6 +101,8 @@ export const AskPlayer = (props: AskPlayerProps) => {
 				break;
 		}
 	};
+
+	console.log(playerData);
 
 	return (
 		<ModalTransition>

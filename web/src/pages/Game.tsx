@@ -118,7 +118,7 @@ export const GameScreen = () => {
 			<CreateTeams
 				visible={visible}
 				setVisible={setVisible}
-				players={Object.keys(gameData ? gameData.players : {})}
+				players={Object.keys(gameData?.players || {})}
 			/>
 		</div>
 	);

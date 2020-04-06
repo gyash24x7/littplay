@@ -23,14 +23,14 @@ export const RANKS: Record<string, string> = {
 export const SUITS: Record<string, any> = { Hearts, Clubs, Spades, Diamonds };
 
 export const getTeamName = (
-	email: string,
+	name: string,
 	teams: Record<string, Team>,
 	opposite: boolean = false
 ) =>
 	Object.keys(teams).find((teamName) =>
 		opposite
-			? !teams[teamName].members.includes(email)
-			: teams[teamName].members.includes(email)
+			? !teams[teamName].members.includes(name)
+			: teams[teamName].members.includes(name)
 	)!;
 
 export const sortedDeck: GameCard[] = Object.keys(SUITS).flatMap((suit) =>
