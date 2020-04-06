@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import { useHistory } from "react-router-dom";
 
 import Logo from "../assets/icon.png";
-import { Player } from "../typings";
+import { User } from "../typings";
 import firebase, { AuthProvider } from "../utils/firebase";
 
 export const LoginScreen = () => {
@@ -15,15 +15,15 @@ export const LoginScreen = () => {
 	const login = async () => {
 		setLoading(true);
 		const result: any = await firebase.auth().signInWithPopup(AuthProvider);
-		const user: Player = { name, email: result.user.email };
+		const user: User = { name, email: result.user.email };
 		localStorage.setItem("user", JSON.stringify(user));
 		setLoading(false);
 		history.push("/");
 	};
 
 	return (
-		<div className="wrapper">
-			<div className="card">
+		<div className="wrapper" style={{ justifyContent: "center" }}>
+			<div className="card" style={{ marginBottom: "10vh" }}>
 				<img src={Logo} alt="" className="logo" />
 				<div className="input-wrapper">
 					<Textfield

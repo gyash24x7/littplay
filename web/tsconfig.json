@@ -32,6 +32,6 @@
 		"experimentalDecorators": true,
 		"emitDecoratorMetadata": true
 	},
-	"include": ["src"],
-	"exclude": ["/node_modules/"]
+	"include": ["src", "public/components", "public/pages"],
+	"exclude": ["/node_modules/", "./public/*"]
 }

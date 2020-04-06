@@ -1,21 +1,26 @@
+import { colors } from "@atlaskit/theme";
 import React from "react";
 
-import { getRankComponent, getSuitComponent } from "../utils/components";
-import { getCardColor } from "../utils/constants";
-import { GameCard } from "../utils/deck";
+import { GameCard } from "../typings";
+import { RANKS, SUITS } from "../utils/constants";
 
-interface GameCardComponentProps {
-	card: GameCard;
-}
+export const GameCardComponent = ({ card }: { card: GameCard }) => {
+	let color = "";
+	switch (card.suit) {
+		case "Hearts":
+		case "Diamonds":
+			color = colors.R400;
+			break;
+		default:
+			color = colors.N900;
+	}
 
-export const GameCardComponent = ({ card }: GameCardComponentProps) => {
-	const Suit = getSuitComponent(card.suit);
-	const Rank = getRankComponent(card);
-	const color = getCardColor(card.suit);
 	return (
 		<div style={{ borderColor: color }} className="playing-card">
-			<Suit />
-			<Rank />
+			<img src={SUITS[card.suit]} alt="" className="suit-icon" />
+			<div style={{ color }} className="rank-icon">
+				{RANKS[card.rank]}
+			</div>
 		</div>
 	);
 };

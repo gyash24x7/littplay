@@ -4,8 +4,8 @@ import Textfield from "@atlaskit/textfield";
 import React, { useState } from "react";
 import { useHistory } from "react-router-dom";
 
-import { Player } from "../typings";
-import firebase, { db } from "../utils/firebase";
+import { Game, User } from "../typings";
+import { db } from "../utils/firebase";
 
 interface JoinGameProps {
 	visible: boolean;
@@ -16,7 +16,7 @@ export const JoinGame = (props: JoinGameProps) => {
 	const [gameId, setGameId] = useState("");
 	const [loading, setLoading] = useState(false);
 
-	const user: Player = JSON.parse(localStorage.getItem("user")!);
+	const user: User = JSON.parse(localStorage.getItem("user")!);
 
 	const handleTextChange = (text: string) => {
 		if (text.length < 7) {
@@ -29,20 +29,15 @@ export const JoinGame = (props: JoinGameProps) => {
 	const goToGame = async () => {
 		setLoading(true);
 
-		const data = (
-			await db
-				.collection("games")
-				.doc(gameId)
-				.get()
-		).data();
+		const data: Game = (
+			await db.collection("games").doc(gameId).get()
+		).data() as any;
 
-		if (!data?.players.find(({ email }: Player) => email === user.email)) {
-			await db
-				.collection("games")
-				.doc(gameId)
-				.update({
-					players: firebase.firestore.FieldValue.arrayUnion(user)
-				});
+		let gameUpdate: any = {};
+		gameUpdate[`players.${user.name}`] = [];
+
+		if (!data.players[user.name]) {
+			await db.collection("games").doc(gameId).update(gameUpdate);
 		}
 
 		setLoading(false);

@@ -7,40 +7,39 @@ import React, { Fragment, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 
 import Logo from "../assets/icon.png";
+import { CreateTeams } from "../components/CreateTeam";
 import { GameCardComponent } from "../components/GameCard";
 import { GamePlay } from "../components/GamePlay";
-import { Game, Player } from "../typings";
+import { Game, User } from "../typings";
 import { db } from "../utils/firebase";
 
 export const GameScreen = () => {
 	const { gameId } = useParams();
 	const [gameData, setGameData] = useState<Game>();
+	const [visible, setVisible] = useState(false);
 	const [loading, setLoading] = useState(false);
-	const user: Player = JSON.parse(localStorage.getItem("user")!);
-
-	const activePlayer = gameData?.players.find(
-		player => player.email === user.email
-	);
+	const user: User = JSON.parse(localStorage.getItem("user")!);
 
 	const startGame = async () => {
 		setLoading(true);
 
-		const players = gameData?.players.map((player, index) => ({
-			...player,
-			cards: gameData.deck.slice(index * 8, index * 8 + 8)
-		}));
+		let gameUpdate: any = {};
+
+		Object.keys(gameData!.players).forEach((name, index) => {
+			gameUpdate[`players.${name}`] = gameData?.deck.slice(
+				index * 24,
+				(index + 1) * 24
+			);
+		});
 
 		await db
 			.collection("games")
 			.doc(gameId)
 			.update({
+				...gameUpdate,
 				started: true,
-				currentMove: { type: "TURN", turn: user.name },
-				teams: {
-					A: players?.slice(0, 3).map(player => player.email),
-					B: players?.slice(3).map(player => player.email)
-				},
-				players
+				currentMove: "TURN",
+				turn: user.name
 			});
 
 		setLoading(false);
@@ -50,7 +49,7 @@ export const GameScreen = () => {
 		const unsubscribeFromGame = db
 			.collection("games")
 			.doc(gameId)
-			.onSnapshot(snapshot => {
+			.onSnapshot((snapshot) => {
 				if (snapshot.exists) {
 					setGameData(snapshot.data() as any);
 				}
@@ -67,43 +66,60 @@ export const GameScreen = () => {
 			{!gameData && <Spinner />}
 			{gameData && !gameData.started && (
 				<div className="card">
-					{gameData.players.map(player => (
-						<div className="flag-wrapper" key={player.email}>
+					{Object.keys(gameData.players).map((name) => (
+						<div className="flag-wrapper" key={name}>
 							<Flag
 								appearance="success"
-								title={player.name + " JOINED"}
+								title={name + " JOINED"}
 								isDismissAllowed={false}
-								id={player.email}
+								id={name}
 								icon={
 									<TickIcon label="Check Icon" secondaryColor={colors.G400} />
 								}
 							/>
 						</div>
 					))}
-					{gameData.players.length === 6 && (
-						<Button
-							appearance="primary"
-							className="button"
-							isDisabled={loading}
-							onClick={startGame}
-							isLoading={loading}
-						>
-							Start Game
-						</Button>
-					)}
+					{Object.keys(gameData.players).length === 2 &&
+						Object.keys(gameData.teams).length === 0 &&
+						gameData.createdBy === user.name && (
+							<Button
+								appearance="primary"
+								className="button"
+								onClick={() => setVisible(true)}
+							>
+								Create Teams
+							</Button>
+						)}
+					{Object.keys(gameData.players).length === 2 &&
+						Object.keys(gameData.teams).length > 0 && (
+							<Button
+								appearance="primary"
+								className="button"
+								isDisabled={loading}
+								onClick={startGame}
+								isLoading={loading}
+							>
+								Start Game
+							</Button>
+						)}
 				</div>
 			)}
 			{gameData && gameData.started && (
 				<Fragment>
 					<div className="playing-card-container">
-						{activePlayer?.cards?.map(card => (
+						{gameData.players[user.name].map((card) => (
 							<GameCardComponent card={card} key={card.rank + card.suit} />
 						))}
 					</div>
-					<GamePlay gameData={gameData} activePlayer={activePlayer} />
+					<GamePlay gameData={gameData} />
 				</Fragment>
 			)}
 			<h4 className="paragraph">Logged in as {user.email}</h4>
+			<CreateTeams
+				visible={visible}
+				setVisible={setVisible}
+				players={Object.keys(gameData ? gameData.players : {})}
+			/>
 		</div>
 	);
 };

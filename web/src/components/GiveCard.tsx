@@ -2,7 +2,7 @@ import Button from "@atlaskit/button";
 import React, { useState } from "react";
 import { useParams } from "react-router-dom";
 
-import { Game, Player } from "../typings";
+import { Game, User } from "../typings";
 import { db } from "../utils/firebase";
 
 interface GiveCardProps {
@@ -13,29 +13,19 @@ interface GiveCardProps {
 export const GiveCard = ({ gameData, haveCard }: GiveCardProps) => {
 	const [loading, setLoading] = useState(false);
 	const { gameId } = useParams();
-	const user: Player = JSON.parse(localStorage.getItem("user")!);
+	const user: User = JSON.parse(localStorage.getItem("user")!);
 
 	const giveCard = async () => {
 		setLoading(true);
 
-		const { players, currentMove, ...data } = gameData;
+		const { players, askData, ...data } = gameData;
 
-		const takingPlayer = gameData.players.find(
-			player => player.name === currentMove.by
+		players[user.name] = players[user.name].filter(
+			({ rank, suit }) =>
+				rank !== askData!.askedFor.rank && suit === askData!.askedFor.suit
 		);
 
-		players.forEach((player, index) => {
-			if (player.email === user.email) {
-				players[index].cards = player.cards!.filter(
-					({ rank, suit }) =>
-						rank !== currentMove.card?.rank || suit !== currentMove.card.suit
-				);
-			}
-
-			if (player.email === takingPlayer?.email) {
-				players[index].cards?.push(currentMove.card!);
-			}
-		});
+		players[askData!.askedBy].push(askData!.askedFor);
 
 		await db
 			.collection("games")
@@ -43,7 +33,8 @@ export const GiveCard = ({ gameData, haveCard }: GiveCardProps) => {
 			.update({
 				...data,
 				players,
-				currentMove: { type: "TURN", turn: takingPlayer?.name }
+				currentMove: "TURN",
+				turn: askData!.askedBy
 			});
 
 		setLoading(false);

@@ -2,39 +2,38 @@ import Banner from "@atlaskit/banner";
 import Button from "@atlaskit/button";
 import React, { Fragment, useState } from "react";
 
-import { Game, Player } from "../typings";
-import { getTeam, getTeamName } from "../utils/constants";
-import { GameCard } from "../utils/deck";
+import { Game, User } from "../typings";
+import { getTeamName } from "../utils/constants";
+import { cardToString } from "../utils/deck";
 import { AskPlayer } from "./AskPlayer";
 import { DeclineCard } from "./DeclineCard";
 import { GiveCard } from "./GiveCard";
 
 interface GamePlayProps {
 	gameData: Game;
-	activePlayer?: Player;
 }
 
-export const GamePlay = ({ gameData, activePlayer }: GamePlayProps) => {
+export const GamePlay = ({ gameData }: GamePlayProps) => {
 	const [visible, setVisible] = useState(false);
 
-	const user: Player = JSON.parse(localStorage.getItem("user")!);
+	const user: User = JSON.parse(localStorage.getItem("user")!);
 
 	let moveDescription = "";
-	switch (gameData.currentMove.type) {
+	switch (gameData.currentMove) {
 		case "TURN":
-			moveDescription = `${gameData.currentMove.turn}'s Turn`;
+			moveDescription = `${gameData.turn}'s Turn`;
 			break;
 
 		case "ASK":
-			moveDescription = `${gameData.currentMove.by} asked ${
-				gameData.currentMove.from
-			} for ${GameCard.toString(gameData.currentMove.card!)}`;
+			moveDescription = `${gameData.askData!.askedBy} asked ${
+				gameData.askData!.askedFrom
+			} for ${cardToString(gameData.askData!.askedFor)}`;
 			break;
 	}
 
 	return (
 		<div className="game-play-container">
-			{gameData?.players.length > 0 && (
+			{Object.keys(gameData.players).length > 0 && (
 				<Fragment>
 					<h2 className="sub-heading">
 						TEAM {getTeamName(user.email, gameData.teams)}
@@ -44,7 +43,7 @@ export const GamePlay = ({ gameData, activePlayer }: GamePlayProps) => {
 							<div className="banner-content">{moveDescription}</div>
 						</Banner>
 					</div>
-					{gameData.currentMove.turn === user.name && (
+					{gameData.turn === user.name && (
 						<div className="move-action">
 							<Button
 								onClick={() => setVisible(true)}
@@ -56,19 +55,21 @@ export const GamePlay = ({ gameData, activePlayer }: GamePlayProps) => {
 							<AskPlayer
 								visible={visible}
 								setVisible={setVisible}
-								team={getTeam(user.email, gameData.teams, true)}
-								activePlayer={activePlayer}
+								team={
+									gameData.teams[getTeamName(user.email, gameData.teams, true)]
+										.members
+								}
 								players={gameData.players}
 							/>
 						</div>
 					)}
-					{gameData.currentMove.from === user.name && (
+					{gameData.askData?.askedFrom === user.name && (
 						<div className="move-action">
 							<GiveCard
 								haveCard={
-									activePlayer!.cards!.findIndex(card => {
-										const rank = gameData.currentMove.card?.rank;
-										const suit = gameData.currentMove.card?.suit;
+									gameData.players[user.name].findIndex((card) => {
+										const rank = gameData.askData?.askedFor.rank;
+										const suit = gameData.askData?.askedFor.suit;
 										return card.suit === suit && card.rank === rank;
 									}) > -1
 								}
@@ -76,9 +77,9 @@ export const GamePlay = ({ gameData, activePlayer }: GamePlayProps) => {
 							/>
 							<DeclineCard
 								haveCard={
-									activePlayer!.cards!.findIndex(card => {
-										const rank = gameData.currentMove.card?.rank;
-										const suit = gameData.currentMove.card?.suit;
+									gameData.players[user.name].findIndex((card) => {
+										const rank = gameData.askData?.askedFor.rank;
+										const suit = gameData.askData?.askedFor.suit;
 										return card.suit === suit && card.rank === rank;
 									}) > -1
 								}

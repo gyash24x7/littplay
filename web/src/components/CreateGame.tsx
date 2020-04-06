@@ -3,8 +3,8 @@ import Modal, { ModalTransition } from "@atlaskit/modal-dialog";
 import React, { useState } from "react";
 import { useHistory } from "react-router-dom";
 
-import { Player } from "../typings";
-import firebase, { db } from "../utils/firebase";
+import { User } from "../typings";
+import { db } from "../utils/firebase";
 
 interface CreateGameProps {
 	visible: boolean;
@@ -15,19 +15,16 @@ interface CreateGameProps {
 export const CreateGame = (props: CreateGameProps) => {
 	const [loading, setLoading] = useState(false);
 
-	const user: Player = JSON.parse(localStorage.getItem("user")!);
+	const user: User = JSON.parse(localStorage.getItem("user")!);
 
 	const history = useHistory();
 
 	const goToGame = async () => {
 		setLoading(true);
+		let gameUpdate: any = {};
+		gameUpdate[`players.${user.name}`] = [];
 
-		await db
-			.collection("games")
-			.doc(props.gameId)
-			.update({
-				players: firebase.firestore.FieldValue.arrayUnion(user)
-			});
+		await db.collection("games").doc(props.gameId).update(gameUpdate);
 
 		setLoading(false);
 		history.push(`/play/${props.gameId}`);

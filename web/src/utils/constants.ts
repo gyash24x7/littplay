@@ -1,57 +1,42 @@
-import { colors } from "@atlaskit/theme";
+import Clubs from "../assets/club.png";
+import Diamonds from "../assets/diamond.png";
+import Hearts from "../assets/heart.png";
+import Spades from "../assets/spade.png";
+import { GameCard, Team } from "../typings";
 
-export const RANKS = [
-	"Ace",
-	"Two",
-	"Three",
-	"Four",
-	"Five",
-	"Six",
-	"Seven",
-	"Eight",
-	"Nine",
-	"Ten",
-	"Jack",
-	"Queen",
-	"King"
-];
-
-export const SUITS = ["Hearts", "Clubs", "Spades", "Diamonds"];
-
-export const getCardColor = (suit: string) => {
-	switch (suit) {
-		case "Hearts":
-		case "Diamonds":
-			return colors.R400;
-		default:
-			return colors.N900;
-	}
+export const RANKS: Record<string, string> = {
+	Ace: "A",
+	Two: "2",
+	Three: "3",
+	Four: "4",
+	Five: "5",
+	Six: "6",
+	Seven: "7",
+	Eight: "8",
+	Nine: "9",
+	Ten: "10",
+	Jack: "J",
+	Queen: "Q",
+	King: "K"
 };
 
-export const SMALL_RANKS = RANKS.slice(0, 6);
-
-export const BIG_RANKS = RANKS.slice(7);
-
-export const getTeam = (
-	email: string,
-	teams: Record<string, string[]>,
-	opposite: boolean = false
-) => {
-	const name = Object.keys(teams).find(teamName =>
-		opposite
-			? !teams[teamName].includes(email)
-			: teams[teamName].includes(email)
-	)!;
-	return teams[name];
-};
+export const SUITS: Record<string, any> = { Hearts, Clubs, Spades, Diamonds };
 
 export const getTeamName = (
 	email: string,
-	teams: Record<string, string[]>,
+	teams: Record<string, Team>,
 	opposite: boolean = false
 ) =>
-	Object.keys(teams).find(teamName =>
+	Object.keys(teams).find((teamName) =>
 		opposite
-			? !teams[teamName].includes(email)
-			: teams[teamName].includes(email)
+			? !teams[teamName].members.includes(email)
+			: teams[teamName].members.includes(email)
 	)!;
+
+export const sortedDeck: GameCard[] = Object.keys(SUITS).flatMap((suit) =>
+	Object.keys(RANKS).map((rank, index) => ({
+		rank,
+		suit,
+		set: index > 6 ? "Big " + suit : "Small " + suit
+	}))
+);

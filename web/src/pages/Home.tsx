@@ -5,8 +5,9 @@ import { useHistory } from "react-router-dom";
 import Logo from "../assets/icon.png";
 import { CreateGame } from "../components/CreateGame";
 import { JoinGame } from "../components/JoinGame";
-import { Player } from "../typings";
-import { Deck, GameCard } from "../utils/deck";
+import { User } from "../typings";
+import { sortedDeck } from "../utils/constants";
+import { removeCardsOfRank, shuffleCards } from "../utils/deck";
 import firebase, { db } from "../utils/firebase";
 
 export const HomeScreen = () => {
@@ -16,7 +17,7 @@ export const HomeScreen = () => {
 	const [loading, setLoading] = useState(false);
 	const history = useHistory();
 
-	const user: Player = JSON.parse(localStorage.getItem("user")!);
+	const user: User = JSON.parse(localStorage.getItem("user")!);
 
 	const logOut = async () => {
 		await firebase.auth().signOut();
@@ -27,12 +28,11 @@ export const HomeScreen = () => {
 	const createGame = async () => {
 		setLoading(true);
 		const gameId = [...Array(6)]
-			.map(_ => (~~(Math.random() * 36)).toString(36))
+			.map((_) => (~~(Math.random() * 36)).toString(36))
 			.join("")
 			.toUpperCase();
 
-		const deck = new Deck();
-		deck.removeCardsOfRank("Seven");
+		const deck = shuffleCards(removeCardsOfRank("Seven", sortedDeck));
 
 		await db
 			.collection("games")
@@ -41,12 +41,12 @@ export const HomeScreen = () => {
 				started: false,
 				completed: false,
 				currentMove: "",
-				players: [],
-				createdBy: user.email,
-				deck: deck.cards.map(GameCard.toMap),
-				teams: {}
+				players: {},
+				deck,
+				teams: {},
+				createdBy: user.name
 			})
-			.catch(err => {
+			.catch((err) => {
 				console.log("Some Error Occurred: ", err);
 			});
 

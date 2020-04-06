@@ -4,74 +4,46 @@ import Select from "@atlaskit/select";
 import React, { useState } from "react";
 import { useParams } from "react-router-dom";
 
-import { Player } from "../typings";
-import { BIG_RANKS, SMALL_RANKS } from "../utils/constants";
-import { Deck } from "../utils/deck";
+import { GameCard, User } from "../typings";
+import { RANKS } from "../utils/constants";
 import { db } from "../utils/firebase";
-
-interface SelectOption {
-	label: string;
-	value: string;
-}
 
 interface AskPlayerProps {
 	visible: boolean;
 	setVisible: (val: boolean) => void;
 	team: string[];
-	activePlayer?: Player;
-	players: Player[];
+	players: Record<string, GameCard[]>;
 }
 
 export const AskPlayer = (props: AskPlayerProps) => {
-	const user: Player = JSON.parse(localStorage.getItem("user")!);
+	const user: User = JSON.parse(localStorage.getItem("user")!);
 	const { gameId } = useParams();
 
-	const playerData = props.players
-		.filter(player => props.team.includes(player.email))
-		.map(player => ({
-			label: `${player.name} (${player.cards?.length} cards left)`,
-			value: player.email
+	const playerData = Object.keys(props.players)
+		.filter((name) => props.team.includes(name))
+		.map((name) => ({
+			label: `${name} (${props.players[name]?.length} cards left)`,
+			value: name
 		}));
 
-	const toggleModal = () => props.setVisible(!props.visible);
-
-	const validCardSuits = new Set(
-		props.activePlayer?.cards?.map(card => card.suit)
+	const validCardSets = new Set(
+		props.players[user.name].map((card) => card.set)
 	);
-	const setWiseCards = Deck.getSetWiseCards(
-		props.activePlayer?.cards!,
-		validCardSuits || []
-	);
+	const setWiseCards: Record<string, GameCard[]> = {};
 
-	const setData = Array.from(validCardSuits)
-		.flatMap(suit => [
-			{ label: `Small ${suit}`, value: `Small ${suit}` },
-			{ label: `Big ${suit}`, value: `Big ${suit}` }
-		])
+	props.players[user.name].forEach((card) => {
+		setWiseCards[card.set] = [...setWiseCards[card.set], card];
+	});
+
+	const setData = Array.from(validCardSets)
+		.map((set) => ({ label: set, value: set }))
 		.filter(({ value }) => setWiseCards[value].length > 0);
 
-	const [selectedPlayer, setSelectedPlayer] = useState<SelectOption>();
-	const [selectedSet, setSelectedSet] = useState<SelectOption>();
-	const [rankData, setRankData] = useState<SelectOption[]>([]);
-	const [selectedRank, setSelectedRank] = useState<SelectOption>();
+	const [selectedPlayer, setSelectedPlayer] = useState("");
+	const [selectedSet, setSelectedSet] = useState("");
+	const [rankData, setRankData] = useState<string[]>([]);
+	const [selectedRank, setSelectedRank] = useState("");
 	const [loading, setLoading] = useState(false);
-
-	const handleSelectedSetSelection = ({ value }: SelectOption) => {
-		let VALID_RANKS = [] as string[];
-		if (value.split(" ")[0] === "Small") VALID_RANKS = SMALL_RANKS;
-		else VALID_RANKS = BIG_RANKS;
-
-		setRankData(
-			VALID_RANKS.filter(
-				rank =>
-					setWiseCards[value].findIndex(
-						card => card.rank === rank && card.suit === value.split(" ")[1]
-					) === -1
-			).map(text => ({ label: text, value: text }))
-		);
-
-		setSelectedSet({ value, label: value });
-	};
 
 	const handleAsking = async () => {
 		setLoading(true);
@@ -79,20 +51,51 @@ export const AskPlayer = (props: AskPlayerProps) => {
 			.collection("games")
 			.doc(gameId)
 			.update({
-				currentMove: {
-					type: "ASK",
-					from: selectedPlayer?.label.split(" (")[0],
-					by: user.name,
-					card: {
-						rank: selectedRank?.value,
-						suit: selectedSet?.value.split(" ")[1]
-					}
+				currentMove: "ASK",
+				askData: {
+					askedBy: user.name,
+					askedFor: {
+						rank: selectedRank,
+						suit: selectedSet.split(" ")[1],
+						set: selectedSet
+					},
+					askedFrom: selectedPlayer
 				}
 			})
-			.catch(err => console.log("Error: ", err));
+			.catch((err) => console.log("Error: ", err));
 
 		setLoading(false);
-		toggleModal();
+		props.setVisible(false);
+	};
+
+	const handleSelection = (field: string) => ({ value }: any) => {
+		switch (field) {
+			case "Player":
+				setSelectedPlayer(value);
+				break;
+
+			case "Rank":
+				setSelectedRank(value);
+				break;
+
+			case "Set":
+				let VALID_RANKS = [] as string[];
+				if (value.indexOf("Small") >= 0)
+					VALID_RANKS = Object.keys(RANKS).slice(0, 6);
+				else VALID_RANKS = Object.keys(RANKS).slice(7);
+
+				setRankData(
+					VALID_RANKS.filter(
+						(rank) =>
+							setWiseCards[value].findIndex(
+								(card) => card.rank === rank && value === card.set
+							) === -1
+					)
+				);
+
+				setSelectedSet(value);
+				break;
+		}
 	};
 
 	return (
@@ -104,24 +107,37 @@ export const AskPlayer = (props: AskPlayerProps) => {
 							<h2 className="sub-heading">Ask</h2>
 							<br />
 							<Select
-								options={playerData}
+								data={playerData}
 								placeholder="Select Whom to Ask"
 								className="select"
-								onChange={setSelectedPlayer as any}
+								onChange={handleSelection("Player")}
+								value={
+									selectedPlayer
+										? { label: selectedPlayer, value: selectedPlayer }
+										: null
+								}
 							/>
 							<Select
 								className="select"
-								options={setData}
+								data={setData}
 								placeholder="Select Card Set to Ask"
-								value={selectedSet}
-								onChange={handleSelectedSetSelection as any}
+								value={
+									selectedSet
+										? { label: selectedSet, value: selectedSet }
+										: null
+								}
+								onChange={handleSelection("Set")}
 							/>
 							<Select
 								className="select"
-								options={rankData}
+								data={rankData}
 								placeholder="Select Card Rank to Ask"
-								value={selectedRank}
-								onChange={setSelectedRank as any}
+								value={
+									selectedRank
+										? { label: selectedRank, value: selectedRank }
+										: null
+								}
+								onChange={handleSelection("Rank")}
 							/>
 							<Button
 								isDisabled={!selectedPlayer || !selectedRank}

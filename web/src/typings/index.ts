@@ -1,53 +1,36 @@
-import { GameCard } from "../utils/deck";
+export interface GameCard {
+	rank: string;
+	suit: string;
+	set: string;
+}
 
-export interface Player {
-	name: string;
-	email: string;
-	cards?: GameCard[];
-	team?: string;
+export interface Team {
+	score: number;
+	members: string[];
 }
 
 export interface Game {
-	id: string;
-	started: boolean;
-	completed: boolean;
-	currentMove: Move;
+	started: false;
+	completed: false;
+	players: Record<string, GameCard[]>;
 	deck: GameCard[];
-	teams: Record<string, string[]>;
+	teams: Record<string, Team>;
 	createdBy: string;
-	players: Player[];
-}
-
-export interface Move {
-	type: string;
-	from?: string;
-	by?: string;
-	card?: GameCard;
+	currentMove: string;
+	askData?: {
+		askedBy: string;
+		askedFrom: string;
+		askedFor: GameCard;
+	};
 	turn?: string;
+	callData?: {
+		calledBy: string;
+		calledSet: string;
+		status: string;
+	};
 }
 
-export interface UserActionPayload {
+export interface User {
 	name: string;
 	email: string;
-}
-
-export interface UserAction {
-	type: string;
-	payload?: UserActionPayload;
-}
-
-export interface GameActionPayload {
-	user: Player;
-	from?: string;
-	card?: GameCard;
-}
-
-export interface GameAction {
-	type: string;
-	payload: GameActionPayload;
-}
-
-export interface Store {
-	game: Game;
-	user: Player;
 }

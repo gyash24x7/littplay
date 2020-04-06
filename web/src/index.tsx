@@ -20,7 +20,7 @@ declare var module: any;
 
 if (module.hot && process.env.NODE_ENV === "development") {
 	module.hot.accept("./routes", () => {
-		const NextApp = require("./App");
+		const NextApp = require("./routes");
 		renderApp(NextApp);
 	});
 }

@@ -170,3 +170,13 @@ body {
 	display: flex;
 	flex-direction: column;
 }
+
+.flex-container {
+	display: flex;
+	flex-wrap: wrap;
+}
+
+.flex-container-element {
+	flex: 1;
+	min-width: 400px;
+}
