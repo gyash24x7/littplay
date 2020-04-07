@@ -64,7 +64,9 @@ export const AskPlayer = (props: AskPlayerProps) => {
 						set: selectedSet
 					},
 					askedFrom: selectedPlayer
-				}
+				},
+				turn: null,
+				callData: null
 			})
 			.catch((err) => console.log("Error: ", err));
 
@@ -88,6 +90,15 @@ export const AskPlayer = (props: AskPlayerProps) => {
 					VALID_RANKS = Object.keys(RANKS).slice(0, 6);
 				else VALID_RANKS = Object.keys(RANKS).slice(7);
 
+				console.log(
+					VALID_RANKS.filter(
+						(rank) =>
+							setWiseCards[value].findIndex(
+								(card) => card.rank === rank && value === card.set
+							) === -1
+					)
+				);
+
 				setRankData(
 					VALID_RANKS.filter(
 						(rank) =>
@@ -102,8 +113,6 @@ export const AskPlayer = (props: AskPlayerProps) => {
 		}
 	};
 
-	console.log(playerData);
-
 	return (
 		<ModalTransition>
 			{props.visible && (
@@ -113,7 +122,7 @@ export const AskPlayer = (props: AskPlayerProps) => {
 							<h2 className="sub-heading">Ask</h2>
 							<br />
 							<Select
-								data={playerData}
+								options={playerData}
 								placeholder="Select Whom to Ask"
 								className="select"
 								onChange={handleSelection("Player")}
@@ -125,7 +134,7 @@ export const AskPlayer = (props: AskPlayerProps) => {
 							/>
 							<Select
 								className="select"
-								data={setData}
+								options={setData}
 								placeholder="Select Card Set to Ask"
 								value={
 									selectedSet
@@ -136,13 +145,8 @@ export const AskPlayer = (props: AskPlayerProps) => {
 							/>
 							<Select
 								className="select"
-								data={rankData}
+								options={rankData.map((rank) => ({ label: rank, value: rank }))}
 								placeholder="Select Card Rank to Ask"
-								value={
-									selectedRank
-										? { label: selectedRank, value: selectedRank }
-										: null
-								}
 								onChange={handleSelection("Rank")}
 							/>
 							<Button

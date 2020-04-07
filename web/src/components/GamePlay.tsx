@@ -6,6 +6,7 @@ import { Game, User } from "../typings";
 import { getTeamName } from "../utils/constants";
 import { cardToString } from "../utils/deck";
 import { AskPlayer } from "./AskPlayer";
+import { CallSet } from "./CallSet";
 import { DeclineCard } from "./DeclineCard";
 import { GiveCard } from "./GiveCard";
 
@@ -14,7 +15,8 @@ interface GamePlayProps {
 }
 
 export const GamePlay = ({ gameData }: GamePlayProps) => {
-	const [visible, setVisible] = useState(false);
+	const [visibleAsk, setVisibleAsk] = useState(false);
+	const [visibleCall, setVisibleCall] = useState(false);
 
 	const user: User = JSON.parse(localStorage.getItem("user")!);
 
@@ -28,6 +30,10 @@ export const GamePlay = ({ gameData }: GamePlayProps) => {
 			moveDescription = `${gameData.askData!.askedBy} asked ${
 				gameData.askData!.askedFrom
 			} for ${cardToString(gameData.askData!.askedFor)}`;
+			break;
+
+		case "CALL":
+			moveDescription = `${gameData.callData?.calledBy} called ${gameData.callData?.calledSet} ${gameData.callData?.status}LY`;
 			break;
 	}
 
@@ -46,20 +52,39 @@ export const GamePlay = ({ gameData }: GamePlayProps) => {
 					{gameData.turn === user.name && (
 						<div className="move-action">
 							<Button
-								onClick={() => setVisible(true)}
+								onClick={() => setVisibleAsk(true)}
 								appearance="primary"
 								className="button"
 							>
 								Ask Player
 							</Button>
+							<Button
+								onClick={() => setVisibleCall(true)}
+								appearance="warning"
+								className="button"
+							>
+								Call Set
+							</Button>
 							<AskPlayer
-								visible={visible}
-								setVisible={setVisible}
+								visible={visibleAsk}
+								setVisible={setVisibleAsk}
 								team={
-									gameData.teams[getTeamName(user.email, gameData.teams, true)]
+									gameData.teams[getTeamName(user.name, gameData.teams, true)]
 										.members
 								}
 								players={gameData.players}
+							/>
+							<CallSet
+								visible={visibleCall}
+								setVisible={setVisibleCall}
+								team={
+									gameData.teams[getTeamName(user.name, gameData.teams)].members
+								}
+								players={gameData.players}
+								turnTransfer={
+									gameData.teams[getTeamName(user.name, gameData.teams, true)]
+										.members[0]
+								}
 							/>
 						</div>
 					)}

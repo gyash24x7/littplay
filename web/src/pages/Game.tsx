@@ -11,6 +11,7 @@ import { CreateTeams } from "../components/CreateTeam";
 import { GameCardComponent } from "../components/GameCard";
 import { GamePlay } from "../components/GamePlay";
 import { Game, User } from "../typings";
+import { getSortedHand } from "../utils/constants";
 import { db } from "../utils/firebase";
 
 export const GameScreen = () => {
@@ -91,7 +92,8 @@ export const GameScreen = () => {
 							</Button>
 						)}
 					{Object.keys(gameData.players).length === 2 &&
-						Object.keys(gameData.teams).length > 0 && (
+						Object.keys(gameData.teams).length > 0 &&
+						gameData.createdBy === user.name && (
 							<Button
 								appearance="primary"
 								className="button"
@@ -107,7 +109,7 @@ export const GameScreen = () => {
 			{gameData && gameData.started && (
 				<Fragment>
 					<div className="playing-card-container">
-						{gameData.players[user.name].map((card) => (
+						{getSortedHand(gameData.players[user.name]).map((card) => (
 							<GameCardComponent card={card} key={card.rank + card.suit} />
 						))}
 					</div>

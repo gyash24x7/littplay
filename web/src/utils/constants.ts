@@ -40,3 +40,15 @@ export const sortedDeck: GameCard[] = Object.keys(SUITS).flatMap((suit) =>
 		set: index > 6 ? "Big " + suit : "Small " + suit
 	}))
 );
+
+export const getSortedHand = (hand: GameCard[]) => {
+	let cards: GameCard[] = [];
+	sortedDeck.forEach((card) => {
+		let i = hand.findIndex(
+			({ rank, suit }) => card.rank === rank && card.suit === suit
+		);
+		if (i >= 0) cards.push(card);
+	});
+
+	return cards;
+};

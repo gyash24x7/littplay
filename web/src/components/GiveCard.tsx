@@ -22,7 +22,7 @@ export const GiveCard = ({ gameData, haveCard }: GiveCardProps) => {
 
 		players[user.name] = players[user.name].filter(
 			({ rank, suit }) =>
-				rank !== askData!.askedFor.rank && suit === askData!.askedFor.suit
+				rank !== askData!.askedFor.rank || suit !== askData!.askedFor.suit
 		);
 
 		players[askData!.askedBy].push(askData!.askedFor);
@@ -34,7 +34,9 @@ export const GiveCard = ({ gameData, haveCard }: GiveCardProps) => {
 				...data,
 				players,
 				currentMove: "TURN",
-				turn: askData!.askedBy
+				turn: askData!.askedBy,
+				askData: null,
+				callData: null
 			});
 
 		setLoading(false);
