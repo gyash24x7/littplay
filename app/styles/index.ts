@@ -3,20 +3,35 @@ import { StyleSheet } from "react-native";
 export default StyleSheet.create({
 	wrapper: {
 		display: "flex",
+		flexDirection: "column",
 		justifyContent: "space-between",
 		alignItems: "center",
-		minHeight: "100vh"
+		flex: 1,
+		overflow: "hidden"
 	},
 
 	card: {
-		padding: "5vh",
+		padding: "5%",
+		marginBottom: "5%",
+		display: "flex",
+		flexDirection: "column",
+		alignItems: "center",
 		backgroundColor: "transparent",
-		borderColor: "transparent"
+		borderColor: "transparent",
+		minWidth: "50%"
 	},
 
 	modal: {
-		padding: "5vh",
-		minWidth: "50vw"
+		display: "flex",
+		flexDirection: "column",
+		justifyContent: "center",
+		margin: 20
+	},
+
+	modalContent: {
+		padding: "10%",
+		backgroundColor: "#fff",
+		textAlign: "center"
 	},
 
 	logo: {
@@ -29,56 +44,50 @@ export default StyleSheet.create({
 		height: 100
 	},
 
-	backdrop: {
-		backgroundColor: "rgba(0, 0, 0, 0.5)"
+	button: {
+		margin: 5,
+		paddingVertical: 5,
+		paddingHorizontal: 50,
+		display: "flex",
+		flexDirection: "column",
+		alignItems: "center",
+		textAlign: "center",
+		justifyContent: "center",
+		textTransform: "uppercase",
+		fontFamily: "montserrat-bold"
 	},
 
-	button: {
-		margin: 5
+	input: {
+		textAlign: "center",
+		fontSize: 20,
+		fontFamily: "montserrat-bold",
+		margin: 5,
+		borderBottomColor: "transparent",
+		backgroundColor: "#ebecf0",
+		padding: 15
 	},
 
 	heading: {
-		fontWeight: "700",
 		fontSize: 48,
 		fontFamily: "montserrat-bold",
-		margin: 15,
-		marginBottom: 30,
-		textAlign: "center"
+		textAlign: "center",
+		lineHeight: 60
+	},
+
+	subHeading: {
+		fontFamily: "montserrat-bold"
 	},
 
 	paragraph: {
-		fontSize: 20,
-		marginBottom: 15,
-		textAlign: "center"
-	},
-
-	labelStyle: {
 		textAlign: "center",
-		fontWeight: "bold",
-		color: "#7A869A",
-		marginBottom: 5
-	},
-
-	bottomText: {
-		fontWeight: "bold",
-		textAlign: "center",
-		lineHeight: 24,
-		position: "absolute",
-		bottom: 0
-	},
-
-	playingCardContainer: {
-		display: "flex",
-		flexDirection: "row",
-		flexWrap: "wrap",
-		padding: "5vh",
-		justifyContent: "center"
+		textTransform: "uppercase"
 	},
 
 	playingCard: {
 		margin: 5,
-		borderWidth: 2,
-		borderColor: "#172b4d",
+		padding: 30,
+		borderWidth: 3,
+		borderRadius: 10,
 		display: "flex",
 		flexDirection: "column",
 		justifyContent: "center",
@@ -86,23 +95,34 @@ export default StyleSheet.create({
 		textAlign: "center"
 	},
 
+	playingCardContainer: {
+		display: "flex",
+		flexDirection: "row",
+		flexWrap: "wrap",
+		paddingHorizontal: "10%",
+		paddingVertical: 20,
+		justifyContent: "center"
+	},
+
 	suitIcon: {
-		width: 30,
-		height: 30
+		width: 40,
+		height: 40
 	},
 
 	rankIcon: {
-		fontWeight: "900",
-		fontSize: 30,
-		lineHeight: 40
+		fontSize: 40,
+		lineHeight: 50,
+		fontFamily: "montserrat-bold"
 	},
 
 	gamePlayContainer: {
 		display: "flex",
+		flexDirection: "column",
 		justifyContent: "center",
 		alignItems: "center",
-		padding: "5vh",
-		margin: "5vh"
+		paddingVertical: "5%",
+		paddingHorizontal: "10%",
+		width: "80%"
 	},
 
 	select: {
@@ -112,5 +132,28 @@ export default StyleSheet.create({
 	moveAction: {
 		display: "flex",
 		flexDirection: "row"
+	},
+
+	flagWrapper: {
+		margin: 5,
+		width: "100%"
+	},
+
+	bannerContent: {
+		fontFamily: "montserrat-bold",
+		fontSize: 18,
+		display: "flex",
+		flexDirection: "column"
+	},
+
+	flexContainer: {
+		display: "flex",
+		flexWrap: "wrap",
+		textAlign: "center"
+	},
+
+	flexContainerElement: {
+		flex: 1,
+		minWidth: 400
 	}
 });

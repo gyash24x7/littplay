@@ -1,9 +1,16 @@
-import { Button, Layout, Modal, Text } from "@ui-kitten/components";
-import React, { useState } from "react";
-import { useHistory } from "react-router-dom";
+import { useNavigation } from "@react-navigation/native";
+import React, { useContext, useState } from "react";
+import { View } from "react-native";
+import {
+  Button,
+  Headline,
+  Modal,
+  Portal,
+  Subheading,
+} from "react-native-paper";
 
 import styles from "../styles";
-import { User } from "../typings";
+import { UserContext } from "../utils/context";
 import { db } from "../utils/firebase";
 
 interface CreateGameProps {
@@ -13,46 +20,43 @@ interface CreateGameProps {
 }
 
 export const CreateGame = (props: CreateGameProps) => {
-	const toggleModal = () => {
-		props.setVisible(!props.visible);
-	};
-
 	const [loading, setLoading] = useState(false);
+	const { user } = useContext(UserContext);
 
-	const user: User = JSON.parse(localStorage.getItem("user")!);
-
-	const history = useHistory();
+	const navigation = useNavigation();
 
 	const goToGame = async () => {
 		setLoading(true);
+		let gameUpdate: any = {};
+		gameUpdate[`players.${user?.name}`] = [];
 
-		await db
-			.collection("games")
-			.doc(props.gameId)
-			.collection("players")
-			.doc(user.email)
-			.set({ name: user.displayName });
+		await db.collection("games").doc(props.gameId).update(gameUpdate);
 
 		setLoading(false);
-		history.push(`/play/${props.gameId}`);
+		navigation.navigate("Game");
 	};
 
 	return (
-		<Modal
-			backdropStyle={styles.backdrop}
-			onBackdropPress={toggleModal}
-			visible={props.visible}
-		>
-			<Layout style={styles.modal}>
-				<Text style={styles.paragraph}>Your Game ID is</Text>
-				<Text style={styles.heading}>{props.gameId}</Text>
-				<Text style={styles.paragraph}>
-					Ask Players to join the game with this ID
-				</Text>
-				<Button style={styles.button} onPress={goToGame} disabled={loading}>
-					{loading ? "Loading..." : "Join Game"}
-				</Button>
-			</Layout>
-		</Modal>
+		<Portal>
+			<Modal visible={props.visible} onDismiss={() => props.setVisible(false)}>
+				<View style={styles.modal}>
+					<View style={styles.modalContent}>
+						<Subheading style={styles.paragraph}>Your Game ID is</Subheading>
+						<Headline style={styles.heading}>{props.gameId}</Headline>
+						<Subheading style={styles.paragraph}>
+							Ask Players to join the game with this ID
+						</Subheading>
+						<Button
+							mode="contained"
+							onPress={goToGame}
+							style={styles.button}
+							loading={loading}
+						>
+							{!loading && "Join Game"}
+						</Button>
+					</View>
+				</View>
+			</Modal>
+		</Portal>
 	);
 };

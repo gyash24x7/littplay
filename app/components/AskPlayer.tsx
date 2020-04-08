@@ -1,73 +1,53 @@
-import {
-  Button,
-  Layout,
-  Modal,
-  Select,
-  SelectOptionType,
-  Text,
-} from "@ui-kitten/components";
+import Button from "@atlaskit/button";
+import Modal, { ModalTransition } from "@atlaskit/modal-dialog";
+import Select from "@atlaskit/select";
 import React, { useState } from "react";
 import { useParams } from "react-router-dom";
 
-import styles from "../styles";
-import { Player, User } from "../typings";
-import { BIG_RANKS, SMALL_RANKS } from "../utils/constants";
-import { Deck } from "../utils/deck";
+import { GameCard, User } from "../typings";
+import { RANKS } from "../utils/constants";
 import { db } from "../utils/firebase";
 
 interface AskPlayerProps {
 	visible: boolean;
 	setVisible: (val: boolean) => void;
-	players: Player[];
-	activePlayer?: Player;
+	team: string[];
+	players: Record<string, GameCard[]>;
 }
 
 export const AskPlayer = (props: AskPlayerProps) => {
 	const user: User = JSON.parse(localStorage.getItem("user")!);
 	const { gameId } = useParams();
 
-	const playerData = props.players
-		.filter(player => player.id !== user.email)
-		.map(player => ({
-			text: `${player.name} (${player.cards?.length} cards left)`
+	const playerData = Object.keys(props.players)
+		.filter((name) => props.team.includes(name))
+		.map((name) => ({
+			label: `${name} (${props.players[name]?.length} cards left)`,
+			value: name
 		}));
 
-	const toggleModal = () => props.setVisible(!props.visible);
-
-	const validCardSuits = new Set(
-		props.activePlayer?.cards?.map(card => card.suit)
+	const validCardSets = new Set(
+		props.players[user.name].map((card) => card.set)
 	);
-	const setWiseCards = Deck.getSetWiseCards(
-		props.activePlayer?.cards!,
-		validCardSuits || []
-	);
+	const setWiseCards: Record<string, GameCard[]> = {};
 
-	const setData = Array.from(validCardSuits)
-		.flatMap(suit => [{ text: `Small ${suit}` }, { text: `Big ${suit}` }])
-		.filter(({ text }) => setWiseCards[text].length > 0);
+	Array.from(validCardSets).forEach((set) => {
+		setWiseCards[set] = [];
+	});
 
-	const [selectedPlayer, setSelectedPlayer] = useState<SelectOptionType>();
-	const [selectedSet, setSelectedSet] = useState<SelectOptionType>();
-	const [rankData, setRankData] = useState<SelectOptionType[]>([]);
-	const [selectedRank, setSelectedRank] = useState<SelectOptionType>();
+	props.players[user.name].forEach((card) => {
+		setWiseCards[card.set].push(card);
+	});
+
+	const setData = Array.from(validCardSets)
+		.map((set) => ({ label: set, value: set }))
+		.filter(({ value }) => setWiseCards[value].length > 0);
+
+	const [selectedPlayer, setSelectedPlayer] = useState("");
+	const [selectedSet, setSelectedSet] = useState("");
+	const [rankData, setRankData] = useState<string[]>([]);
+	const [selectedRank, setSelectedRank] = useState("");
 	const [loading, setLoading] = useState(false);
-
-	const handleSelectedSetSelection = ({ text }: SelectOptionType) => {
-		let VALID_RANKS = [] as string[];
-		if (text.split(" ")[0] === "Small") VALID_RANKS = SMALL_RANKS;
-		else VALID_RANKS = BIG_RANKS;
-
-		setRankData(
-			VALID_RANKS.filter(
-				rank =>
-					setWiseCards[text].findIndex(
-						card => card.rank === rank && card.suit === text.split(" ")[1]
-					) === -1
-			).map(text => ({ text }))
-		);
-
-		setSelectedSet({ text });
-	};
 
 	const handleAsking = async () => {
 		setLoading(true);
@@ -75,60 +55,113 @@ export const AskPlayer = (props: AskPlayerProps) => {
 			.collection("games")
 			.doc(gameId)
 			.update({
-				currentMove: {
-					type: "ASK",
-					from: selectedPlayer?.text.split(" (")[0],
-					by: user.displayName,
-					card: {
-						rank: selectedRank?.text,
-						suit: selectedSet?.text.split(" ")[1]
-					}
-				}
+				currentMove: "ASK",
+				askData: {
+					askedBy: user.name,
+					askedFor: {
+						rank: selectedRank,
+						suit: selectedSet.split(" ")[1],
+						set: selectedSet
+					},
+					askedFrom: selectedPlayer
+				},
+				turn: null,
+				callData: null
 			})
-			.catch(err => console.log("Error: ", err));
+			.catch((err) => console.log("Error: ", err));
 
 		setLoading(false);
-		toggleModal();
+		props.setVisible(false);
+	};
+
+	const handleSelection = (field: string) => ({ value }: any) => {
+		switch (field) {
+			case "Player":
+				setSelectedPlayer(value);
+				break;
+
+			case "Rank":
+				setSelectedRank(value);
+				break;
+
+			case "Set":
+				let VALID_RANKS = [] as string[];
+				if (value.indexOf("Small") >= 0)
+					VALID_RANKS = Object.keys(RANKS).slice(0, 6);
+				else VALID_RANKS = Object.keys(RANKS).slice(7);
+
+				console.log(
+					VALID_RANKS.filter(
+						(rank) =>
+							setWiseCards[value].findIndex(
+								(card) => card.rank === rank && value === card.set
+							) === -1
+					)
+				);
+
+				setRankData(
+					VALID_RANKS.filter(
+						(rank) =>
+							setWiseCards[value].findIndex(
+								(card) => card.rank === rank && value === card.set
+							) === -1
+					)
+				);
+
+				setSelectedSet(value);
+				break;
+		}
 	};
 
 	return (
-		<Modal
-			backdropStyle={styles.backdrop}
-			onBackdropPress={toggleModal}
-			visible={props.visible}
-		>
-			<Layout style={styles.modal}>
-				<Text style={styles.paragraph}>Ask</Text>
-				<Select
-					data={playerData}
-					onSelect={setSelectedPlayer as any}
-					placeholder="Select Whom to Ask"
-					style={styles.select}
-					selectedOption={selectedPlayer}
-				/>
-				<Select
-					data={setData}
-					onSelect={handleSelectedSetSelection as any}
-					placeholder="Select Card Set to Ask"
-					style={styles.select}
-					selectedOption={selectedSet}
-				/>
-				<Select
-					data={rankData}
-					onSelect={setSelectedRank as any}
-					placeholder="Select Card Rank to Ask"
-					style={styles.select}
-					disabled={!selectedSet}
-					selectedOption={selectedRank}
-				/>
-				<Button
-					disabled={!selectedPlayer || !selectedRank}
-					style={styles.button}
-					onPress={handleAsking}
-				>
-					{loading ? "Loading..." : "Ask"}
-				</Button>
-			</Layout>
-		</Modal>
+		<ModalTransition>
+			{props.visible && (
+				<Modal onClose={() => props.setVisible(false)} isChromeless>
+					<View className="modal">
+						<View className="modal-content">
+							<Text className="sub-heading">Ask</Text>
+							<br />
+							<Select
+								options={playerData}
+								placeholder="Select Whom to Ask"
+								className="select"
+								onChange={handleSelection("Player")}
+								value={
+									selectedPlayer
+										? { label: selectedPlayer, value: selectedPlayer }
+										: null
+								}
+							/>
+							<Select
+								className="select"
+								options={setData}
+								placeholder="Select Card Set to Ask"
+								value={
+									selectedSet
+										? { label: selectedSet, value: selectedSet }
+										: null
+								}
+								onChange={handleSelection("Set")}
+							/>
+							<Select
+								className="select"
+								options={rankData.map((rank) => ({ label: rank, value: rank }))}
+								placeholder="Select Card Rank to Ask"
+								onChange={handleSelection("Rank")}
+							/>
+							<Button
+								isDisabled={!selectedPlayer || !selectedRank}
+								className="button"
+								onClick={handleAsking}
+								isLoading={loading}
+								appearance={"primary"}
+							>
+								Ask
+							</Button>
+						</View>
+					</View>
+				</Modal>
+			)}
+		</ModalTransition>
 	);
 };

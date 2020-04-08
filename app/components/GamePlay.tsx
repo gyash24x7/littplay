@@ -1,67 +1,100 @@
-import { Button, Layout, Text } from "@ui-kitten/components";
+import Banner from "@atlaskit/banner";
+import Button from "@atlaskit/button";
 import React, { Fragment, useState } from "react";
 
-import styles from "../styles";
-import { Game, Player, User } from "../typings";
-import { GameCard } from "../utils/deck";
+import { Game, User } from "../typings";
+import { getTeamName } from "../utils/constants";
+import { cardToString } from "../utils/deck";
 import { AskPlayer } from "./AskPlayer";
+import { CallSet } from "./CallSet";
 import { DeclineCard } from "./DeclineCard";
 import { GiveCard } from "./GiveCard";
 
 interface GamePlayProps {
-	players: Player[];
 	gameData: Game;
-	activePlayer?: Player;
 }
 
-export const GamePlay = ({
-	gameData,
-	players,
-	activePlayer
-}: GamePlayProps) => {
-	const [visible, setVisible] = useState(false);
+export const GamePlay = ({ gameData }: GamePlayProps) => {
+	const [visibleAsk, setVisibleAsk] = useState(false);
+	const [visibleCall, setVisibleCall] = useState(false);
 
 	const user: User = JSON.parse(localStorage.getItem("user")!);
 
 	let moveDescription = "";
-	switch (gameData.currentMove.type) {
+	switch (gameData.currentMove) {
 		case "TURN":
-			moveDescription = `${gameData.currentMove.turn}'s Turn`;
+			moveDescription = `${gameData.turn}'s Turn`;
 			break;
 
 		case "ASK":
-			moveDescription = `${gameData.currentMove.by} asked ${
-				gameData.currentMove.from
-			} for ${GameCard.toString(gameData.currentMove.card!)}`;
+			moveDescription = `${gameData.askData!.askedBy} asked ${
+				gameData.askData!.askedFrom
+			} for ${cardToString(gameData.askData!.askedFor)}`;
+			break;
+
+		case "CALL":
+			moveDescription = `${gameData.callData?.calledBy} called ${gameData.callData?.calledSet} ${gameData.callData?.status}LY`;
 			break;
 	}
 
 	return (
-		<Layout style={styles.gamePlayContainer}>
-			{gameData && players.length > 0 && (
+		<View className="game-play-container">
+			{Object.keys(gameData.players).length > 0 && (
 				<Fragment>
-					<Layout style={styles.moveAction}>
-						<Text>{moveDescription}</Text>
-					</Layout>
-					{gameData.currentMove.turn === user.displayName && (
-						<Layout style={styles.moveAction}>
-							<Button onPress={() => setVisible(true)}>Ask Player</Button>
+					<Text className="sub-heading">
+						{getTeamName(user.name, gameData.teams)}
+					</Text>
+					<View className="flag-wrapper">
+						<Banner appearance="announcement" isOpen>
+							<View className="banner-content">{moveDescription}</View>
+						</Banner>
+					</View>
+					{gameData.turn === user.name && (
+						<View className="move-action">
+							<Button
+								onClick={() => setVisibleAsk(true)}
+								appearance="primary"
+								className="button"
+							>
+								Ask Player
+							</Button>
+							<Button
+								onClick={() => setVisibleCall(true)}
+								appearance="warning"
+								className="button"
+							>
+								Call Set
+							</Button>
 							<AskPlayer
-								visible={visible}
-								setVisible={setVisible}
-								players={players}
-								activePlayer={activePlayer}
+								visible={visibleAsk}
+								setVisible={setVisibleAsk}
+								team={
+									gameData.teams[getTeamName(user.name, gameData.teams, true)]
+										.members
+								}
+								players={gameData.players}
 							/>
-						</Layout>
+							<CallSet
+								visible={visibleCall}
+								setVisible={setVisibleCall}
+								team={
+									gameData.teams[getTeamName(user.name, gameData.teams)].members
+								}
+								players={gameData.players}
+								turnTransfer={
+									gameData.teams[getTeamName(user.name, gameData.teams, true)]
+										.members[0]
+								}
+							/>
+						</View>
 					)}
-					{gameData.currentMove.from === user.displayName && (
-						<Layout style={styles.moveAction}>
+					{gameData.askData?.askedFrom === user.name && (
+						<View className="move-action">
 							<GiveCard
-								players={players}
 								haveCard={
-									activePlayer!.cards!.findIndex(card => {
-										const rank = gameData.currentMove.card?.rank;
-										const suit = gameData.currentMove.card?.suit;
+									gameData.players[user.name].findIndex((card) => {
+										const rank = gameData.askData?.askedFor.rank;
+										const suit = gameData.askData?.askedFor.suit;
 										return card.suit === suit && card.rank === rank;
 									}) > -1
 								}
@@ -69,17 +102,17 @@ export const GamePlay = ({
 							/>
 							<DeclineCard
 								haveCard={
-									activePlayer!.cards!.findIndex(card => {
-										const rank = gameData.currentMove.card?.rank;
-										const suit = gameData.currentMove.card?.suit;
+									gameData.players[user.name].findIndex((card) => {
+										const rank = gameData.askData?.askedFor.rank;
+										const suit = gameData.askData?.askedFor.suit;
 										return card.suit === suit && card.rank === rank;
 									}) > -1
 								}
 							/>
-						</Layout>
+						</View>
 					)}
 				</Fragment>
 			)}
-		</Layout>
+		</View>
 	);
 };

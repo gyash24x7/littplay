@@ -10,8 +10,8 @@ export interface Team {
 }
 
 export interface Game {
-	started: false;
-	completed: false;
+	started: boolean;
+	completed: boolean;
 	players: Record<string, GameCard[]>;
 	deck: GameCard[];
 	teams: Record<string, Team>;

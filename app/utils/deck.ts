@@ -1,70 +1,23 @@
-import { BIG_RANKS, RANKS, SMALL_RANKS, SUITS } from "./constants";
+import { GameCard } from "../typings";
 
-export class GameCard {
-	rank: string;
-	suit: string;
+export const shuffleCards = (cards: GameCard[]) => {
+	var currentIndex = cards.length,
+		temporaryValue,
+		randomIndex;
 
-	constructor({ rank, suit }: { rank: string; suit: string }) {
-		this.suit = suit;
-		this.rank = rank;
+	while (0 !== currentIndex) {
+		randomIndex = Math.floor(Math.random() * currentIndex);
+		currentIndex -= 1;
+
+		temporaryValue = cards[currentIndex];
+		cards[currentIndex] = cards[randomIndex];
+		cards[randomIndex] = temporaryValue;
 	}
+	return cards;
+};
 
-	static toMap({ rank, suit }: GameCard) {
-		return { rank, suit };
-	}
+export const removeCardsOfRank = (rank: string, cards: GameCard[]) => {
+	return cards.filter((card) => card.rank !== rank);
+};
 
-	static toString({ rank, suit }: GameCard) {
-		return `${rank} of ${suit}`;
-	}
-}
-
-export class Deck {
-	cards: GameCard[] = [];
-
-	constructor() {
-		this.cards = RANKS.flatMap(rank =>
-			SUITS.map(suit => new GameCard({ suit, rank }))
-		);
-
-		this.shuffle();
-	}
-
-	shuffle() {
-		var currentIndex = this.cards.length,
-			temporaryValue,
-			randomIndex;
-
-		while (0 !== currentIndex) {
-			randomIndex = Math.floor(Math.random() * currentIndex);
-			currentIndex -= 1;
-
-			temporaryValue = this.cards[currentIndex];
-			this.cards[currentIndex] = this.cards[randomIndex];
-			this.cards[randomIndex] = temporaryValue;
-		}
-	}
-
-	removeCardsOfRank(rank: string) {
-		this.cards = this.cards.filter(card => card.rank !== rank);
-	}
-
-	static getSetWiseCards(cards: GameCard[], validSuits: Set<string>) {
-		const setWiseCards: { [key: string]: GameCard[] } = {};
-
-		validSuits.forEach(suit => {
-			setWiseCards[`Small ${suit}`] = cards.filter(
-				card => suit === card.suit && SMALL_RANKS.includes(card.rank)
-			);
-
-			setWiseCards[`Big ${suit}`] = cards.filter(
-				card => suit === card.suit && BIG_RANKS.includes(card.rank)
-			);
-		});
-
-		return setWiseCards;
-	}
-
-	// static getSetWiseCallableCards( setWiseCards: { [ key: string ]: GameCard[]; } ) {
-
-	// }
-}
+export const cardToString = ({ rank, suit }: GameCard) => `${rank} of ${suit}`;

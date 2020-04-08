@@ -1,8 +1,7 @@
-import { Button } from "@ui-kitten/components";
+import Button from "@atlaskit/button";
 import React, { useState } from "react";
 import { useParams } from "react-router-dom";
 
-import styles from "../styles";
 import { User } from "../typings";
 import { db } from "../utils/firebase";
 
@@ -21,14 +20,20 @@ export const DeclineCard = ({ haveCard }: DeclineCardProps) => {
 		await db
 			.collection("games")
 			.doc(gameId)
-			.update({ currentMove: { type: "TURN", turn: user.displayName } });
+			.update({ currentMove: "TURN", turn: user.name });
 
 		setLoading(false);
 	};
 
 	return (
-		<Button style={styles.button} onPress={declineCard} disabled={haveCard}>
-			{loading ? "Loading..." : "Decline"}
+		<Button
+			className="button"
+			onClick={declineCard}
+			isDisabled={haveCard}
+			isLoading={loading}
+			appearance="danger"
+		>
+			Decline
 		</Button>
 	);
 };

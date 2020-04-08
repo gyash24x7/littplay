@@ -8,7 +8,7 @@
 		"dev:web": "yarn workspace web dev",
 		"build:web": "yarn workspace web build",
 		"deploy:web": "cd web && firebase deploy",
-		"dev:app": "yarn workspace app start"
+		"dev:app": "yarn workspace app android"
 	},
 	"repository": {
 		"type": "git",

@@ -1,33 +1,41 @@
-import { ApplicationProvider } from "@ui-kitten/components";
-import * as Font from "expo-font";
+import { useFonts } from "@use-expo/font";
 import React, { useEffect, useState } from "react";
+import { ActivityIndicator, AsyncStorage } from "react-native";
+import ErrorBoundary from "react-native-error-boundary";
+import { Provider } from "react-native-paper";
 
 import { AppRoutes } from "./routes";
-import { customMapping, customTheme } from "./utils/theme";
+import { User } from "./typings";
+import { UserContext } from "./utils/context";
+import { theme } from "./utils/theme";
 
-export default function App() {
-	const [loading, setLoading] = useState(true);
+export default () => {
+	const [fontLoaded] = useFonts({
+		"montserrat-bold": require("./assets/fonts/montserrat-bold.ttf"),
+		"montserrat-regular": require("./assets/fonts/montserrat-regular.ttf"),
+		"montserrat-light": require("./assets/fonts/montserrat-light.ttf")
+	});
+
+	const [user, setUser] = useState({} as User);
 
 	useEffect(() => {
-		Font.loadAsync({
-			"montserrat-regular": require("./assets/fonts/montserrat-regular.ttf"),
-			"montserrat-bold": require("./assets/fonts/montserrat-bold.ttf"),
-			"montserrat-light": require("./assets/fonts/montserrat-light.ttf")
-		}).then(() => setLoading(false));
-	}, [setLoading]);
+		const getUser = async () => {
+			let userString = await AsyncStorage.getItem("user");
+			setUser(userString ? JSON.parse(userString) : {});
+		};
+
+		getUser();
+	});
+
+	if (!fontLoaded) return <ActivityIndicator />;
 
 	return (
-		<ApplicationProvider theme={customTheme} mapping={customMapping}>
-			{!loading && <AppRoutes />}
-		</ApplicationProvider>
+		<ErrorBoundary>
+			<UserContext.Provider value={{ user, setUser }}>
+				<Provider theme={theme}>
+					<AppRoutes />
+				</Provider>
+			</UserContext.Provider>
+		</ErrorBoundary>
 	);
-}
-
-// const styles = StyleSheet.create({
-// 	container: {
-// 		flex: 1,
-// 		backgroundColor: "#fff",
-// 		alignItems: "center",
-// 		justifyContent: "center"
-// 	}
-// });
+};

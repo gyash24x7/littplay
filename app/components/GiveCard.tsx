@@ -1,61 +1,56 @@
-import { Button } from "@ui-kitten/components";
+import Button from "@atlaskit/button";
 import React, { useState } from "react";
 import { useParams } from "react-router-dom";
 
-import styles from "../styles";
-import { Game, Player, User } from "../typings";
-import firebase, { db } from "../utils/firebase";
+import { Game, User } from "../typings";
+import { db } from "../utils/firebase";
 
 interface GiveCardProps {
-	players: Player[];
 	gameData: Game;
 	haveCard: boolean;
 }
 
-export const GiveCard = ({ players, gameData, haveCard }: GiveCardProps) => {
+export const GiveCard = ({ gameData, haveCard }: GiveCardProps) => {
 	const [loading, setLoading] = useState(false);
 	const { gameId } = useParams();
 	const user: User = JSON.parse(localStorage.getItem("user")!);
 
 	const giveCard = async () => {
 		setLoading(true);
-		const takingPlayer = players.find(
-			player => player.name === gameData.currentMove.by
+
+		const { players, askData, ...data } = gameData;
+
+		players[user.name] = players[user.name].filter(
+			({ rank, suit }) =>
+				rank !== askData!.askedFor.rank || suit !== askData!.askedFor.suit
 		);
 
-		await db
-			.collection("games")
-			.doc(gameId)
-			.collection("players")
-			.doc(user.email)
-			.update({
-				cards: firebase.firestore.FieldValue.arrayRemove(
-					gameData.currentMove.card
-				)
-			});
+		players[askData!.askedBy].push(askData!.askedFor);
 
 		await db
 			.collection("games")
 			.doc(gameId)
-			.collection("players")
-			.doc(takingPlayer?.id)
 			.update({
-				cards: firebase.firestore.FieldValue.arrayUnion(
-					gameData.currentMove.card
-				)
+				...data,
+				players,
+				currentMove: "TURN",
+				turn: askData!.askedBy,
+				askData: null,
+				callData: null
 			});
-
-		await db
-			.collection("games")
-			.doc(gameId)
-			.update({ currentMove: { type: "TURN", turn: takingPlayer?.name } });
 
 		setLoading(false);
 	};
 
 	return (
-		<Button style={styles.button} onPress={giveCard} disabled={!haveCard}>
-			{loading ? "Loading..." : "Give Card"}
+		<Button
+			className="button"
+			onClick={giveCard}
+			isDisabled={!haveCard}
+			isLoading={loading}
+			appearance="primary"
+		>
+			Give Card
 		</Button>
 	);
 };
