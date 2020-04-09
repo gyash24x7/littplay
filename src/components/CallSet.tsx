@@ -1,35 +1,34 @@
 import Button from "@atlaskit/button";
 import Modal, { ModalTransition } from "@atlaskit/modal-dialog";
 import Select from "@atlaskit/select";
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { useParams } from "react-router-dom";
 
-import { GameCard, User } from "../typings";
-import { RANKS } from "../utils/constants";
+import { GameCard, GameModalProps } from "../typings";
+import { getTeamName, RANKS } from "../utils/constants";
+import { GameContext, UserContext } from "../utils/context";
 import { db } from "../utils/firebase";
 
-interface CallSetProps {
-	visible: boolean;
-	setVisible: (val: boolean) => void;
-	team: string[];
-	players: Record<string, GameCard[]>;
-	turnTransfer: string;
-}
-
-export const CallSet = (props: CallSetProps) => {
-	const user: User = JSON.parse(localStorage.getItem("user")!);
+export const CallSet = (props: GameModalProps) => {
+	const { user } = useContext(UserContext);
 	const { gameId } = useParams();
+	const gameData = useContext(GameContext)!;
 
-	const validCardSets = new Set(
-		props.players[user.name].map((card) => card.set)
-	);
+	const players = gameData.players;
+	let myTeam = gameData.teams[getTeamName(user.name, gameData.teams)];
+	let oppTeam = gameData.teams[getTeamName(user.name, gameData.teams, true)];
+
+	const teamMembers = myTeam.members;
+	const turnTransfer = oppTeam.members[0];
+
+	const validCardSets = new Set(players[user.name].map((card) => card.set));
 	const setWiseCards: Record<string, GameCard[]> = {};
 
 	Array.from(validCardSets).forEach((set) => {
 		setWiseCards[set] = [];
 	});
 
-	props.players[user.name].forEach((card) => {
+	players[user.name].forEach((card) => {
 		setWiseCards[card.set].push(card);
 	});
 
@@ -41,7 +40,7 @@ export const CallSet = (props: CallSetProps) => {
 	const [rankData, setRankData] = useState<string[]>([]);
 
 	let initialCallData: Record<string, string[]> = {};
-	props.team.forEach((player) => {
+	teamMembers.forEach((player) => {
 		initialCallData[player] = [];
 	});
 
@@ -50,12 +49,12 @@ export const CallSet = (props: CallSetProps) => {
 
 	const checkCardCall = () => {
 		let cardsFound = 0;
-		let playerData = { ...props.players };
+		let playerData = { ...players };
 
 		Object.keys(callData).forEach((member) => {
 			const memberRanks = callData[member];
 			memberRanks.forEach((rank) => {
-				let index = props.players[member].findIndex(
+				let index = players[member].findIndex(
 					(card) => card.rank === rank && card.set === selectedSet
 				);
 
@@ -68,16 +67,27 @@ export const CallSet = (props: CallSetProps) => {
 			});
 		});
 
+		if (cardsFound === 6) {
+			myTeam.score++;
+		} else {
+			oppTeam.score++;
+		}
+
+		const teamData = {} as any;
+		teamData[getTeamName(user.name, gameData.teams)] = myTeam;
+		teamData[getTeamName(user.name, gameData.teams, true)] = oppTeam;
+
 		return {
 			players: playerData,
-			status: cardsFound === 6 ? "CORRECT" : "INCORRECT"
+			status: cardsFound === 6 ? "CORRECT" : "INCORRECT",
+			teams: teamData
 		};
 	};
 
 	const handleCalling = async () => {
 		setLoading(true);
 
-		const { players, status } = checkCardCall();
+		const { players, status, teams } = checkCardCall();
 
 		await db
 			.collection("games")
@@ -91,18 +101,21 @@ export const CallSet = (props: CallSetProps) => {
 					calledBy: user.name,
 					calledSet: selectedSet,
 					status
-				}
+				},
+				teams
 			})
-			.then(async () => {
-				await db
-					.collection("games")
-					.doc(gameId)
-					.update({
-						callData: null,
-						askData: null,
-						currentMove: "TURN",
-						turn: status === "CORRECT" ? user.name : props.turnTransfer
-					});
+			.then(() => {
+				setTimeout(async () => {
+					await db
+						.collection("games")
+						.doc(gameId)
+						.update({
+							callData: null,
+							askData: null,
+							currentMove: "TURN",
+							turn: status === "CORRECT" ? user.name : turnTransfer
+						});
+				}, 3000);
 			})
 			.catch((err) => console.log("Error: ", err));
 
@@ -146,7 +159,7 @@ export const CallSet = (props: CallSetProps) => {
 								onChange={handleSetSelection}
 							/>
 							<br />
-							{props.team.map((member) => (
+							{teamMembers.map((member) => (
 								<div>
 									<h4 className="paragraph">{member}</h4>
 									<Select

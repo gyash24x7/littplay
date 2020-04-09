@@ -1,55 +1,63 @@
 import Banner from "@atlaskit/banner";
 import Button from "@atlaskit/button";
-import React, { Fragment, useState } from "react";
+import React, { Fragment, useContext, useState } from "react";
 
-import { Game, User } from "../typings";
 import { getTeamName } from "../utils/constants";
-import { cardToString } from "../utils/deck";
+import { GameContext, UserContext } from "../utils/context";
+import { cardToString, getHaveCards } from "../utils/deck";
 import { AskPlayer } from "./AskPlayer";
 import { CallSet } from "./CallSet";
 import { DeclineCard } from "./DeclineCard";
 import { GiveCard } from "./GiveCard";
 
-interface GamePlayProps {
-	gameData: Game;
-}
-
-export const GamePlay = ({ gameData }: GamePlayProps) => {
+export const GamePlay = () => {
 	const [visibleAsk, setVisibleAsk] = useState(false);
 	const [visibleCall, setVisibleCall] = useState(false);
+	const [timer, setTimer] = useState(4);
 
-	const user: User = JSON.parse(localStorage.getItem("user")!);
+	const { currentMove, turn, askData, callData, players, teams } = useContext(
+		GameContext
+	)!;
+
+	const { user } = useContext(UserContext);
 
 	let moveDescription = "";
-	switch (gameData.currentMove) {
+	switch (currentMove) {
 		case "TURN":
-			moveDescription = `${gameData.turn}'s Turn`;
+			moveDescription = `${turn}'s Turn`;
 			break;
 
 		case "ASK":
-			moveDescription = `${gameData.askData!.askedBy} asked ${
-				gameData.askData!.askedFrom
-			} for ${cardToString(gameData.askData!.askedFor)}`;
+			moveDescription = `${askData!.askedBy} asked ${
+				askData!.askedFrom
+			} for ${cardToString(askData!.askedFor)}`;
 			break;
 
 		case "CALL":
-			moveDescription = `${gameData.callData?.calledBy} called ${gameData.callData?.calledSet} ${gameData.callData?.status}LY`;
+			moveDescription = `${callData?.calledBy} called ${callData?.calledSet} ${callData?.status}LY`;
+			setInterval(() => {
+				setTimer(timer - 1);
+			}, 900);
 			break;
 	}
 
 	return (
 		<div className="game-play-container">
-			{Object.keys(gameData.players).length > 0 && (
+			{Object.keys(players).length > 0 && (
 				<Fragment>
-					<h2 className="sub-heading">
-						{getTeamName(user.name, gameData.teams)}
-					</h2>
+					<h2 className="sub-heading">TEAM {getTeamName(user.name, teams)}</h2>
 					<div className="flag-wrapper">
 						<Banner appearance="announcement" isOpen>
 							<div className="banner-content">{moveDescription}</div>
 						</Banner>
+						<br />
+						{callData && (
+							<div className="banner-content" style={{ textAlign: "center" }}>
+								Proceeding in {timer} seconds
+							</div>
+						)}
 					</div>
-					{gameData.turn === user.name && (
+					{turn === user.name && (
 						<div className="move-action">
 							<Button
 								onClick={() => setVisibleAsk(true)}
@@ -65,49 +73,17 @@ export const GamePlay = ({ gameData }: GamePlayProps) => {
 							>
 								Call Set
 							</Button>
-							<AskPlayer
-								visible={visibleAsk}
-								setVisible={setVisibleAsk}
-								team={
-									gameData.teams[getTeamName(user.name, gameData.teams, true)]
-										.members
-								}
-								players={gameData.players}
-							/>
-							<CallSet
-								visible={visibleCall}
-								setVisible={setVisibleCall}
-								team={
-									gameData.teams[getTeamName(user.name, gameData.teams)].members
-								}
-								players={gameData.players}
-								turnTransfer={
-									gameData.teams[getTeamName(user.name, gameData.teams, true)]
-										.members[0]
-								}
-							/>
+							<AskPlayer visible={visibleAsk} setVisible={setVisibleAsk} />
+							<CallSet visible={visibleCall} setVisible={setVisibleCall} />
 						</div>
 					)}
-					{gameData.askData?.askedFrom === user.name && (
+					{askData?.askedFrom === user.name && (
 						<div className="move-action">
 							<GiveCard
-								haveCard={
-									gameData.players[user.name].findIndex((card) => {
-										const rank = gameData.askData?.askedFor.rank;
-										const suit = gameData.askData?.askedFor.suit;
-										return card.suit === suit && card.rank === rank;
-									}) > -1
-								}
-								gameData={gameData}
+								haveCard={getHaveCards(players[user.name], askData?.askedFor)}
 							/>
 							<DeclineCard
-								haveCard={
-									gameData.players[user.name].findIndex((card) => {
-										const rank = gameData.askData?.askedFor.rank;
-										const suit = gameData.askData?.askedFor.suit;
-										return card.suit === suit && card.rank === rank;
-									}) > -1
-								}
+								haveCard={getHaveCards(players[user.name], askData?.askedFor)}
 							/>
 						</div>
 					)}

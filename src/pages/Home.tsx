@@ -1,13 +1,13 @@
 import Button from "@atlaskit/button";
 import { IonPage } from "@ionic/react";
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { useHistory } from "react-router-dom";
 
 import Logo from "../assets/icon.png";
 import { CreateGame } from "../components/CreateGame";
 import { JoinGame } from "../components/JoinGame";
-import { User } from "../typings";
 import { sortedDeck } from "../utils/constants";
+import { UserContext } from "../utils/context";
 import { removeCardsOfRank, shuffleCards } from "../utils/deck";
 import firebase, { db } from "../utils/firebase";
 
@@ -18,11 +18,12 @@ export const HomeScreen = () => {
 	const [loading, setLoading] = useState(false);
 	const history = useHistory();
 
-	const user: User = JSON.parse(localStorage.getItem("user")!);
+	const { user, setUser } = useContext(UserContext);
 
 	const logOut = async () => {
 		await firebase.auth().signOut();
 		localStorage.clear();
+		setUser({});
 		history.push("/login");
 	};
 
@@ -87,7 +88,7 @@ export const HomeScreen = () => {
 					<Button className="button" appearance="danger" onClick={logOut}>
 						Logout
 					</Button>
-					<h4 className="paragraph">Logged in as {user.email}</h4>
+					<h4 className="paragraph">Logged in as {user?.email}</h4>
 				</div>
 			</div>
 

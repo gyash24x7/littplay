@@ -1,41 +1,38 @@
 import Button from "@atlaskit/button";
 import Modal, { ModalTransition } from "@atlaskit/modal-dialog";
 import Select from "@atlaskit/select";
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { useParams } from "react-router-dom";
 
-import { GameCard, User } from "../typings";
-import { RANKS } from "../utils/constants";
+import { GameCard, GameModalProps } from "../typings";
+import { getTeamName, RANKS } from "../utils/constants";
+import { GameContext, UserContext } from "../utils/context";
 import { db } from "../utils/firebase";
 
-interface AskPlayerProps {
-	visible: boolean;
-	setVisible: (val: boolean) => void;
-	team: string[];
-	players: Record<string, GameCard[]>;
-}
-
-export const AskPlayer = (props: AskPlayerProps) => {
-	const user: User = JSON.parse(localStorage.getItem("user")!);
+export const AskPlayer = (props: GameModalProps) => {
+	const { user } = useContext(UserContext);
 	const { gameId } = useParams();
+	const gameData = useContext(GameContext)!;
 
-	const playerData = Object.keys(props.players)
-		.filter((name) => props.team.includes(name))
+	const players = gameData.players;
+	const team =
+		gameData.teams[getTeamName(user.name, gameData.teams, true)].members;
+
+	const playerData = Object.keys(players)
+		.filter((name) => team.includes(name))
 		.map((name) => ({
-			label: `${name} (${props.players[name]?.length} cards left)`,
+			label: `${name} (${players[name]?.length} cards left)`,
 			value: name
 		}));
 
-	const validCardSets = new Set(
-		props.players[user.name].map((card) => card.set)
-	);
+	const validCardSets = new Set(players[user.name].map((card) => card.set));
 	const setWiseCards: Record<string, GameCard[]> = {};
 
 	Array.from(validCardSets).forEach((set) => {
 		setWiseCards[set] = [];
 	});
 
-	props.players[user.name].forEach((card) => {
+	players[user.name].forEach((card) => {
 		setWiseCards[card.set].push(card);
 	});
 

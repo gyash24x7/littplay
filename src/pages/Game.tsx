@@ -3,15 +3,18 @@ import Flag from "@atlaskit/flag";
 import TickIcon from "@atlaskit/icon/glyph/check-circle";
 import Spinner from "@atlaskit/spinner";
 import { colors } from "@atlaskit/theme";
-import React, { Fragment, useEffect, useState } from "react";
+import { IonPage } from "@ionic/react";
+import React, { Fragment, useContext, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 
 import Logo from "../assets/icon.png";
 import { CreateTeams } from "../components/CreateTeam";
 import { GameCardComponent } from "../components/GameCard";
 import { GamePlay } from "../components/GamePlay";
-import { Game, User } from "../typings";
+import { Scoreboard } from "../components/Scoreboard";
+import { Game } from "../typings";
 import { getSortedHand } from "../utils/constants";
+import { GameContext, UserContext } from "../utils/context";
 import { db } from "../utils/firebase";
 
 export const GameScreen = () => {
@@ -19,7 +22,7 @@ export const GameScreen = () => {
 	const [gameData, setGameData] = useState<Game>();
 	const [visible, setVisible] = useState(false);
 	const [loading, setLoading] = useState(false);
-	const user: User = JSON.parse(localStorage.getItem("user")!);
+	const { user } = useContext(UserContext);
 
 	const startGame = async () => {
 		setLoading(true);
@@ -60,68 +63,72 @@ export const GameScreen = () => {
 	}, [gameId]);
 
 	return (
-		<div className="wrapper">
-			<div className="logo-mark">
-				<img src={Logo} alt="" />
-			</div>
-			{!gameData && <Spinner />}
-			{gameData && !gameData.started && (
-				<div className="card">
-					{Object.keys(gameData.players).map((name) => (
-						<div className="flag-wrapper" key={name}>
-							<Flag
-								appearance="success"
-								title={name + " JOINED"}
-								isDismissAllowed={false}
-								id={name}
-								icon={
-									<TickIcon label="Check Icon" secondaryColor={colors.G400} />
-								}
-							/>
-						</div>
-					))}
-					{Object.keys(gameData.players).length === 2 &&
-						Object.keys(gameData.teams).length === 0 &&
-						gameData.createdBy === user.name && (
-							<Button
-								appearance="primary"
-								className="button"
-								onClick={() => setVisible(true)}
-							>
-								Create Teams
-							</Button>
-						)}
-					{Object.keys(gameData.players).length === 2 &&
-						Object.keys(gameData.teams).length > 0 &&
-						gameData.createdBy === user.name && (
-							<Button
-								appearance="primary"
-								className="button"
-								isDisabled={loading}
-								onClick={startGame}
-								isLoading={loading}
-							>
-								Start Game
-							</Button>
-						)}
-				</div>
-			)}
-			{gameData && gameData.started && (
-				<Fragment>
-					<div className="playing-card-container">
-						{getSortedHand(gameData.players[user.name]).map((card) => (
-							<GameCardComponent card={card} key={card.rank + card.suit} />
-						))}
+		<IonPage>
+			<GameContext.Provider value={gameData}>
+				<div className="wrapper">
+					<div className="top-container">
+						<img src={Logo} alt="" className="logo-mark" />
+						<Scoreboard />
 					</div>
-					<GamePlay gameData={gameData} />
-				</Fragment>
-			)}
-			<h4 className="paragraph">Logged in as {user.email}</h4>
-			<CreateTeams
-				visible={visible}
-				setVisible={setVisible}
-				players={Object.keys(gameData?.players || {})}
-			/>
-		</div>
+					{!gameData && <Spinner />}
+					{gameData && !gameData.started && (
+						<div className="card">
+							{Object.keys(gameData.players).map((name) => (
+								<div className="flag-wrapper" key={name}>
+									<Flag
+										appearance="success"
+										title={name + " JOINED"}
+										isDismissAllowed={false}
+										id={name}
+										icon={
+											<TickIcon
+												label="Check Icon"
+												secondaryColor={colors.G400}
+											/>
+										}
+									/>
+								</div>
+							))}
+							{Object.keys(gameData.players).length === 2 &&
+								Object.keys(gameData.teams).length === 0 &&
+								gameData.createdBy === user.name && (
+									<Button
+										appearance="primary"
+										className="button"
+										onClick={() => setVisible(true)}
+									>
+										Create Teams
+									</Button>
+								)}
+							{Object.keys(gameData.players).length === 2 &&
+								Object.keys(gameData.teams).length > 0 &&
+								gameData.createdBy === user.name && (
+									<Button
+										appearance="primary"
+										className="button"
+										isDisabled={loading}
+										onClick={startGame}
+										isLoading={loading}
+									>
+										Start Game
+									</Button>
+								)}
+						</div>
+					)}
+					{gameData && gameData.started && (
+						<Fragment>
+							<div className="playing-card-container">
+								{getSortedHand(gameData.players[user.name]).map((card) => (
+									<GameCardComponent card={card} key={card.rank + card.suit} />
+								))}
+							</div>
+							<GamePlay />
+						</Fragment>
+					)}
+					<h4 className="paragraph">Logged in as {user.email}</h4>
+					<CreateTeams visible={visible} setVisible={setVisible} />
+				</div>
+			</GameContext.Provider>
+		</IonPage>
 	);
 };

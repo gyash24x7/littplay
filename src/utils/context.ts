@@ -1,7 +1,9 @@
 import React from "react";
 
-import { User } from "../typings";
+import { Game, User } from "../typings";
 
 export const UserContext = React.createContext(
 	{} as { user: User; setUser: (val: any) => void }
 );
+
+export const GameContext = React.createContext<Game | undefined>(undefined);

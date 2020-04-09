@@ -1,5 +1,6 @@
 import Button from "@atlaskit/button";
 import Textfield from "@atlaskit/textfield";
+import { IonPage } from "@ionic/react";
 import React, { useState } from "react";
 import { useHistory } from "react-router-dom";
 
@@ -22,32 +23,34 @@ export const LoginScreen = () => {
 	};
 
 	return (
-		<div className="wrapper" style={{ justifyContent: "center" }}>
-			<div className="card" style={{ marginBottom: "10vh" }}>
-				<img src={Logo} alt="" className="logo" />
-				<div className="input-wrapper">
-					<Textfield
-						appearance="none"
-						value={name}
-						isDisabled={loading}
-						onChange={(e: any) => {
-							e.persist();
-							setName(e.target.value.toUpperCase());
-						}}
-						className="input"
-						placeholder="ENTER NAME"
-					/>
+		<IonPage>
+			<div className="wrapper" style={{ justifyContent: "center" }}>
+				<div className="card" style={{ marginBottom: "10vh" }}>
+					<img src={Logo} alt="" className="logo" />
+					<div className="input-wrapper">
+						<Textfield
+							appearance="none"
+							value={name}
+							isDisabled={loading}
+							onChange={(e: any) => {
+								e.persist();
+								setName(e.target.value.toUpperCase());
+							}}
+							className="input"
+							placeholder="ENTER NAME"
+						/>
+					</div>
+					<Button
+						onClick={login}
+						isDisabled={loading || !name}
+						isLoading={loading}
+						appearance="primary"
+						className="button"
+					>
+						Log in with Google
+					</Button>
 				</div>
-				<Button
-					onClick={login}
-					isDisabled={loading || !name}
-					isLoading={loading}
-					appearance="primary"
-					className="button"
-				>
-					Log in with Google
-				</Button>
 			</div>
-		</div>
+		</IonPage>
 	);
 };

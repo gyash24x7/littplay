@@ -34,3 +34,7 @@ export interface User {
 	name: string;
 	email: string;
 }
+export interface GameModalProps {
+	visible: boolean;
+	setVisible: (val: boolean) => void;
+}

@@ -1,19 +1,19 @@
 import Button from "@atlaskit/button";
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { useParams } from "react-router-dom";
 
-import { Game, User } from "../typings";
+import { GameContext, UserContext } from "../utils/context";
 import { db } from "../utils/firebase";
 
 interface GiveCardProps {
-	gameData: Game;
 	haveCard: boolean;
 }
 
-export const GiveCard = ({ gameData, haveCard }: GiveCardProps) => {
+export const GiveCard = ({ haveCard }: GiveCardProps) => {
 	const [loading, setLoading] = useState(false);
 	const { gameId } = useParams();
-	const user: User = JSON.parse(localStorage.getItem("user")!);
+	const { user } = useContext(UserContext);
+	const gameData = useContext(GameContext)!;
 
 	const giveCard = async () => {
 		setLoading(true);

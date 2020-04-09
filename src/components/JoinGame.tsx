@@ -40,6 +40,7 @@ export const JoinGame = (props: JoinGameProps) => {
 			await db.collection("games").doc(gameId).update(gameUpdate);
 		}
 
+		props.setVisible(false);
 		setLoading(false);
 		history.push(`/play/${gameId}`);
 	};
