@@ -1,8 +1,12 @@
-import React from "react";
+import React, { useContext } from "react";
 import { Redirect, Route, RouteProps } from "react-router-dom";
 
+import { UserContext } from "../utils/context";
+
 export const ProtectedRoute = (props: RouteProps) => {
-	if (localStorage.getItem("user")) {
+	const { user } = useContext(UserContext);
+
+	if (user.loggedIn) {
 		return <Route {...props} />;
 	} else return <Redirect to="/login" />;
 };

@@ -14,6 +14,8 @@
 		url("../assets/fonts/montserrat-light.ttf") format("truetype");
 }
 
+@import "~@atlaskit/css-reset/dist/bundle.css";
+
 body {
 	font-family: "montserrat" !important;
 }
@@ -191,7 +193,7 @@ body {
 }
 
 .scoreboard > div {
-	padding: 10px 20px;
+	width: 200px;
 }
 
 .top-container {

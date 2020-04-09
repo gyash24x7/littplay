@@ -1,7 +1,6 @@
 import Button from "@atlaskit/button";
-import Textfield from "@atlaskit/textfield";
-import { IonPage } from "@ionic/react";
-import React, { useState } from "react";
+import React, { Fragment, useState } from "react";
+import { useHistory } from "react-router-dom";
 
 import Logo from "../assets/icon.png";
 import { User } from "../typings";
@@ -9,38 +8,30 @@ import firebase, { AuthProvider } from "../utils/firebase";
 
 export const LoginScreen = () => {
 	const [loading, setLoading] = useState(false);
-	const [name, setName] = useState("");
+	const history = useHistory();
 
 	const login = async () => {
 		setLoading(true);
 		const result: any = await firebase.auth().signInWithPopup(AuthProvider);
-		const user: User = { name, email: result.user.email };
+		const user: User = {
+			name: result.user.displayName,
+			email: result.user.email,
+			loggedIn: true
+		};
 		localStorage.setItem("user", JSON.stringify(user));
 		setLoading(false);
-		window.location.pathname = "/";
+		history.push("/");
 	};
 
 	return (
-		<IonPage>
+		<Fragment>
 			<div className="wrapper" style={{ justifyContent: "center" }}>
 				<div className="card" style={{ marginBottom: "10vh" }}>
 					<img src={Logo} alt="" className="logo" />
-					<div className="input-wrapper">
-						<Textfield
-							appearance="none"
-							value={name}
-							isDisabled={loading}
-							onChange={(e: any) => {
-								e.persist();
-								setName(e.target.value.toUpperCase());
-							}}
-							className="input"
-							placeholder="ENTER NAME"
-						/>
-					</div>
+
 					<Button
 						onClick={login}
-						isDisabled={loading || !name}
+						isDisabled={loading}
 						isLoading={loading}
 						appearance="primary"
 						className="button"
@@ -49,6 +40,6 @@ export const LoginScreen = () => {
 					</Button>
 				</div>
 			</div>
-		</IonPage>
+		</Fragment>
 	);
 };

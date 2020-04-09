@@ -13,7 +13,6 @@ import { GiveCard } from "./GiveCard";
 export const GamePlay = () => {
 	const [visibleAsk, setVisibleAsk] = useState(false);
 	const [visibleCall, setVisibleCall] = useState(false);
-	const [timer, setTimer] = useState(4);
 
 	const { currentMove, turn, askData, callData, players, teams } = useContext(
 		GameContext
@@ -35,9 +34,6 @@ export const GamePlay = () => {
 
 		case "CALL":
 			moveDescription = `${callData?.calledBy} called ${callData?.calledSet} ${callData?.status}LY`;
-			setInterval(() => {
-				setTimer(timer - 1);
-			}, 900);
 			break;
 	}
 
@@ -53,7 +49,7 @@ export const GamePlay = () => {
 						<br />
 						{callData && (
 							<div className="banner-content" style={{ textAlign: "center" }}>
-								Proceeding in {timer} seconds
+								Please Wait...
 							</div>
 						)}
 					</div>

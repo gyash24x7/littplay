@@ -1,8 +1,9 @@
 import Button from "@atlaskit/button";
 import Modal, { ModalTransition } from "@atlaskit/modal-dialog";
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
+import { useHistory } from "react-router-dom";
 
-import { User } from "../typings";
+import { UserContext } from "../utils/context";
 import { db } from "../utils/firebase";
 
 interface CreateGameProps {
@@ -14,9 +15,9 @@ interface CreateGameProps {
 export const CreateGame = (props: CreateGameProps) => {
 	const [loading, setLoading] = useState(false);
 
-	const user: User = JSON.parse(localStorage.getItem("user")!);
+	const { user } = useContext(UserContext);
 
-	// const history = useHistory();
+	const history = useHistory();
 
 	const goToGame = async () => {
 		setLoading(true);
@@ -26,7 +27,7 @@ export const CreateGame = (props: CreateGameProps) => {
 		await db.collection("games").doc(props.gameId).update(gameUpdate);
 
 		setLoading(false);
-		// history.push(`/play/${props.gameId}`);
+		history.push(`/play/${props.gameId}`);
 	};
 
 	return (

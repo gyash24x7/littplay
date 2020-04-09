@@ -52,3 +52,9 @@ export const getSortedHand = (hand: GameCard[]) => {
 
 	return cards;
 };
+
+export const getTeamDescriptions = (teams: Record<string, Team>) => {
+	return Object.keys(teams).map(
+		(teamName) => `TEAM ${teamName} : ${teams[teamName].members.join(" ")}`
+	);
+};

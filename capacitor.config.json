@@ -1,8 +1,0 @@
-{
-  "appId": "com.gyuapstha.littplay",
-  "appName": "littplay",
-  "bundledWebRuntime": false,
-  "npmClient": "yarn",
-  "webDir": "build",
-  "cordova": {}
-}

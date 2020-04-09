@@ -33,6 +33,7 @@ export interface Game {
 export interface User {
 	name: string;
 	email: string;
+	loggedIn: boolean;
 }
 export interface GameModalProps {
 	visible: boolean;

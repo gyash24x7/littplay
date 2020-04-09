@@ -60,9 +60,6 @@ export const CallSet = (props: GameModalProps) => {
 
 				if (index >= 0) {
 					cardsFound++;
-					playerData[member] = playerData[member].filter(
-						(card) => card.rank !== rank || card.set !== selectedSet
-					);
 				}
 			});
 		});
@@ -72,6 +69,14 @@ export const CallSet = (props: GameModalProps) => {
 		} else {
 			oppTeam.score++;
 		}
+
+		Object.keys(gameData.teams)
+			.flatMap((team) => gameData.teams[team].members)
+			.forEach((member) => {
+				playerData[member] = playerData[member].filter(
+					(card) => card.set !== selectedSet
+				);
+			});
 
 		const teamData = {} as any;
 		teamData[getTeamName(user.name, gameData.teams)] = myTeam;
@@ -115,7 +120,7 @@ export const CallSet = (props: GameModalProps) => {
 							currentMove: "TURN",
 							turn: status === "CORRECT" ? user.name : turnTransfer
 						});
-				}, 3000);
+				}, 2000);
 			})
 			.catch((err) => console.log("Error: ", err));
 

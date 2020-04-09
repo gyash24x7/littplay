@@ -1,8 +1,0 @@
-{
-  "name": "littplay",
-  "integrations": {
-    "capacitor": {}
-  },
-  "type": "react",
-  "id": "606badff"
-}
