@@ -1,7 +1,6 @@
 import Button from "@atlaskit/button";
 import { IonPage } from "@ionic/react";
 import React, { useContext, useState } from "react";
-import { useHistory } from "react-router-dom";
 
 import Logo from "../assets/icon.png";
 import { CreateGame } from "../components/CreateGame";
@@ -16,7 +15,6 @@ export const HomeScreen = () => {
 	const [visibleJoin, setVisibleJoin] = useState(false);
 	const [gameId, setGameId] = useState("");
 	const [loading, setLoading] = useState(false);
-	const history = useHistory();
 
 	const { user, setUser } = useContext(UserContext);
 
@@ -24,7 +22,7 @@ export const HomeScreen = () => {
 		await firebase.auth().signOut();
 		localStorage.clear();
 		setUser({});
-		history.push("/login");
+		window.location.pathname = "/login";
 	};
 
 	const createGame = async () => {

@@ -2,14 +2,12 @@ import Button from "@atlaskit/button";
 import Textfield from "@atlaskit/textfield";
 import { IonPage } from "@ionic/react";
 import React, { useState } from "react";
-import { useHistory } from "react-router-dom";
 
 import Logo from "../assets/icon.png";
 import { User } from "../typings";
 import firebase, { AuthProvider } from "../utils/firebase";
 
 export const LoginScreen = () => {
-	const history = useHistory();
 	const [loading, setLoading] = useState(false);
 	const [name, setName] = useState("");
 
@@ -19,7 +17,7 @@ export const LoginScreen = () => {
 		const user: User = { name, email: result.user.email };
 		localStorage.setItem("user", JSON.stringify(user));
 		setLoading(false);
-		history.push("/");
+		window.location.pathname = "/";
 	};
 
 	return (
