@@ -175,6 +175,15 @@
     react-transition-group "^2.2.1"
     tslib "^1.9.3"
 
+"@atlaskit/spinner@^13.0.1":
+  version "13.0.1"
+  resolved "https://registry.yarnpkg.com/@atlaskit/spinner/-/spinner-13.0.1.tgz#fdac3a4abb840a5e10c5629ed476186e23c9be3d"
+  integrity sha512-8opI4BqSUUkRbao49GujG6oL3jrDtLFCBzZgps6tP8fCVRa6hL9m7kmTeDLQr3kiKnTIN/V0Xg34UDzq2A3bFA==
+  dependencies:
+    "@atlaskit/theme" "^9.5.1"
+    "@emotion/core" "^10.0.9"
+    tslib "^1.9.3"
+
 "@atlaskit/textfield@^3.1.9":
   version "3.1.9"
   resolved "https://registry.yarnpkg.com/@atlaskit/textfield/-/textfield-3.1.9.tgz#3db4a66c1294fb92a3084dffc124f9cdc81ec645"
