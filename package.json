@@ -3,7 +3,7 @@
 	"version": "0.1.0",
 	"private": true,
 	"dependencies": {
-		"@atlaskit/avatar": "^17.1.9",
+		"@atlaskit/avatar": "^18.0.1",
 		"@atlaskit/banner": "^10.1.7",
 		"@atlaskit/button": "^13.3.9",
 		"@atlaskit/css-reset": "^5.0.10",
