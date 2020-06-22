@@ -10,7 +10,7 @@
 		"@atlaskit/flag": "^12.4.5",
 		"@atlaskit/form": "^7.2.0",
 		"@atlaskit/icon": "^20.1.0",
-		"@atlaskit/modal-dialog": "^10.5.5",
+		"@atlaskit/modal-dialog": "^10.6.2",
 		"@atlaskit/motion": "^0.2.2",
 		"@atlaskit/select": "^11.0.9",
 		"@atlaskit/spinner": "^13.0.1",
