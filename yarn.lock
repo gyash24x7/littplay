@@ -87,7 +87,7 @@
     tiny-invariant "^0.0.3"
     tslib "^1.9.3"
 
-"@atlaskit/icon@^20.1.0", "@atlaskit/icon@^20.1.2":
+"@atlaskit/icon@^20.1.0", "@atlaskit/icon@^20.1.1", "@atlaskit/icon@^20.1.2":
   version "20.1.2"
   resolved "https://registry.yarnpkg.com/@atlaskit/icon/-/icon-20.1.2.tgz#1054196d5442cb818faefe17a47c3e528bc15ae7"
   integrity sha512-cDpE6kfiCxv4VNY4LKtRUPAdXTcx4t2eEU1K5Htm/5i6/rmJMHMITIvpZaRqF2R7XdBH5kE2MLxSfexBHC0DjQ==
@@ -144,14 +144,14 @@
     tiny-invariant "^0.0.3"
     tslib "^1.9.3"
 
-"@atlaskit/select@^11.0.9":
-  version "11.0.9"
-  resolved "https://registry.yarnpkg.com/@atlaskit/select/-/select-11.0.9.tgz#9c512c2a74c97bf03a23d217d5df47e2a7f6a1f5"
-  integrity sha512-wSeVDdueOkgLYSG5CKtjTZ+6Z/9KAcXPb/VdM2HnWN8eHuZ04jUEacsKKX3z1oS63bUuPwlJdvAJhtB1GYJiww==
+"@atlaskit/select@^11.0.13":
+  version "11.0.13"
+  resolved "https://registry.yarnpkg.com/@atlaskit/select/-/select-11.0.13.tgz#439c57baba657351bc172716d6648ff29ac8eebb"
+  integrity sha512-L43hR0qSs7v3zgvqwyMnbYWjq0PE6jTCmLW/kObqXQ2uXa0YMnDklEskFetYh5K22Y2LDb9Y4nSp+b3boGAQDQ==
   dependencies:
     "@atlaskit/analytics-next" "^6.3.5"
-    "@atlaskit/icon" "^20.1.0"
-    "@atlaskit/spinner" "^12.1.6"
+    "@atlaskit/icon" "^20.1.1"
+    "@atlaskit/spinner" "^13.0.0"
     "@atlaskit/theme" "^9.5.1"
     "@emotion/core" "^10.0.9"
     "@types/react-select" "^3.0.8"
@@ -164,16 +164,7 @@
     shallow-equal "^1.0.0"
     tslib "^1.9.3"
 
-"@atlaskit/spinner@^12.1.6":
-  version "12.1.6"
-  resolved "https://registry.yarnpkg.com/@atlaskit/spinner/-/spinner-12.1.6.tgz#bf8cfef92ebbdb87c492d087032e4096c4840078"
-  integrity sha512-pqwgpc8Gx0GMlWNqHmeRvJo1K0J7kiL59lEdtfv4drjWd2ny/wuW12AzdSrEs1gcGPjrdcwGx01bB7MCsEtRYA==
-  dependencies:
-    "@atlaskit/theme" "^9.5.1"
-    react-transition-group "^2.2.1"
-    tslib "^1.9.3"
-
-"@atlaskit/spinner@^13.0.1":
+"@atlaskit/spinner@^13.0.0", "@atlaskit/spinner@^13.0.1":
   version "13.0.1"
   resolved "https://registry.yarnpkg.com/@atlaskit/spinner/-/spinner-13.0.1.tgz#fdac3a4abb840a5e10c5629ed476186e23c9be3d"
   integrity sha512-8opI4BqSUUkRbao49GujG6oL3jrDtLFCBzZgps6tP8fCVRa6hL9m7kmTeDLQr3kiKnTIN/V0Xg34UDzq2A3bFA==

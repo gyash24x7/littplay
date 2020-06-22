@@ -12,7 +12,7 @@
 		"@atlaskit/icon": "^20.1.0",
 		"@atlaskit/modal-dialog": "^10.5.5",
 		"@atlaskit/motion": "^0.2.2",
-		"@atlaskit/select": "^11.0.9",
+		"@atlaskit/select": "^11.0.13",
 		"@atlaskit/spinner": "^13.0.1",
 		"@atlaskit/textfield": "^3.1.9",
 		"@atlaskit/theme": "^9.5.2",
