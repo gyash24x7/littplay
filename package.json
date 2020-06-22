@@ -8,7 +8,7 @@
 		"@atlaskit/button": "^13.3.9",
 		"@atlaskit/css-reset": "^5.0.10",
 		"@atlaskit/flag": "^12.4.5",
-		"@atlaskit/form": "^7.2.0",
+		"@atlaskit/form": "^7.3.1",
 		"@atlaskit/icon": "^20.1.0",
 		"@atlaskit/modal-dialog": "^10.5.5",
 		"@atlaskit/motion": "^0.2.2",

@@ -73,21 +73,20 @@
     tslib "^1.9.3"
     uuid "^3.1.0"
 
-"@atlaskit/form@^7.2.0":
-  version "7.2.0"
-  resolved "https://registry.yarnpkg.com/@atlaskit/form/-/form-7.2.0.tgz#a8879483b05e0162db6f10382a2e8178ef673ca2"
-  integrity sha512-SphhFIgmqyQYCECTIqJ3U8TSScxS5MEt6nOlOSbmwrvUysXVM40EVngrIrbIcdpuC7yfEjFXtIRbuJU+gZHPZA==
+"@atlaskit/form@^7.3.1":
+  version "7.3.1"
+  resolved "https://registry.yarnpkg.com/@atlaskit/form/-/form-7.3.1.tgz#e495580655cd0b4fc8a39cf0a654a7480ba699b6"
+  integrity sha512-l6iEkW8th6OGsFcXCtvqFCaNaA1uJGZoFbff8WzFXNo/bEssG1XUSysGO8I2dZv2lHJRN0fcf4lVvqWHZOPc4g==
   dependencies:
-    "@atlaskit/icon" "^20.1.0"
+    "@atlaskit/icon" "^20.1.1"
     "@atlaskit/theme" "^9.5.1"
     final-form "^4.14.1"
     final-form-focus "^1.1.0"
-    memoize-one "^5.1.0"
     react-uid "^2.2.0"
     tiny-invariant "^0.0.3"
     tslib "^1.9.3"
 
-"@atlaskit/icon@^20.1.0", "@atlaskit/icon@^20.1.2":
+"@atlaskit/icon@^20.1.0", "@atlaskit/icon@^20.1.1", "@atlaskit/icon@^20.1.2":
   version "20.1.2"
   resolved "https://registry.yarnpkg.com/@atlaskit/icon/-/icon-20.1.2.tgz#1054196d5442cb818faefe17a47c3e528bc15ae7"
   integrity sha512-cDpE6kfiCxv4VNY4LKtRUPAdXTcx4t2eEU1K5Htm/5i6/rmJMHMITIvpZaRqF2R7XdBH5kE2MLxSfexBHC0DjQ==
@@ -173,7 +172,7 @@
     react-transition-group "^2.2.1"
     tslib "^1.9.3"
 
-"@atlaskit/spinner@^13.0.1":
+"@atlaskit/spinner@^13.0.0", "@atlaskit/spinner@^13.0.1":
   version "13.0.1"
   resolved "https://registry.yarnpkg.com/@atlaskit/spinner/-/spinner-13.0.1.tgz#fdac3a4abb840a5e10c5629ed476186e23c9be3d"
   integrity sha512-8opI4BqSUUkRbao49GujG6oL3jrDtLFCBzZgps6tP8fCVRa6hL9m7kmTeDLQr3kiKnTIN/V0Xg34UDzq2A3bFA==
