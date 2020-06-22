@@ -182,10 +182,10 @@
     "@emotion/core" "^10.0.9"
     tslib "^1.9.3"
 
-"@atlaskit/textfield@^3.1.9":
-  version "3.1.9"
-  resolved "https://registry.yarnpkg.com/@atlaskit/textfield/-/textfield-3.1.9.tgz#3db4a66c1294fb92a3084dffc124f9cdc81ec645"
-  integrity sha512-/BngbkkmlcnJiaG28ugZL8UZ616fYFzBfwstY+WLQL8MKEg0KFGaMcrY123PLKinG3RBb85BKWVu5XPkIRMccQ==
+"@atlaskit/textfield@^3.1.12":
+  version "3.1.12"
+  resolved "https://registry.yarnpkg.com/@atlaskit/textfield/-/textfield-3.1.12.tgz#d53891c476cf1cbc65e7ff171fec11130ea33ac2"
+  integrity sha512-/iCT3+2ZXK/1FlyytwcewHAkoo3l3zCemPZtX5Pm4OMl6Ja4iyG1HbKs0OsfaQM2FXlH52UF2dxKcAnsAvhhvQ==
   dependencies:
     "@atlaskit/analytics-next" "^6.3.5"
     "@atlaskit/theme" "^9.5.1"
