@@ -185,10 +185,10 @@
     "@emotion/core" "^10.0.9"
     tslib "^1.9.3"
 
-"@atlaskit/theme@^9.5.1", "@atlaskit/theme@^9.5.2":
-  version "9.5.2"
-  resolved "https://registry.yarnpkg.com/@atlaskit/theme/-/theme-9.5.2.tgz#a6ede937f5a6870c4acf6a6cbf094b429e0e759d"
-  integrity sha512-I5pUi6Ie0eOAwnuFtgoXsB3NoRoCl5itQtiIaZ106eLB+eYd22H9Qr0KXWvl4RY2Dn82MO3KbnVGMTX7DUSGeg==
+"@atlaskit/theme@^9.5.1", "@atlaskit/theme@^9.5.5":
+  version "9.5.5"
+  resolved "https://registry.yarnpkg.com/@atlaskit/theme/-/theme-9.5.5.tgz#217dd6c880754a8642f81b9a02231071c6fab276"
+  integrity sha512-iZCmciUOGtxW3wvt083QFEc+Y884xdtzTJrMd7AOSRRises37hlcCDYupEX6fcwBre5qIXpnfTO5EFwUB3XW0w==
   dependencies:
     exenv "^1.2.2"
     prop-types "^15.5.10"

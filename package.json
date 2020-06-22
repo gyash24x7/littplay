@@ -15,7 +15,7 @@
 		"@atlaskit/select": "^11.0.9",
 		"@atlaskit/spinner": "^12.1.6",
 		"@atlaskit/textfield": "^3.1.9",
-		"@atlaskit/theme": "^9.5.2",
+		"@atlaskit/theme": "^9.5.5",
 		"firebase": "^7.13.2",
 		"react-router-dom": "^5.1.2",
 		"styled-components": "3.2.6",
