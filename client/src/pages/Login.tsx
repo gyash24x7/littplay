@@ -29,7 +29,7 @@ export const LoginPage = () => {
 								<IonInput placeholder="Password" className="input" />
 							</IonItem>
 							<br />
-							<IonButton expand="block" className="button">
+							<IonButton expand="block" className="button" type="button">
 								Submit
 							</IonButton>
 
