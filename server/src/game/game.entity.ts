@@ -6,11 +6,8 @@ import { GameStatus } from "../utils";
 export class Game {
 	@PrimaryColumn() id: string;
 	@Column({ unique: true }) gameCode: string;
-	@Column({ nullable: true }) teamAName?: string;
-	@Column({ nullable: true }) teamBName?: string;
-
-	@Column({ type: "simple-array", nullable: true }) teamAPlayers?: string[];
-	@Column({ type: "simple-array", nullable: true }) teamBPlayers?: string[];
+	@Column({ nullable: true }) teamA?: string;
+	@Column({ nullable: true }) teamB?: string;
 
 	@Column({ default: 6, type: "int" }) noOfPlayers: number;
 	@Column({ type: "enum", enum: GameStatus, default: GameStatus.NOT_STARTED })

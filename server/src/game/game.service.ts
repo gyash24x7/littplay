@@ -3,6 +3,7 @@ import { InjectRepository } from "@nestjs/typeorm";
 import cuid from "cuid";
 import { Repository } from "typeorm";
 import { User } from "../user/user.entity";
+import { Deck } from "../utils/deck";
 import { Game } from "./game.entity";
 import { CreateTeamsInput } from "./game.inputs";
 
@@ -32,12 +33,26 @@ export class GameService {
 	async createTeams(data: CreateTeamsInput) {
 		const game = await this.gameRepo.findOne(data.gameId);
 		if (!game) throw new NotFoundException("Game Not Found!");
-		game.teamAName = data.teamAName;
-		game.teamBName = data.teamBName;
-		game.teamAPlayers = data.teamAPlayers;
-		game.teamBPlayers = data.teamBPlayers;
+		game.teamA = data.teamA;
+		game.teamB = data.teamB;
 		await this.gameRepo.save(game);
 	}
 
-	async startGame(id: string) {}
+	async startGame(id: string) {
+		const game = await this.gameRepo.findOne(id);
+		if (!game) throw new NotFoundException("Game Not Found!");
+
+		const deck = new Deck();
+		deck.removeCardsOfRank("SEVEN");
+		deck.shuffle();
+		const hands = deck.generateHands(6);
+		game.a0 = hands[0].map((card) => card.getCardString());
+		game.a1 = hands[1].map((card) => card.getCardString());
+		game.a2 = hands[2].map((card) => card.getCardString());
+		game.b0 = hands[3].map((card) => card.getCardString());
+		game.b1 = hands[4].map((card) => card.getCardString());
+		game.b2 = hands[5].map((card) => card.getCardString());
+
+		await this.gameRepo.save(game);
+	}
 }
