@@ -21,10 +21,10 @@
     "@atlaskit/tooltip" "^15.2.5"
     tslib "^1.9.3"
 
-"@atlaskit/banner@^10.1.7":
-  version "10.1.7"
-  resolved "https://registry.yarnpkg.com/@atlaskit/banner/-/banner-10.1.7.tgz#2738a9f119684b2d7d5c3f95cf555ea9fced2299"
-  integrity sha512-PnF3qXZMnp99bc+RaHmYa520aCkpsJVzS+UDbwSBxzGC6lIAcjgUNek0w21/4y+xgILpTKsx/I+eSWLF+xSGzg==
+"@atlaskit/banner@^10.1.10":
+  version "10.1.10"
+  resolved "https://registry.yarnpkg.com/@atlaskit/banner/-/banner-10.1.10.tgz#f6ce66f27921672503aeb8015b564605d8ca6413"
+  integrity sha512-43iT77on+oJNmKWChN5FM8b/sgs3lWR7VWhG63PMxW6WxVZHJRdKFiaZh7xtRLRETw377g9MMUx2nx9fsAg4eA==
   dependencies:
     "@atlaskit/theme" "^9.5.1"
     tslib "^1.9.3"
@@ -173,7 +173,7 @@
     react-transition-group "^2.2.1"
     tslib "^1.9.3"
 
-"@atlaskit/spinner@^13.0.1":
+"@atlaskit/spinner@^13.0.0", "@atlaskit/spinner@^13.0.1":
   version "13.0.1"
   resolved "https://registry.yarnpkg.com/@atlaskit/spinner/-/spinner-13.0.1.tgz#fdac3a4abb840a5e10c5629ed476186e23c9be3d"
   integrity sha512-8opI4BqSUUkRbao49GujG6oL3jrDtLFCBzZgps6tP8fCVRa6hL9m7kmTeDLQr3kiKnTIN/V0Xg34UDzq2A3bFA==
