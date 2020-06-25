@@ -1,41 +1,21 @@
-import {
-	IonButton,
-	IonButtons,
-	IonContent,
-	IonGrid,
-	IonHeader,
-	IonIcon,
-	IonPage,
-	IonText,
-	IonTitle,
-	IonToolbar
-} from "@ionic/react";
-import { logOut } from "ionicons/icons";
+import { IonContent, IonGrid, IonPage, IonText } from "@ionic/react";
+import Avatar from "avataaars";
 import React, { useContext } from "react";
+import { AppHeader } from "../components/AppHeader";
 import { UserContext } from "../utils/context";
 
 export const ProfilePage = () => {
 	const user = useContext(UserContext)!;
-	const logout = () => {
-		localStorage.clear();
-		window.location.pathname = "/login";
-	};
-
 	return (
 		<IonPage>
-			<IonHeader>
-				<IonToolbar>
-					<IonButtons slot="primary">
-						<IonButton onClick={logout}>
-							<IonIcon icon={logOut} size="large" />
-						</IonButton>
-					</IonButtons>
-					<IonTitle className="header-container">LITERATURE</IonTitle>
-				</IonToolbar>
-			</IonHeader>
+			<AppHeader />
 			<IonContent>
 				<IonGrid className="container">
-					<img src={user.avatar} alt="" style={{ width: 150 }} />
+					<Avatar
+						avatarStyle="Circle"
+						{...JSON.parse(user.avatar)}
+						style={{ width: 150, height: 200 }}
+					/>
 					<IonText className="user-name">{user.name}</IonText>
 					<IonText>{user.email}</IonText>
 				</IonGrid>

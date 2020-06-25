@@ -9,7 +9,7 @@ export const PublicRoutes = () => {
 		<IonRouterOutlet>
 			<Route path="/login" component={LoginPage} exact={true} />
 			<Route path="/signup" component={SignUpPage} exact={true} />
-			<Route path="/" render={() => <Redirect to="/login" />} exact={true} />
+			<Redirect to="/login" />
 		</IonRouterOutlet>
 	);
 };

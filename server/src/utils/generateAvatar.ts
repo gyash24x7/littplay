@@ -5,13 +5,7 @@ export const generateAvatar = () => {
 		queryParams[option] = options[option][idx];
 	});
 
-	let baseUrl = "https://avataaars.io/?";
-	Object.keys(queryParams).forEach((key) => {
-		baseUrl += `${key}=${queryParams[key]}&`;
-	});
-
-	baseUrl += "avatarStyle=Circle";
-	return baseUrl;
+	return JSON.stringify(queryParams);
 };
 
 const options: Record<string, string[]> = {
