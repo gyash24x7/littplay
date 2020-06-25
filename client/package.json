@@ -30,7 +30,8 @@
 		"build": "react-scripts build",
 		"test": "react-scripts test",
 		"eject": "react-scripts eject",
-		"gen": "graphql-codegen --watch"
+		"gen": "graphql-codegen --watch",
+		"dev": "ionic serve --port 3000"
 	},
 	"eslintConfig": {
 		"extends": "react-app"

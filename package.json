@@ -9,5 +9,9 @@
 	"workspaces": [
 		"./client",
 		"./server"
-	]
+	],
+	"scripts": {
+		"dev:client": "yarn workspace client dev",
+		"dev:server": "yarn workspace server start:dev"
+	}
 }

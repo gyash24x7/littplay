@@ -64,3 +64,19 @@
 	padding-top: 10px;
 	font-family: "montserrat";
 }
+
+.error-msg-container {
+	width: 100%;
+	padding: 15px;
+	margin-top: 10px;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+
+	.error-msg {
+		margin-top: 10px;
+		text-transform: uppercase;
+		font-size: 12px;
+		font-family: "montserrat-bold";
+	}
+}

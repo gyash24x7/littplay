@@ -6,13 +6,77 @@ import {
 	IonInput,
 	IonItem,
 	IonPage,
+	IonSpinner,
 	IonText
 } from "@ionic/react";
-import React from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import Logo from "../assets/icon.png";
+import { ErrorMsg } from "../components/ErrorMsg";
+import { useCreateUserMutation } from "../generated";
+
+const emailRegex = /^([a-zA-Z0-9_\-.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([a-zA-Z0-9-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)$/;
 
 export const SignUpPage = () => {
+	const [name, setName] = useState("");
+	const [email, setEmail] = useState("");
+	const [password, setPassword] = useState("");
+	const [confirmPassword, setConfirmPassword] = useState("");
+	const [errorMsg, setErrorMsg] = useState<string>();
+
+	const [createUser, { loading }] = useCreateUserMutation({
+		onCompleted(data) {
+			localStorage.setItem("authToken", data.createUser);
+			window.location.pathname = "/";
+		},
+		onError(error) {
+			setErrorMsg(error.message);
+		}
+	});
+
+	const handleInput = (field: string) => (e: any) => {
+		setErrorMsg(undefined);
+		switch (field) {
+			case "name":
+				setName(e.target.value);
+				break;
+			case "email":
+				setEmail(e.target.value);
+				break;
+			case "password":
+				setPassword(e.target.value);
+				break;
+			case "confirmPassword":
+				setConfirmPassword(e.target.value);
+				break;
+		}
+	};
+
+	const validateFields = (): string | undefined => {
+		switch (true) {
+			case !name:
+				return "Name is Required";
+			case !email:
+				return "Email is Required";
+			case !emailRegex.test(email):
+				return "Invalid Email1";
+			case !password || !confirmPassword:
+				return "Password is Required1";
+			case password.length < 8:
+				return "Password Length should be more than 8";
+			case password !== confirmPassword:
+				return "Passwords do not Match";
+		}
+	};
+
+	const handleSubmit = () => {
+		const errorMsg = validateFields();
+		if (!errorMsg) {
+			createUser({ variables: { name, email, password } });
+		}
+		setErrorMsg(errorMsg);
+	};
+
 	return (
 		<IonPage>
 			<IonContent>
@@ -22,11 +86,22 @@ export const SignUpPage = () => {
 						<IonText className="heading">SIGN UP</IonText>
 						<div className="input-list">
 							<IonItem>
-								<IonInput placeholder="Name" className="input" />
+								<IonInput
+									placeholder="Name"
+									className="input"
+									value={name}
+									onInput={handleInput("name")}
+								/>
 							</IonItem>
 							<br />
 							<IonItem>
-								<IonInput placeholder="Email" className="input" />
+								<IonInput
+									placeholder="Email"
+									className="input"
+									type="email"
+									value={email}
+									onInput={handleInput("email")}
+								/>
 							</IonItem>
 							<br />
 							<IonItem>
@@ -34,6 +109,8 @@ export const SignUpPage = () => {
 									placeholder="Password"
 									className="input"
 									type="password"
+									value={password}
+									onInput={handleInput("password")}
 								/>
 							</IonItem>
 							<br />
@@ -42,11 +119,17 @@ export const SignUpPage = () => {
 									placeholder="Confirm Password"
 									className="input"
 									type="password"
+									value={confirmPassword}
+									onInput={handleInput("confirmPassword")}
 								/>
 							</IonItem>
 							<br />
-							<IonButton expand="block" className="button">
-								Submit
+							<IonButton
+								expand="block"
+								className="button"
+								onClick={handleSubmit}
+							>
+								{loading ? <IonSpinner /> : "Submit"}
 							</IonButton>
 							<div className="login-bottom-links">
 								<IonText>Already have an account?</IonText>
@@ -54,6 +137,7 @@ export const SignUpPage = () => {
 									<IonText>Login</IonText>
 								</Link>
 							</div>
+							<ErrorMsg message={errorMsg} />
 						</div>
 					</div>
 				</IonGrid>

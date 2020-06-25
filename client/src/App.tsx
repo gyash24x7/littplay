@@ -1,3 +1,4 @@
+import { ApolloProvider } from "@apollo/client";
 import { IonApp } from "@ionic/react";
 import { IonReactRouter } from "@ionic/react-router";
 /* Core CSS required for Ionic components to work properly */
@@ -14,7 +15,8 @@ import "@ionic/react/css/text-alignment.css";
 import "@ionic/react/css/text-transformation.css";
 import "@ionic/react/css/typography.css";
 import React from "react";
-import { PublicRoutes } from "./routes/PublicRoutes";
+import { client } from "./graphql";
+import { AppRoutes } from "./routes";
 import "./styles/app.scss";
 /* Theme variables */
 import "./theme/variables.css";
@@ -22,7 +24,9 @@ import "./theme/variables.css";
 const App: React.FC = () => (
 	<IonApp>
 		<IonReactRouter>
-			<PublicRoutes />
+			<ApolloProvider client={client}>
+				<AppRoutes />
+			</ApolloProvider>
 		</IonReactRouter>
 	</IonApp>
 );

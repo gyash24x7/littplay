@@ -6,13 +6,65 @@ import {
 	IonInput,
 	IonItem,
 	IonPage,
+	IonSpinner,
 	IonText
 } from "@ionic/react";
-import React from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import Logo from "../assets/icon.png";
+import { ErrorMsg } from "../components/ErrorMsg";
+import { useLoginMutation } from "../generated";
+
+const emailRegex = /^([a-zA-Z0-9_\-.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([a-zA-Z0-9-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)$/;
 
 export const LoginPage = () => {
+	const [email, setEmail] = useState("");
+	const [password, setPassword] = useState("");
+	const [errorMsg, setErrorMsg] = useState<string>();
+
+	const [login, { loading }] = useLoginMutation({
+		onCompleted(data) {
+			localStorage.setItem("authToken", data.login);
+			window.location.pathname = "/";
+		},
+		onError(error) {
+			setErrorMsg(error.message);
+		}
+	});
+
+	const handleInput = (field: string) => (e: any) => {
+		setErrorMsg(undefined);
+		switch (field) {
+			case "email":
+				setEmail(e.target.value);
+				break;
+			case "password":
+				setPassword(e.target.value);
+				break;
+		}
+	};
+
+	const validateFields = (): string | undefined => {
+		switch (true) {
+			case !email:
+				return "Email is Required";
+			case !emailRegex.test(email):
+				return "Invalid Email1";
+			case !password:
+				return "Password is Required1";
+			case password.length < 8:
+				return "Password Length should be more than 8";
+		}
+	};
+
+	const handleSubmit = () => {
+		const errorMsg = validateFields();
+		if (!errorMsg) {
+			login({ variables: { email, password } });
+		}
+		setErrorMsg(errorMsg);
+	};
+
 	return (
 		<IonPage>
 			<IonContent>
@@ -22,23 +74,40 @@ export const LoginPage = () => {
 						<IonText className="heading">LOGIN</IonText>
 						<div className="input-list">
 							<IonItem>
-								<IonInput placeholder="Email" className="input" />
+								<IonInput
+									placeholder="Email"
+									className="input"
+									value={email}
+									type="email"
+									onInput={handleInput("email")}
+								/>
 							</IonItem>
 							<br />
 							<IonItem>
-								<IonInput placeholder="Password" className="input" />
+								<IonInput
+									placeholder="Password"
+									className="input"
+									value={password}
+									onInput={handleInput("password")}
+									type="password"
+								/>
 							</IonItem>
 							<br />
-							<IonButton expand="block" className="button" type="button">
-								Submit
+							<IonButton
+								expand="block"
+								className="button"
+								type="button"
+								onClick={handleSubmit}
+							>
+								{loading ? <IonSpinner /> : "Submit"}
 							</IonButton>
-
 							<div className="login-bottom-links">
 								<IonText>Don't have an account?</IonText>
 								<Link to="/signup">
 									<IonText>Sign Up</IonText>
 								</Link>
 							</div>
+							<ErrorMsg message={errorMsg} />
 						</div>
 					</div>
 				</IonGrid>
