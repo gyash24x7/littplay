@@ -5,8 +5,8 @@ import {
 	IonImg,
 	IonInput,
 	IonItem,
+	IonLoading,
 	IonPage,
-	IonSpinner,
 	IonText
 } from "@ionic/react";
 import React, { useState } from "react";
@@ -55,6 +55,8 @@ export const LoginPage = () => {
 			case password.length < 8:
 				return "Password Length should be more than 8";
 		}
+
+		return;
 	};
 
 	const handleSubmit = () => {
@@ -68,7 +70,8 @@ export const LoginPage = () => {
 	return (
 		<IonPage>
 			<IonContent>
-				<IonGrid fixed className="public-container">
+				<IonLoading isOpen={loading} message="Please wait.." />
+				<IonGrid fixed className="container">
 					<div className="form-wrapper">
 						<IonImg src={Logo} className="logo-icon" />
 						<IonText className="heading">LOGIN</IonText>
@@ -99,7 +102,7 @@ export const LoginPage = () => {
 								type="button"
 								onClick={handleSubmit}
 							>
-								{loading ? <IonSpinner /> : "Submit"}
+								Submit
 							</IonButton>
 							<div className="login-bottom-links">
 								<IonText>Don't have an account?</IonText>

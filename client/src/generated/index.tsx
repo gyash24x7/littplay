@@ -69,7 +69,7 @@ export type LoginMutation = { login: string };
 export type MeQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type MeQuery = { me: { id: string, name: string, email: string } };
+export type MeQuery = { me: { id: string, name: string, email: string, avatar: string } };
 
 
 export const CreateUserDocument = gql`
@@ -102,6 +102,7 @@ export const MeDocument = gql`
     id
     name
     email
+    avatar
   }
 }
     `;

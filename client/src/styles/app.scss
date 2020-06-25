@@ -14,7 +14,7 @@
 		url("../assets/fonts/montserrat-light.ttf") format("truetype");
 }
 
-.public-container {
+.container {
 	display: flex;
 	flex-direction: column;
 	justify-content: center;
@@ -79,4 +79,23 @@
 		font-size: 12px;
 		font-family: "montserrat-bold";
 	}
+}
+
+.user-avatar {
+	width: 100px;
+	height: 100px;
+}
+
+.user-avatar-container {
+	border-radius: 100%;
+	width: 125px;
+	height: 125px;
+	display: flex;
+	justify-content: center;
+	background-color: #303030;
+	align-items: center;
+}
+
+.header-container {
+	font-family: "montserrat-bold";
 }

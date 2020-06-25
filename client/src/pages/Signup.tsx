@@ -5,8 +5,8 @@ import {
 	IonImg,
 	IonInput,
 	IonItem,
+	IonLoading,
 	IonPage,
-	IonSpinner,
 	IonText
 } from "@ionic/react";
 import React, { useState } from "react";
@@ -67,6 +67,8 @@ export const SignUpPage = () => {
 			case password !== confirmPassword:
 				return "Passwords do not Match";
 		}
+
+		return;
 	};
 
 	const handleSubmit = () => {
@@ -80,7 +82,8 @@ export const SignUpPage = () => {
 	return (
 		<IonPage>
 			<IonContent>
-				<IonGrid fixed className="public-container">
+				<IonLoading isOpen={loading} message="Please wait..." />
+				<IonGrid fixed className="container">
 					<div className="form-wrapper">
 						<IonImg src={Logo} className="logo-icon" />
 						<IonText className="heading">SIGN UP</IonText>
@@ -129,7 +132,7 @@ export const SignUpPage = () => {
 								className="button"
 								onClick={handleSubmit}
 							>
-								{loading ? <IonSpinner /> : "Submit"}
+								Submit
 							</IonButton>
 							<div className="login-bottom-links">
 								<IonText>Already have an account?</IonText>

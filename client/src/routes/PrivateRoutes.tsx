@@ -6,21 +6,21 @@ import {
 	IonTabButton,
 	IonTabs
 } from "@ionic/react";
-import { ellipse, triangle } from "ionicons/icons";
+import { ellipse } from "ionicons/icons";
 import React from "react";
+import { Route } from "react-router";
+import { ProfilePage } from "../pages/Profile";
 
 export const PrivateRoutes = () => {
 	return (
 		<IonTabs>
-			<IonRouterOutlet></IonRouterOutlet>
+			<IonRouterOutlet>
+				<Route path="/profile" component={ProfilePage} />
+			</IonRouterOutlet>
 			<IonTabBar slot="bottom">
-				<IonTabButton tab="tab1" href="/tab1">
-					<IonIcon icon={triangle} />
-					<IonLabel>Tab 1</IonLabel>
-				</IonTabButton>
-				<IonTabButton tab="tab2" href="/tab2">
+				<IonTabButton tab="profile" href="/profile">
 					<IonIcon icon={ellipse} />
-					<IonLabel>Tab 2</IonLabel>
+					<IonLabel>Profile</IonLabel>
 				</IonTabButton>
 			</IonTabBar>
 		</IonTabs>

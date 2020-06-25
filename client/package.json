@@ -12,6 +12,7 @@
 		"@ionic/react": "^5.2.2",
 		"@ionic/react-hooks": "^0.0.8",
 		"@ionic/react-router": "^5.2.2",
+		"avataaars": "^1.2.1",
 		"graphql": "14.6.0",
 		"graphql-tag": "^2.10.3",
 		"ionicons": "^5.1.0",
@@ -26,7 +27,7 @@
 		"typescript": "3.9.5"
 	},
 	"scripts": {
-		"start": "react-scripts start",
+		"start": "BROWSER=none react-scripts start",
 		"build": "react-scripts build",
 		"test": "react-scripts test",
 		"eject": "react-scripts eject",

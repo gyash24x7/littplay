@@ -9,10 +9,9 @@ import { InjectRepository } from "@nestjs/typeorm";
 import bcrypt from "bcryptjs";
 import cuid from "cuid";
 import { Repository } from "typeorm";
+import { generateAvatar } from "../utils/generateAvatar";
 import { User } from "./user.entity";
 import { CreateUserInput, LoginInput } from "./user.inputs";
-
-const AVATAR_BASE_URL = "https://avatars.dicebears.com/api/gridy/";
 
 @Injectable()
 export class UserService {
@@ -24,7 +23,7 @@ export class UserService {
 	async signUp(data: CreateUserInput) {
 		let user: User;
 		const id = cuid();
-		const avatar = AVATAR_BASE_URL + id + ".svg";
+		const avatar = generateAvatar();
 		const salt = await bcrypt.genSalt(15);
 		const password = await bcrypt.hash(data.password, salt);
 
