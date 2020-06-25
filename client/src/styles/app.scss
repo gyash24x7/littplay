@@ -20,7 +20,7 @@
 	justify-content: center;
 	align-items: center;
 	height: 100%;
-	font-family: "montserrat";
+	font-family: "montserrat" !important;
 }
 
 .logo-icon {
@@ -82,20 +82,15 @@
 }
 
 .user-avatar {
-	width: 100px;
-	height: 100px;
+	width: 150px;
 }
 
-.user-avatar-container {
-	border-radius: 100%;
-	width: 125px;
-	height: 125px;
-	display: flex;
-	justify-content: center;
-	background-color: #303030;
-	align-items: center;
+.user-name {
+	margin-top: 15px;
+	font-size: 20px;
+	font-family: "montserrat-bold";
+	text-transform: uppercase;
 }
-
 .header-container {
 	font-family: "montserrat-bold";
 }

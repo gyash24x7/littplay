@@ -9,7 +9,7 @@ import {
 	IonPage,
 	IonText
 } from "@ionic/react";
-import React, { useState } from "react";
+import React, { FormEvent, useState } from "react";
 import { Link } from "react-router-dom";
 import Logo from "../assets/icon.png";
 import { ErrorMsg } from "../components/ErrorMsg";
@@ -25,7 +25,7 @@ export const LoginPage = () => {
 	const [login, { loading }] = useLoginMutation({
 		onCompleted(data) {
 			localStorage.setItem("authToken", data.login);
-			window.location.pathname = "/";
+			window.location.pathname = "/profile";
 		},
 		onError(error) {
 			setErrorMsg(error.message);
@@ -59,7 +59,8 @@ export const LoginPage = () => {
 		return;
 	};
 
-	const handleSubmit = () => {
+	const handleSubmit = (e: FormEvent) => {
+		e.preventDefault();
 		const errorMsg = validateFields();
 		if (!errorMsg) {
 			login({ variables: { email, password } });
@@ -75,7 +76,7 @@ export const LoginPage = () => {
 					<div className="form-wrapper">
 						<IonImg src={Logo} className="logo-icon" />
 						<IonText className="heading">LOGIN</IonText>
-						<div className="input-list">
+						<form className="input-list" onSubmit={handleSubmit} noValidate>
 							<IonItem>
 								<IonInput
 									placeholder="Email"
@@ -96,12 +97,7 @@ export const LoginPage = () => {
 								/>
 							</IonItem>
 							<br />
-							<IonButton
-								expand="block"
-								className="button"
-								type="button"
-								onClick={handleSubmit}
-							>
+							<IonButton expand="block" className="button" type="submit">
 								Submit
 							</IonButton>
 							<div className="login-bottom-links">
@@ -111,7 +107,7 @@ export const LoginPage = () => {
 								</Link>
 							</div>
 							<ErrorMsg message={errorMsg} />
-						</div>
+						</form>
 					</div>
 				</IonGrid>
 			</IonContent>

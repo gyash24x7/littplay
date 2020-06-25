@@ -9,7 +9,7 @@ import {
 	IonPage,
 	IonText
 } from "@ionic/react";
-import React, { useState } from "react";
+import React, { FormEvent, useState } from "react";
 import { Link } from "react-router-dom";
 import Logo from "../assets/icon.png";
 import { ErrorMsg } from "../components/ErrorMsg";
@@ -71,7 +71,8 @@ export const SignUpPage = () => {
 		return;
 	};
 
-	const handleSubmit = () => {
+	const handleSubmit = (e: FormEvent) => {
+		e.preventDefault();
 		const errorMsg = validateFields();
 		if (!errorMsg) {
 			createUser({ variables: { name, email, password } });
@@ -87,7 +88,7 @@ export const SignUpPage = () => {
 					<div className="form-wrapper">
 						<IonImg src={Logo} className="logo-icon" />
 						<IonText className="heading">SIGN UP</IonText>
-						<div className="input-list">
+						<form className="input-list" onSubmit={handleSubmit} noValidate>
 							<IonItem>
 								<IonInput
 									placeholder="Name"
@@ -127,11 +128,7 @@ export const SignUpPage = () => {
 								/>
 							</IonItem>
 							<br />
-							<IonButton
-								expand="block"
-								className="button"
-								onClick={handleSubmit}
-							>
+							<IonButton expand="block" className="button" type="submit">
 								Submit
 							</IonButton>
 							<div className="login-bottom-links">
@@ -141,7 +138,7 @@ export const SignUpPage = () => {
 								</Link>
 							</div>
 							<ErrorMsg message={errorMsg} />
-						</div>
+						</form>
 					</div>
 				</IonGrid>
 			</IonContent>
