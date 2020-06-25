@@ -1,0 +1,13 @@
+{
+	"name": "littplay",
+	"version": "1.0.0",
+	"main": "index.js",
+	"repository": "https://github.com/gyash24x7/littplay.git",
+	"author": "gyash24x7 <gyash24x7@gmail.com>",
+	"license": "MIT",
+	"private": true,
+	"workspaces": [
+		"./client",
+		"./server"
+	]
+}
