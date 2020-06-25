@@ -128,7 +128,7 @@ export const SignUpPage = () => {
 								/>
 							</IonItem>
 							<br />
-							<IonButton expand="block" className="button" type="submit">
+							<IonButton expand="block" className="app-button" type="submit">
 								Submit
 							</IonButton>
 							<div className="login-bottom-links">

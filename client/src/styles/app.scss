@@ -52,7 +52,7 @@
 	}
 }
 
-.button {
+.app-button {
 	height: 50px;
 	font-family: "montserrat-bold";
 	text-transform: uppercase;
@@ -111,4 +111,17 @@
 
 .modal-card {
 	width: 90%;
+	text-align: center;
+	font-family: "montserrat";
+}
+
+.game-code {
+	font-size: 36px;
+	font-family: "montserrat-bold";
+	cursor: pointer;
+}
+
+.card-subtitle {
+	font-size: 16px;
+	text-transform: uppercase;
 }

@@ -26,6 +26,7 @@ export type LoginInput = {
 export type Mutation = {
   login: Scalars['String'];
   createUser: Scalars['String'];
+  createGame: Scalars['String'];
 };
 
 
@@ -48,6 +49,11 @@ export type User = {
   email: Scalars['String'];
   avatar: Scalars['String'];
 };
+
+export type CreateGameMutationVariables = Exact<{ [key: string]: never; }>;
+
+
+export type CreateGameMutation = { createGame: string };
 
 export type CreateUserMutationVariables = Exact<{
   name: Scalars['String'];
@@ -72,6 +78,18 @@ export type MeQueryVariables = Exact<{ [key: string]: never; }>;
 export type MeQuery = { me: { id: string, name: string, email: string, avatar: string } };
 
 
+export const CreateGameDocument = gql`
+    mutation CreateGame {
+  createGame
+}
+    `;
+export type CreateGameMutationFn = ApolloReactCommon.MutationFunction<CreateGameMutation, CreateGameMutationVariables>;
+export function useCreateGameMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<CreateGameMutation, CreateGameMutationVariables>) {
+        return ApolloReactHooks.useMutation<CreateGameMutation, CreateGameMutationVariables>(CreateGameDocument, baseOptions);
+      }
+export type CreateGameMutationHookResult = ReturnType<typeof useCreateGameMutation>;
+export type CreateGameMutationResult = ApolloReactCommon.MutationResult<CreateGameMutation>;
+export type CreateGameMutationOptions = ApolloReactCommon.BaseMutationOptions<CreateGameMutation, CreateGameMutationVariables>;
 export const CreateUserDocument = gql`
     mutation CreateUser($name: String!, $email: String!, $password: String!) {
   createUser(data: {email: $email, password: $password, name: $name})
