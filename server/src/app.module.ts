@@ -3,6 +3,7 @@ import { GraphQLModule } from "@nestjs/graphql";
 import { TypeOrmModule } from "@nestjs/typeorm";
 import { GameModule } from "./game/game.module";
 import { UserModule } from "./user/user.module";
+import { GameActivityModule } from './game-activity/game-activity.module';
 
 @Module({
 	imports: [
@@ -19,8 +20,10 @@ import { UserModule } from "./user/user.module";
 			context: ({ req }) => ({ req })
 		}),
 		GameModule,
-		UserModule
+		UserModule,
+		GameActivityModule
 	],
-	controllers: []
+	controllers: [],
+	providers: []
 })
 export class AppModule {}

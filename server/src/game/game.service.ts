@@ -3,6 +3,7 @@ import { InjectRepository } from "@nestjs/typeorm";
 import cuid from "cuid";
 import { Repository } from "typeorm";
 import { User } from "../user/user.entity";
+import { GameStatus } from "../utils";
 import { Deck } from "../utils/deck";
 import { Game } from "./game.entity";
 import { CreateTeamsInput } from "./game.inputs";
@@ -23,11 +24,14 @@ export class GameService {
 	}
 
 	async joinGame(gameCode: string, user: User) {
-		const game = await this.gameRepo.findOne({ gameCode });
+		const game = await this.gameRepo.findOne({
+			gameCode,
+			status: GameStatus.NOT_STARTED
+		});
 		if (!game) throw new NotFoundException("Game Not Found!");
 
 		game.players.push(user);
-		await this.gameRepo.save(game);
+		return this.gameRepo.save(game);
 	}
 
 	async createTeams(data: CreateTeamsInput) {
@@ -54,5 +58,11 @@ export class GameService {
 		game.b2 = hands[5].map((card) => card.getCardString());
 
 		await this.gameRepo.save(game);
+	}
+
+	async getGame(gameCode: string) {
+		const game = await this.gameRepo.findOne({ where: { gameCode } });
+		if (!game) throw new NotFoundException("Game Not Found!");
+		return game;
 	}
 }

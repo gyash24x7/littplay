@@ -1,4 +1,13 @@
-import { Column, Entity, ManyToMany, ManyToOne, PrimaryColumn } from "typeorm";
+import {
+	Column,
+	Entity,
+	JoinTable,
+	ManyToMany,
+	ManyToOne,
+	OneToMany,
+	PrimaryColumn
+} from "typeorm";
+import { GameActivity } from "../game-activity/game-activity.entity";
 import { User } from "../user/user.entity";
 import { GameStatus } from "../utils";
 
@@ -23,5 +32,11 @@ export class Game {
 
 	@Column() createdById: string;
 	@ManyToOne(() => User, { eager: true }) createdBy: User;
-	@ManyToMany(() => User, { eager: true }) players: User[];
+
+	@ManyToMany(() => User, (user) => user.games, { eager: true })
+	@JoinTable()
+	players: User[];
+
+	@OneToMany(() => GameActivity, (activity) => activity.game)
+	activity: GameActivity[];
 }
