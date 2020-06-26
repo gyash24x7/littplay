@@ -5,7 +5,13 @@ export const generateAvatar = () => {
 		queryParams[option] = options[option][idx];
 	});
 
-	return JSON.stringify(queryParams);
+	let baseUrl = "https://avataaars.io/?";
+	Object.keys(queryParams).map((key) => {
+		baseUrl += `${key}=${obj[key]}&`;
+	});
+	baseUrl += "avatarStyle=Circle";
+
+	return baseUrl;
 };
 
 const options: Record<string, string[]> = {

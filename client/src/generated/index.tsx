@@ -12,10 +12,58 @@ export type Scalars = {
   Float: number;
 };
 
+export type CreateTeamsInput = {
+  gameId: Scalars['String'];
+  teamA: Scalars['String'];
+  teamB: Scalars['String'];
+};
+
 export type CreateUserInput = {
   email: Scalars['String'];
   name: Scalars['String'];
   password: Scalars['String'];
+};
+
+export type Game = {
+  id: Scalars['ID'];
+  gameCode: Scalars['String'];
+  status: GameStatus;
+  noOfPlayers: Scalars['Int'];
+  teamA?: Maybe<Scalars['String']>;
+  teamB?: Maybe<Scalars['String']>;
+  teamAScore: Scalars['Int'];
+  teamBScore: Scalars['Int'];
+  teamAMembers: Array<GameToUser>;
+  teamBMembers: Array<GameToUser>;
+};
+
+export type GameActivity = {
+  id: Scalars['ID'];
+  game: Game;
+  description: Scalars['String'];
+  kind: GameActivityKind;
+};
+
+export enum GameActivityKind {
+  PlayerJoined = 'PLAYER_JOINED',
+  GameStarted = 'GAME_STARTED',
+  AskPlayer = 'ASK_PLAYER',
+  CardGiven = 'CARD_GIVEN',
+  CardDeclined = 'CARD_DECLINED',
+  CallingSet = 'CALLING_SET',
+  SetCalled = 'SET_CALLED',
+  TeamsCreated = 'TEAMS_CREATED'
+}
+
+export enum GameStatus {
+  NotStarted = 'NOT_STARTED',
+  Started = 'STARTED',
+  Completed = 'COMPLETED'
+}
+
+export type GameToUser = {
+  user: User;
+  hand?: Maybe<Array<Scalars['String']>>;
 };
 
 export type LoginInput = {
@@ -26,7 +74,9 @@ export type LoginInput = {
 export type Mutation = {
   login: Scalars['String'];
   createUser: Scalars['String'];
-  createGame: Scalars['String'];
+  createGame: Game;
+  joinGame: Game;
+  createTeams: Game;
 };
 
 
@@ -39,8 +89,33 @@ export type MutationCreateUserArgs = {
   data: CreateUserInput;
 };
 
+
+export type MutationJoinGameArgs = {
+  gameCode: Scalars['String'];
+};
+
+
+export type MutationCreateTeamsArgs = {
+  data: CreateTeamsInput;
+};
+
 export type Query = {
   me: User;
+  getGame: Game;
+};
+
+
+export type QueryGetGameArgs = {
+  gameCode: Scalars['String'];
+};
+
+export type Subscription = {
+  gameActivity: GameActivity;
+};
+
+
+export type SubscriptionGameActivityArgs = {
+  gameCode: Scalars['String'];
 };
 
 export type User = {
@@ -53,7 +128,7 @@ export type User = {
 export type CreateGameMutationVariables = Exact<{ [key: string]: never; }>;
 
 
-export type CreateGameMutation = { createGame: string };
+export type CreateGameMutation = { createGame: { id: string, gameCode: string, noOfPlayers: number } };
 
 export type CreateUserMutationVariables = Exact<{
   name: Scalars['String'];
@@ -80,7 +155,11 @@ export type MeQuery = { me: { id: string, name: string, email: string, avatar: s
 
 export const CreateGameDocument = gql`
     mutation CreateGame {
-  createGame
+  createGame {
+    id
+    gameCode
+    noOfPlayers
+  }
 }
     `;
 export type CreateGameMutationFn = ApolloReactCommon.MutationFunction<CreateGameMutation, CreateGameMutationVariables>;

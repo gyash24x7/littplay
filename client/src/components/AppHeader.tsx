@@ -1,27 +1,18 @@
 import {
-	IonButton,
 	IonButtons,
 	IonHeader,
-	IonIcon,
+	IonMenuButton,
 	IonTitle,
 	IonToolbar
 } from "@ionic/react";
-import { logOut } from "ionicons/icons";
 import React from "react";
 
 export const AppHeader = () => {
-	const logout = () => {
-		localStorage.clear();
-		window.location.pathname = "/login";
-	};
-
 	return (
 		<IonHeader>
 			<IonToolbar>
-				<IonButtons slot="primary">
-					<IonButton onClick={logout}>
-						<IonIcon icon={logOut} size="large" />
-					</IonButton>
+				<IonButtons slot="start">
+					<IonMenuButton menu="appMenu" />
 				</IonButtons>
 				<IonTitle className="header-container">LITERATURE</IonTitle>
 			</IonToolbar>

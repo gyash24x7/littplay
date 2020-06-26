@@ -80,7 +80,7 @@ export const LoginPage = () => {
 							<IonItem>
 								<IonInput
 									placeholder="Email"
-									className="input"
+									className="app-input"
 									value={email}
 									type="email"
 									onInput={handleInput("email")}
@@ -90,7 +90,7 @@ export const LoginPage = () => {
 							<IonItem>
 								<IonInput
 									placeholder="Password"
-									className="input"
+									className="app-input"
 									value={password}
 									onInput={handleInput("password")}
 									type="password"

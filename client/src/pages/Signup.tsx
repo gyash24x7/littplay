@@ -92,7 +92,7 @@ export const SignUpPage = () => {
 							<IonItem>
 								<IonInput
 									placeholder="Name"
-									className="input"
+									className="app-input"
 									value={name}
 									onInput={handleInput("name")}
 								/>
@@ -101,7 +101,7 @@ export const SignUpPage = () => {
 							<IonItem>
 								<IonInput
 									placeholder="Email"
-									className="input"
+									className="app-input"
 									type="email"
 									value={email}
 									onInput={handleInput("email")}
@@ -111,7 +111,7 @@ export const SignUpPage = () => {
 							<IonItem>
 								<IonInput
 									placeholder="Password"
-									className="input"
+									className="app-input"
 									type="password"
 									value={password}
 									onInput={handleInput("password")}
@@ -121,7 +121,7 @@ export const SignUpPage = () => {
 							<IonItem>
 								<IonInput
 									placeholder="Confirm Password"
-									className="input"
+									className="app-input"
 									type="password"
 									value={confirmPassword}
 									onInput={handleInput("confirmPassword")}
