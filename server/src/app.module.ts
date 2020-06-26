@@ -1,9 +1,10 @@
 import { Module } from "@nestjs/common";
 import { GraphQLModule } from "@nestjs/graphql";
 import { TypeOrmModule } from "@nestjs/typeorm";
+import { GameActivityModule } from "./game-activity/game-activity.module";
 import { GameModule } from "./game/game.module";
 import { UserModule } from "./user/user.module";
-import { GameActivityModule } from './game-activity/game-activity.module';
+import { GameToUserModule } from './game-to-user/game-to-user.module';
 
 @Module({
 	imports: [
@@ -11,7 +12,6 @@ import { GameActivityModule } from './game-activity/game-activity.module';
 			type: "postgres",
 			url: "postgresql://gyuapstha:xdcVy2Ue@localhost:5432/littplay",
 			autoLoadEntities: true,
-			logging: true,
 			synchronize: true
 		}),
 		GraphQLModule.forRoot({
@@ -21,7 +21,8 @@ import { GameActivityModule } from './game-activity/game-activity.module';
 		}),
 		GameModule,
 		UserModule,
-		GameActivityModule
+		GameActivityModule,
+		GameToUserModule
 	],
 	controllers: [],
 	providers: []

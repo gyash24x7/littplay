@@ -2,6 +2,7 @@ import {
 	ConflictException,
 	Injectable,
 	InternalServerErrorException,
+	Logger,
 	UnauthorizedException
 } from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
@@ -20,6 +21,8 @@ export class UserService {
 		private readonly jwtService: JwtService
 	) {}
 
+	private readonly logger = new Logger("UserService");
+
 	async signUp(data: CreateUserInput) {
 		let user: User;
 		const id = cuid();
@@ -29,6 +32,7 @@ export class UserService {
 
 		try {
 			user = await this.userRepo.save({ ...data, id, avatar, salt, password });
+			this.logger.log(`User Created: ${user.id}`);
 		} catch (error) {
 			if (error.code === "23505") {
 				throw new ConflictException("User Already Exists!");
@@ -46,6 +50,7 @@ export class UserService {
 		const valid = await bcrypt.compare(password, user.password);
 		if (!valid) throw new UnauthorizedException("Invalid Credentials!");
 
+		this.logger.log(`User logged in: ${user.id}`);
 		const accessToken = this.jwtService.sign({ id: user.id });
 		return accessToken;
 	}

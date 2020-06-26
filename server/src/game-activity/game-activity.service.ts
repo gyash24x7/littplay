@@ -1,4 +1,4 @@
-import { Injectable } from "@nestjs/common";
+import { Injectable, Logger } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import cuid from "cuid";
 import { Repository } from "typeorm";
@@ -12,7 +12,13 @@ export class GameActivityService {
 		private readonly gameActivityRepo: Repository<GameActivity>
 	) {}
 
+	private readonly logger = new Logger("GameActivityService");
+
 	async createActivity(data: CreateGameActivityInput) {
-		return this.gameActivityRepo.save({ id: cuid(), ...data });
+		const activity = await this.gameActivityRepo.save({ id: cuid(), ...data });
+		this.logger.log(
+			`GameActivity created: ${activity.kind}, ${activity.game.gameCode}`
+		);
+		return activity;
 	}
 }

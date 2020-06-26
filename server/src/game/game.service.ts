@@ -1,9 +1,9 @@
-import { Injectable, NotFoundException } from "@nestjs/common";
+import { Injectable, Logger, NotFoundException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import cuid from "cuid";
 import { Repository } from "typeorm";
+import { GameToUserService } from "../game-to-user/game-to-user.service";
 import { User } from "../user/user.entity";
-import { GameStatus } from "../utils";
 import { Deck } from "../utils/deck";
 import { Game } from "./game.entity";
 import { CreateTeamsInput } from "./game.inputs";
@@ -11,58 +11,82 @@ import { CreateTeamsInput } from "./game.inputs";
 @Injectable()
 export class GameService {
 	constructor(
-		@InjectRepository(Game) private readonly gameRepo: Repository<Game>
+		@InjectRepository(Game) private readonly gameRepo: Repository<Game>,
+		private readonly gameToUserService: GameToUserService
 	) {}
 
-	async createGame({ id: createdById }: User) {
-		const gameCode = [...Array(6)]
-			.map(() => (~~(Math.random() * 36)).toString(36))
-			.join("")
-			.toUpperCase();
-		const id = cuid();
-		return await this.gameRepo.save({ id, gameCode, createdById });
+	private readonly logger = new Logger("GameService");
+
+	async createGame(user: User) {
+		const game = await this.gameRepo.save({
+			id: cuid(),
+			gameCode: cuid.slug().toUpperCase(),
+			createdById: user.id
+		});
+		this.logger.log(`Game Created: ${game.gameCode}`);
+
+		await this.gameToUserService.createGameToUser({
+			gameId: game.id,
+			userId: user.id
+		});
+
+		return game;
 	}
 
 	async joinGame(gameCode: string, user: User) {
-		const game = await this.gameRepo.findOne({
-			gameCode,
-			status: GameStatus.NOT_STARTED
-		});
+		let game = await this.gameRepo.findOne({ gameCode });
 		if (!game) throw new NotFoundException("Game Not Found!");
 
-		game.players.push(user);
-		return this.gameRepo.save(game);
+		if (!this.gameToUserRelationExists(game, user)) {
+			await this.gameToUserService.createGameToUserRelation({
+				gameId: game.id,
+				userId: user.id
+			});
+		}
+
+		return game;
 	}
 
-	async createTeams(data: CreateTeamsInput) {
-		const game = await this.gameRepo.findOne(data.gameId);
+	async createTeams({ teamA, teamB, gameId }: CreateTeamsInput) {
+		let game = await this.gameRepo.findOne(gameId);
 		if (!game) throw new NotFoundException("Game Not Found!");
-		game.teamA = data.teamA;
-		game.teamB = data.teamB;
-		await this.gameRepo.save(game);
+		game.teamA = teamA;
+		game.teamB = teamB;
+		let { gameCode } = await this.gameRepo.save(game);
+		this.logger.log(
+			`Teams Created for the Game: ${gameCode}, ${teamA}, ${teamB}`
+		);
+
+		await this.gameToUserService.addTeamsToGameToUserRelations(
+			game.gameToUsers,
+			[teamA, teamB]
+		);
 	}
 
 	async startGame(id: string) {
-		const game = await this.gameRepo.findOne(id);
+		let game: any = await this.gameRepo.findOne(id);
 		if (!game) throw new NotFoundException("Game Not Found!");
 
 		const deck = new Deck();
 		deck.removeCardsOfRank("SEVEN");
 		deck.shuffle();
-		const hands = deck.generateHands(6);
-		game.a0 = hands[0].map((card) => card.getCardString());
-		game.a1 = hands[1].map((card) => card.getCardString());
-		game.a2 = hands[2].map((card) => card.getCardString());
-		game.b0 = hands[3].map((card) => card.getCardString());
-		game.b1 = hands[4].map((card) => card.getCardString());
-		game.b2 = hands[5].map((card) => card.getCardString());
+		deck.generateHands(6).map((hand, i) => {
+			game[`a${i}`] = hand.map((card) => card.getCardString());
+		});
 
-		await this.gameRepo.save(game);
+		game = await this.gameRepo.save(game);
+		this.logger.log(`Generated Hands for the Game: ${game.gameCode}`);
 	}
 
 	async getGame(gameCode: string) {
 		const game = await this.gameRepo.findOne({ where: { gameCode } });
 		if (!game) throw new NotFoundException("Game Not Found!");
 		return game;
+	}
+
+	gameToUserRelationExists(game: Game, user: User) {
+		const relation = game.gameToUsers.find(({ userId }) => user.id === userId);
+
+		return !!relation;
 	}
 }
