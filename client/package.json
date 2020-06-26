@@ -13,7 +13,7 @@
 		"@ionic/react": "^5.2.2",
 		"@ionic/react-hooks": "^0.0.8",
 		"@ionic/react-router": "^5.2.2",
-		"graphql": "14.6.0",
+		"graphql": "15.1.0",
 		"graphql-tag": "^2.10.3",
 		"ionicons": "^5.1.0",
 		"lorem-ipsum": "^2.0.3",
