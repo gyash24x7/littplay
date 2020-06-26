@@ -1,4 +1,5 @@
-import { Resolver } from '@nestjs/graphql';
+import { Resolver } from "@nestjs/graphql";
+import { GameToUserType } from "./game-to-user.type";
 
-@Resolver('GameToUser')
+@Resolver(() => GameToUserType)
 export class GameToUserResolver {}

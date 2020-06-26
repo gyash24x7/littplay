@@ -11,7 +11,8 @@ export enum GameActivityKind {
 	CARD_GIVEN,
 	CARD_DECLINED,
 	CALLING_SET,
-	SET_CALLED
+	SET_CALLED,
+	TEAMS_CREATED
 }
 
 export const SUITS = ["SPADES", "HEARTS", "CLUBS", "DIAMONDS"];

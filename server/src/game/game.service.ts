@@ -25,11 +25,10 @@ export class GameService {
 		});
 		this.logger.log(`Game Created: ${game.gameCode}`);
 
-		await this.gameToUserService.createGameToUser({
+		await this.gameToUserService.createGameToUserRelation({
 			gameId: game.id,
 			userId: user.id
 		});
-
 		return game;
 	}
 
@@ -52,15 +51,17 @@ export class GameService {
 		if (!game) throw new NotFoundException("Game Not Found!");
 		game.teamA = teamA;
 		game.teamB = teamB;
-		let { gameCode } = await this.gameRepo.save(game);
+		game = await this.gameRepo.save(game);
 		this.logger.log(
-			`Teams Created for the Game: ${gameCode}, ${teamA}, ${teamB}`
+			`Teams Created for the Game: ${game.gameCode}, ${teamA}, ${teamB}`
 		);
 
-		await this.gameToUserService.addTeamsToGameToUserRelations(
+		game.gameToUsers = await this.gameToUserService.addTeamsToGameToUserRelations(
 			game.gameToUsers,
 			[teamA, teamB]
 		);
+
+		return game;
 	}
 
 	async startGame(id: string) {
@@ -86,7 +87,6 @@ export class GameService {
 
 	gameToUserRelationExists(game: Game, user: User) {
 		const relation = game.gameToUsers.find(({ userId }) => user.id === userId);
-
 		return !!relation;
 	}
 }

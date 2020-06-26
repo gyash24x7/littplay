@@ -1,5 +1,4 @@
-import { Column, Entity, ManyToMany, PrimaryColumn } from "typeorm";
-import { Game } from "../game/game.entity";
+import { Column, Entity, PrimaryColumn } from "typeorm";
 
 @Entity()
 export class User {
@@ -9,7 +8,4 @@ export class User {
 	@Column() password: string;
 	@Column() salt: string;
 	@Column() avatar: string;
-
-	@ManyToMany(() => Game, (game) => game.players)
-	games: Game[];
 }
