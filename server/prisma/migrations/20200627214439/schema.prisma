@@ -1,0 +1,60 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+datasource db {
+  provider = "postgresql"
+  url = "***"
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id       String @id @default(cuid())
+  name     String
+  email    String @unique
+  password String
+  salt     String @unique
+  avatar   String
+  games    Game[] @relation(references: [id])
+  teams    Team[] @relation(references: [id])
+}
+
+model Game {
+  id          String         @id @default(cuid())
+  code        String         @unique
+  players     User[]         @relation(references: [id])
+  status      GameStatus     @default(NOT_STARTED)
+  playerCount Int            @default(6)
+  teams       Team[]         @relation(references: [id])
+  activity    GameActivity[]
+}
+
+model Team {
+  id      String @id @default(cuid())
+  name    String
+  members User[] @relation(references: [id])
+  games   Game[] @relation(references: [id])
+}
+
+model GameActivity {
+  id          String           @id @default(cuid())
+  description String
+  type        GameActivityType
+  game        Game             @relation(fields: [gameId], references: [id])
+  gameId      String
+}
+
+enum GameActivityType {
+  PLAYER_JOINED
+  TEAMS_CREATED
+  GAME_STARTED
+}
+
+enum GameStatus {
+  NOT_STARTED
+  TEAMS_CREATED
+  IN_PROGRESS
+  COMPLETED
+}

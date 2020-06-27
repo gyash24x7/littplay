@@ -1,0 +1,15 @@
+{
+  "version": "0.3.14-fixed",
+  "steps": [
+    {
+      "tag": "UpdateEnum",
+      "enum": "GameStatus",
+      "createdValues": [
+        "IN_PROGRESS"
+      ],
+      "deletedValues": [
+        "STARTED"
+      ]
+    }
+  ]
+}
