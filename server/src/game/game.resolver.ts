@@ -7,13 +7,11 @@ import {
 	ResolveField,
 	Resolver
 } from "@nestjs/graphql";
-import { GameActivityService } from "../game-activity/game-activity.service";
 import { GameToUserType } from "../game-to-user/game-to-user.type";
 import { AuthUser } from "../user/auth-user.decorator";
 import { GqlAuthGuard } from "../user/gql-auth.guard";
 import { User } from "../user/user.entity";
 import { UserType } from "../user/user.type";
-import { GameActivityKind } from "../utils";
 import { Game } from "./game.entity";
 import { CreateTeamsInput } from "./game.inputs";
 import { GameService } from "./game.service";
@@ -21,10 +19,7 @@ import { GameType } from "./game.type";
 
 @Resolver(() => GameType)
 export class GameResolver {
-	constructor(
-		private readonly gameService: GameService,
-		private readonly gameActivityService: GameActivityService
-	) {}
+	constructor(private readonly gameService: GameService) {}
 
 	@Mutation(() => GameType)
 	@UseGuards(GqlAuthGuard)
@@ -37,11 +32,6 @@ export class GameResolver {
 	@UseGuards(GqlAuthGuard)
 	async joinGame(@Args("gameCode") gameCode: string, @AuthUser() user: User) {
 		const game = await this.gameService.joinGame(gameCode, user);
-		await this.gameActivityService.createActivity({
-			game,
-			kind: GameActivityKind.PLAYER_JOINED,
-			description: `${user.name} joined the game`
-		});
 		return game;
 	}
 
@@ -57,12 +47,7 @@ export class GameResolver {
 		@Args("data") data: CreateTeamsInput,
 		@AuthUser() user: User
 	) {
-		const game = await this.gameService.createTeams(data);
-		await this.gameActivityService.createActivity({
-			game,
-			kind: GameActivityKind.TEAMS_CREATED,
-			description: `${user.name} created the teams`
-		});
+		const game = await this.gameService.createTeams(data, user);
 		return game;
 	}
 

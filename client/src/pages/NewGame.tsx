@@ -8,19 +8,17 @@ import {
 } from "@ionic/react";
 import React from "react";
 import { useHistory } from "react-router";
-import { AppHeader } from "../components/AppHeader";
 import { JoinGame } from "../components/JoinGame";
 import { useCreateGameMutation } from "../generated";
 
 export const NewGamePage = () => {
 	const history = useHistory();
 	const [createGame, { loading }] = useCreateGameMutation({
-		onCompleted: (data) => history.push(`/play/${data.createGame.id}`)
+		onCompleted: (data) => history.push(`/game/${data.createGame.id}`)
 	});
 
 	return (
 		<IonPage>
-			<AppHeader />
 			<IonContent>
 				<IonGrid className="container new-game">
 					<JoinGame />

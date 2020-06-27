@@ -47,11 +47,11 @@ export const AppMenu = () => {
 			</IonHeader>
 			<IonContent>
 				<IonList className="app-menu-list">
-					<IonItem onClick={handleMenuItemClick("play")}>
+					<IonItem onClick={handleMenuItemClick("/game")}>
 						<IonIcon icon={play} />
-						<IonText className="item-text">Play</IonText>
+						<IonText className="item-text">New Game</IonText>
 					</IonItem>
-					<IonItem onClick={handleMenuItemClick("profile")}>
+					<IonItem onClick={handleMenuItemClick("/profile")}>
 						<IonIcon icon={personCircle} />
 						<IonText className="item-text">Profile</IonText>
 					</IonItem>

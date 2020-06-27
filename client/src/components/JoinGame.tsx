@@ -17,7 +17,7 @@ export const JoinGame = () => {
 
 	const [joinGame, { loading }] = useJoinGameMutation({
 		variables: { gameCode },
-		onCompleted: ({ joinGame }) => history.push(`/play/${joinGame.id}`)
+		onCompleted: ({ joinGame }) => history.push(`/game/${joinGame.id}`)
 	});
 
 	const validateData = () => {
@@ -47,7 +47,7 @@ export const JoinGame = () => {
 			<IonButton className="app-button" onClick={handleSubmit}>
 				Join Game
 			</IonButton>
-			<ErrorMsg message={errorMsg} />
+			{errorMsg && <ErrorMsg message={errorMsg} />}
 		</Fragment>
 	);
 };

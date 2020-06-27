@@ -157,13 +157,13 @@
 
 .players-wrapper {
 	display: flex;
+	justify-content: center;
 	flex-wrap: wrap;
 	margin: -10px;
 }
 
 .player-icon {
 	margin: 10px;
-	flex: 1;
 	min-width: 100px;
 	display: flex;
 	flex-direction: column;

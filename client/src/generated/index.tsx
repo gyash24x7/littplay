@@ -167,6 +167,13 @@ export type MeQueryVariables = Exact<{ [key: string]: never; }>;
 
 export type MeQuery = { me: { id: string, name: string, email: string, avatar: string } };
 
+export type PlayerJoinActivitySubscriptionVariables = Exact<{
+  gameCode: Scalars['String'];
+}>;
+
+
+export type PlayerJoinActivitySubscription = { gameActivity: { id: string, kind: GameActivityKind, game: { players: Array<{ id: string, name: string, avatar: string }> } } };
+
 
 export const CreateGameDocument = gql`
     mutation CreateGame {
@@ -271,3 +278,23 @@ export type MeQueryResult = ApolloReactCommon.QueryResult<MeQuery, MeQueryVariab
 export function refetchMeQuery(variables?: MeQueryVariables) {
       return { query: MeDocument, variables: variables }
     }
+export const PlayerJoinActivityDocument = gql`
+    subscription PlayerJoinActivity($gameCode: String!) {
+  gameActivity(gameCode: $gameCode) {
+    id
+    kind
+    game {
+      players {
+        id
+        name
+        avatar
+      }
+    }
+  }
+}
+    `;
+export function usePlayerJoinActivitySubscription(baseOptions?: ApolloReactHooks.SubscriptionHookOptions<PlayerJoinActivitySubscription, PlayerJoinActivitySubscriptionVariables>) {
+        return ApolloReactHooks.useSubscription<PlayerJoinActivitySubscription, PlayerJoinActivitySubscriptionVariables>(PlayerJoinActivityDocument, baseOptions);
+      }
+export type PlayerJoinActivitySubscriptionHookResult = ReturnType<typeof usePlayerJoinActivitySubscription>;
+export type PlayerJoinActivitySubscriptionResult = ApolloReactCommon.SubscriptionResult<PlayerJoinActivitySubscription>;

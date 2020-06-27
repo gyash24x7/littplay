@@ -19,7 +19,7 @@ export class Game {
 	status: GameStatus;
 
 	@Column() createdById: string;
-	@ManyToOne(() => User, { eager: true }) createdBy: User;
+	@ManyToOne(() => User) createdBy: User;
 
 	@OneToMany(() => GameToUser, (gameToUser) => gameToUser.game, { eager: true })
 	gameToUsers: GameToUser[];

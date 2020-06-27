@@ -2,8 +2,10 @@ import { Injectable, Logger, NotFoundException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import cuid from "cuid";
 import { Repository } from "typeorm";
+import { GameActivityService } from "../game-activity/game-activity.service";
 import { GameToUserService } from "../game-to-user/game-to-user.service";
 import { User } from "../user/user.entity";
+import { GameActivityKind } from "../utils";
 import { Deck } from "../utils/deck";
 import { Game } from "./game.entity";
 import { CreateTeamsInput } from "./game.inputs";
@@ -12,7 +14,8 @@ import { CreateTeamsInput } from "./game.inputs";
 export class GameService {
 	constructor(
 		@InjectRepository(Game) private readonly gameRepo: Repository<Game>,
-		private readonly gameToUserService: GameToUserService
+		private readonly gameToUserService: GameToUserService,
+		private readonly gameActivityService: GameActivityService
 	) {}
 
 	private readonly logger = new Logger("GameService");
@@ -41,12 +44,22 @@ export class GameService {
 				gameId: game.id,
 				userId: user.id
 			});
+
+			game = await this.gameRepo.findOne({ gameCode });
+
+			if (game) {
+				await this.gameActivityService.createActivity({
+					game,
+					kind: GameActivityKind.PLAYER_JOINED,
+					description: `${user.name} joined the game`
+				});
+			}
 		}
 
-		return game;
+		return game!;
 	}
 
-	async createTeams({ teamA, teamB, gameId }: CreateTeamsInput) {
+	async createTeams({ teamA, teamB, gameId }: CreateTeamsInput, user: User) {
 		let game = await this.gameRepo.findOne(gameId);
 		if (!game) throw new NotFoundException("Game Not Found!");
 		game.teamA = teamA;
@@ -60,6 +73,12 @@ export class GameService {
 			game.gameToUsers,
 			[teamA, teamB]
 		);
+
+		await this.gameActivityService.createActivity({
+			game,
+			kind: GameActivityKind.TEAMS_CREATED,
+			description: `${user.name} created the teams`
+		});
 
 		return game;
 	}

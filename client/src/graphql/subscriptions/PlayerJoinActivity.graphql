@@ -1,0 +1,13 @@
+subscription PlayerJoinActivity($gameCode: String!) {
+	gameActivity(gameCode: $gameCode) {
+		id
+		kind
+		game {
+			players {
+				id
+				name
+				avatar
+			}
+		}
+	}
+}
