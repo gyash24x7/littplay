@@ -7,7 +7,7 @@ export const generateAvatar = () => {
 
 	let baseUrl = "https://avataaars.io/?";
 	Object.keys(queryParams).map((key) => {
-		baseUrl += `${key}=${obj[key]}&`;
+		baseUrl += `${key}=${queryParams[key]}&`;
 	});
 	baseUrl += "avatarStyle=Circle";
 

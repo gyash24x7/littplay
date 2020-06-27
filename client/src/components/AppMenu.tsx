@@ -3,7 +3,6 @@ import {
 	IonHeader,
 	IonIcon,
 	IonItem,
-	IonItemDivider,
 	IonList,
 	IonMenu,
 	IonText,
@@ -53,7 +52,6 @@ export const AppMenu = () => {
 					</IonItem>
 				</IonList>
 				<IonList className="app-menu-logout">
-					<IonItemDivider />
 					<IonItem>
 						<IonIcon icon={logOut} />
 						<IonText className="item-text">Log Out</IonText>

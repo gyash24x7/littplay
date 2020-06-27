@@ -12,6 +12,7 @@ import { GameToUserType } from "../game-to-user/game-to-user.type";
 import { AuthUser } from "../user/auth-user.decorator";
 import { GqlAuthGuard } from "../user/gql-auth.guard";
 import { User } from "../user/user.entity";
+import { UserType } from "../user/user.type";
 import { GameActivityKind } from "../utils";
 import { Game } from "./game.entity";
 import { CreateTeamsInput } from "./game.inputs";
@@ -46,8 +47,8 @@ export class GameResolver {
 
 	@Query(() => GameType)
 	@UseGuards(GqlAuthGuard)
-	async getGame(@Args("gameCode") gameCode: string) {
-		return this.gameService.getGame(gameCode);
+	async getGame(@Args("gameId") gameId: string) {
+		return this.gameService.getGame(gameId);
 	}
 
 	@Mutation(() => GameType)
@@ -81,5 +82,10 @@ export class GameResolver {
 				.filter((gameToUser) => gameToUser.team === game.teamB)
 				.map<GameToUserType>(({ user, hand }) => ({ user, hand }));
 		return [];
+	}
+
+	@ResolveField(() => [UserType])
+	players(@Parent() game: Game) {
+		return game.gameToUsers?.map((gameToUser) => gameToUser.user) || [];
 	}
 }

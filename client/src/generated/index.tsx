@@ -35,6 +35,7 @@ export type Game = {
   teamBScore: Scalars['Int'];
   teamAMembers: Array<GameToUser>;
   teamBMembers: Array<GameToUser>;
+  players: Array<User>;
 };
 
 export type GameActivity = {
@@ -106,7 +107,7 @@ export type Query = {
 
 
 export type QueryGetGameArgs = {
-  gameCode: Scalars['String'];
+  gameId: Scalars['String'];
 };
 
 export type Subscription = {
@@ -146,6 +147,13 @@ export type LoginMutationVariables = Exact<{
 
 
 export type LoginMutation = { login: string };
+
+export type GetGameQueryVariables = Exact<{
+  gameId: Scalars['String'];
+}>;
+
+
+export type GetGameQuery = { getGame: { id: string, gameCode: string, noOfPlayers: number, status: GameStatus, players: Array<{ id: string, name: string, avatar: string }> } };
 
 export type MeQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -193,6 +201,33 @@ export function useLoginMutation(baseOptions?: ApolloReactHooks.MutationHookOpti
 export type LoginMutationHookResult = ReturnType<typeof useLoginMutation>;
 export type LoginMutationResult = ApolloReactCommon.MutationResult<LoginMutation>;
 export type LoginMutationOptions = ApolloReactCommon.BaseMutationOptions<LoginMutation, LoginMutationVariables>;
+export const GetGameDocument = gql`
+    query GetGame($gameId: String!) {
+  getGame(gameId: $gameId) {
+    id
+    gameCode
+    noOfPlayers
+    status
+    players {
+      id
+      name
+      avatar
+    }
+  }
+}
+    `;
+export function useGetGameQuery(baseOptions?: ApolloReactHooks.QueryHookOptions<GetGameQuery, GetGameQueryVariables>) {
+        return ApolloReactHooks.useQuery<GetGameQuery, GetGameQueryVariables>(GetGameDocument, baseOptions);
+      }
+export function useGetGameLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<GetGameQuery, GetGameQueryVariables>) {
+          return ApolloReactHooks.useLazyQuery<GetGameQuery, GetGameQueryVariables>(GetGameDocument, baseOptions);
+        }
+export type GetGameQueryHookResult = ReturnType<typeof useGetGameQuery>;
+export type GetGameLazyQueryHookResult = ReturnType<typeof useGetGameLazyQuery>;
+export type GetGameQueryResult = ApolloReactCommon.QueryResult<GetGameQuery, GetGameQueryVariables>;
+export function refetchGetGameQuery(variables?: GetGameQueryVariables) {
+      return { query: GetGameDocument, variables: variables }
+    }
 export const MeDocument = gql`
     query Me {
   me {

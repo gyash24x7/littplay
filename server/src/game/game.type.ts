@@ -1,5 +1,6 @@
 import { Field, ID, Int, ObjectType, registerEnumType } from "@nestjs/graphql";
 import { GameToUserType } from "../game-to-user/game-to-user.type";
+import { UserType } from "../user/user.type";
 import { GameStatus } from "../utils";
 
 registerEnumType(GameStatus, { name: "GameStatus" });
@@ -18,4 +19,5 @@ export class GameType {
 
 	@Field(() => [GameToUserType]) teamAMembers: GameToUserType[];
 	@Field(() => [GameToUserType]) teamBMembers: GameToUserType[];
+	@Field(() => [UserType]) players: UserType[];
 }

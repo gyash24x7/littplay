@@ -79,8 +79,8 @@ export class GameService {
 		this.logger.log(`Generated Hands for the Game: ${game.gameCode}`);
 	}
 
-	async getGame(gameCode: string) {
-		const game = await this.gameRepo.findOne({ where: { gameCode } });
+	async getGame(gameId: string) {
+		const game = await this.gameRepo.findOne(gameId);
 		if (!game) throw new NotFoundException("Game Not Found!");
 		return game;
 	}
