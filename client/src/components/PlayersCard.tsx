@@ -2,7 +2,9 @@ import {
 	IonCard,
 	IonCardContent,
 	IonCardHeader,
-	IonCardSubtitle,
+	IonCardTitle,
+	IonCol,
+	IonRow,
 	IonText
 } from "@ionic/react";
 import React from "react";
@@ -16,17 +18,17 @@ export const PlayersCard = ({ players }: PlayersCardProps) => {
 	return (
 		<IonCard className="game-play-card">
 			<IonCardHeader>
-				<IonCardSubtitle className="card-subtitle">Players</IonCardSubtitle>
+				<IonCardTitle>PLAYERS</IonCardTitle>
 			</IonCardHeader>
 			<IonCardContent>
-				<div className="players-wrapper">
+				<IonRow>
 					{players.map((player) => (
-						<div key={player.id} className="player-icon">
+						<IonCol className="player-icon" key={player.id}>
 							<img src={player.avatar} alt="" className="user-avatar" />
 							<IonText>{player.name}</IonText>
-						</div>
+						</IonCol>
 					))}
-				</div>
+				</IonRow>
 			</IonCardContent>
 		</IonCard>
 	);

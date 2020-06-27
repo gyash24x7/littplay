@@ -1,8 +1,10 @@
 import {
+	IonCol,
 	IonContent,
 	IonGrid,
 	IonLoading,
 	IonPage,
+	IonRow,
 	IonToast
 } from "@ionic/react";
 import React, { useState } from "react";
@@ -22,13 +24,21 @@ export const GamePlayPage = () => {
 		<IonPage>
 			<IonContent>
 				<IonGrid className="game-play-container">
-					{data?.getGame.status === GameStatus.NotStarted && (
-						<NewGameCard
-							gameCode={data.getGame.gameCode}
-							displayToast={() => setIsToastVisible(true)}
-						/>
-					)}
-					{data?.getGame && <PlayersCard players={data.getGame.players} />}
+					<IonRow>
+						<IonCol>
+							{data?.getGame.status === GameStatus.NotStarted && (
+								<NewGameCard
+									gameCode={data.getGame.gameCode}
+									displayToast={() => setIsToastVisible(true)}
+								/>
+							)}
+						</IonCol>
+					</IonRow>
+					<IonRow>
+						<IonCol>
+							{data?.getGame && <PlayersCard players={data.getGame.players} />}
+						</IonCol>
+					</IonRow>
 				</IonGrid>
 				<IonToast
 					isOpen={isToastVisible}

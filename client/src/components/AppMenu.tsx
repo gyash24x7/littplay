@@ -23,6 +23,11 @@ export const AppMenu = () => {
 		history.push(path);
 	};
 
+	const handleLogout = () => {
+		localStorage.clear();
+		window.location.pathname = "/login";
+	};
+
 	return (
 		<IonMenu
 			side="start"
@@ -52,7 +57,7 @@ export const AppMenu = () => {
 					</IonItem>
 				</IonList>
 				<IonList className="app-menu-logout">
-					<IonItem>
+					<IonItem onClick={handleLogout}>
 						<IonIcon icon={logOut} />
 						<IonText className="item-text">Log Out</IonText>
 					</IonItem>

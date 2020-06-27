@@ -22,8 +22,8 @@ export const NewGamePage = () => {
 		<IonPage>
 			<AppHeader />
 			<IonContent>
-				<IonGrid className="container">
-					<JoinGame withInput />
+				<IonGrid className="container new-game">
+					<JoinGame />
 					<br />
 					<IonText>OR</IonText>
 					<br />

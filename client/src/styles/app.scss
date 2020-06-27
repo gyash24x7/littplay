@@ -21,6 +21,10 @@
 	align-items: center;
 	height: 100%;
 	font-family: "montserrat" !important;
+
+	&.new-game {
+		width: 80%;
+	}
 }
 
 .logo-icon {
@@ -56,7 +60,7 @@
 	height: 50px;
 	font-family: "montserrat-bold";
 	text-transform: uppercase;
-	width: 80%;
+	width: 100%;
 }
 
 .login-bottom-links {
@@ -108,8 +112,9 @@
 }
 
 .game-play-card {
-	width: 100%;
+	flex: 1;
 	font-family: "montserrat";
+	text-align: center;
 	margin: 5px 10px;
 }
 
@@ -147,11 +152,7 @@
 }
 
 .game-play-container {
-	display: flex;
-	padding: 10px;
-	padding-top: 61px;
-	flex-direction: column;
-	align-items: center;
+	padding-top: 71px;
 }
 
 .players-wrapper {

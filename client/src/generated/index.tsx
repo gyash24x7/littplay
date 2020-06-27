@@ -140,6 +140,13 @@ export type CreateUserMutationVariables = Exact<{
 
 export type CreateUserMutation = { createUser: string };
 
+export type JoinGameMutationVariables = Exact<{
+  gameCode: Scalars['String'];
+}>;
+
+
+export type JoinGameMutation = { joinGame: { id: string } };
+
 export type LoginMutationVariables = Exact<{
   email: Scalars['String'];
   password: Scalars['String'];
@@ -189,6 +196,20 @@ export function useCreateUserMutation(baseOptions?: ApolloReactHooks.MutationHoo
 export type CreateUserMutationHookResult = ReturnType<typeof useCreateUserMutation>;
 export type CreateUserMutationResult = ApolloReactCommon.MutationResult<CreateUserMutation>;
 export type CreateUserMutationOptions = ApolloReactCommon.BaseMutationOptions<CreateUserMutation, CreateUserMutationVariables>;
+export const JoinGameDocument = gql`
+    mutation JoinGame($gameCode: String!) {
+  joinGame(gameCode: $gameCode) {
+    id
+  }
+}
+    `;
+export type JoinGameMutationFn = ApolloReactCommon.MutationFunction<JoinGameMutation, JoinGameMutationVariables>;
+export function useJoinGameMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<JoinGameMutation, JoinGameMutationVariables>) {
+        return ApolloReactHooks.useMutation<JoinGameMutation, JoinGameMutationVariables>(JoinGameDocument, baseOptions);
+      }
+export type JoinGameMutationHookResult = ReturnType<typeof useJoinGameMutation>;
+export type JoinGameMutationResult = ApolloReactCommon.MutationResult<JoinGameMutation>;
+export type JoinGameMutationOptions = ApolloReactCommon.BaseMutationOptions<JoinGameMutation, JoinGameMutationVariables>;
 export const LoginDocument = gql`
     mutation Login($email: String!, $password: String!) {
   login(data: {email: $email, password: $password})

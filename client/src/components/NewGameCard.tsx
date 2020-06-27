@@ -1,4 +1,5 @@
 import {
+	IonButton,
 	IonCard,
 	IonCardHeader,
 	IonCardSubtitle,
@@ -12,22 +13,21 @@ interface NewGameCardProps {
 }
 
 export const NewGameCard = ({ gameCode, displayToast }: NewGameCardProps) => {
+	const copyCode = () =>
+		navigator.clipboard.writeText(gameCode).then(displayToast);
+
 	return (
 		<IonCard className="game-play-card">
 			<IonCardHeader>
 				<IonCardSubtitle className="card-subtitle">
 					Your Game Code is
 				</IonCardSubtitle>
-				<IonCardTitle
-					className="game-code"
-					onClick={() =>
-						navigator.clipboard.writeText(gameCode).then(displayToast)
-					}
-				>
-					{gameCode}
-				</IonCardTitle>
-				<IonCardSubtitle>(Click the code to copy)</IonCardSubtitle>
+				<IonCardTitle className="game-code">{gameCode}</IonCardTitle>
 				<IonCardSubtitle>Share the code with other players</IonCardSubtitle>
+				<br />
+				<IonButton color="dark" size="small" onClick={copyCode}>
+					Copy Code
+				</IonButton>
 			</IonCardHeader>
 			<br />
 		</IonCard>
