@@ -1,12 +1,7 @@
-import {
-	Inject,
-	Injectable,
-	Logger,
-	UnauthorizedException
-} from "@nestjs/common";
+import { Injectable, Logger, UnauthorizedException } from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
-import { PrismaClient } from "@prisma/client";
 import bcrypt from "bcryptjs";
+import { PrismaService } from "../prisma/prisma.service";
 import { AvatarService } from "./avatar.service";
 import { CreateUserInput, LoginInput } from "./user.inputs";
 
@@ -14,7 +9,7 @@ import { CreateUserInput, LoginInput } from "./user.inputs";
 export class UserService {
 	private logger = new Logger("UserService");
 	constructor(
-		@Inject("PrismaClient") private readonly prisma: PrismaClient,
+		private readonly prisma: PrismaService,
 		private readonly avatarService: AvatarService,
 		private readonly jwtService: JwtService
 	) {}

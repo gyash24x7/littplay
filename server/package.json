@@ -25,6 +25,7 @@
 		"bcryptjs": "^2.4.3",
 		"class-transformer": "^0.2.3",
 		"class-validator": "^0.12.2",
+		"cuid": "^2.1.8",
 		"dotenv-cli": "^3.2.0",
 		"graphql": "14.6.0",
 		"helmet": "^3.23.3",

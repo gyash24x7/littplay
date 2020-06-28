@@ -2,6 +2,7 @@ import { Module } from "@nestjs/common";
 import { GraphQLModule } from "@nestjs/graphql";
 import { GameActivityModule } from "./game-activity/game-activity.module";
 import { GameModule } from "./game/game.module";
+import { PrismaModule } from "./prisma/prisma.module";
 import { TeamModule } from "./team/team.module";
 import { UserModule } from "./user/user.module";
 
@@ -15,7 +16,8 @@ import { UserModule } from "./user/user.module";
 		UserModule,
 		GameModule,
 		TeamModule,
-		GameActivityModule
+		GameActivityModule,
+		PrismaModule
 	]
 })
 export class AppModule {}
