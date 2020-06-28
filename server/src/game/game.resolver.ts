@@ -54,6 +54,10 @@ export class GameResolver {
 		if (game.playerCount === game.players.length)
 			throw new BadRequestException("This Game already has 6 players!");
 
+		if (game.players.map((player) => player.id).includes(id)) {
+			return game.id;
+		}
+
 		try {
 			game = await this.prisma.game.update({
 				where: { code },

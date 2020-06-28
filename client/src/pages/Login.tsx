@@ -106,7 +106,7 @@ export const LoginPage = () => {
 									<IonText>Sign Up</IonText>
 								</Link>
 							</div>
-							<ErrorMsg message={errorMsg} />
+							{errorMsg && <ErrorMsg message={errorMsg} />}
 						</form>
 					</div>
 				</IonGrid>
