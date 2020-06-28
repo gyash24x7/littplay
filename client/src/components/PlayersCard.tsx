@@ -7,38 +7,32 @@ import {
 	IonRow,
 	IonText
 } from "@ionic/react";
-import React, { useState } from "react";
-import { usePlayerJoinActivitySubscription, User } from "../generated";
+import React from "react";
+import { Player } from "../generated";
+import { DeepPartial } from "../generated/types";
 
 interface PlayersCardProps {
-	players: Partial<User>[];
+	players: DeepPartial<Player>[];
 	gameCode: string;
 }
 
-export const PlayersCard = ({ players, gameCode }: PlayersCardProps) => {
-	const [playerData, setPlayerData] = useState(players);
-
-	usePlayerJoinActivitySubscription({
-		variables: { gameCode },
-		onSubscriptionData({ subscriptionData: { data } }) {
-			setPlayerData(data?.gameActivity.game.players || players);
-		}
-	});
-
+export const PlayersCard = ({ players }: PlayersCardProps) => {
 	return (
 		<IonCard className="game-play-card">
 			<IonCardHeader>
-				<IonCardTitle>PLAYERS {players.length}</IonCardTitle>
+				<IonCardTitle>PLAYERS</IonCardTitle>
 			</IonCardHeader>
 			<IonCardContent>
 				<IonRow>
 					<IonCol className="players-wrapper">
-						{playerData.map((player) => (
-							<div className="player-icon" key={player.id}>
-								<img src={player.avatar} alt="" className="user-avatar" />
-								<IonText>{player.name}</IonText>
-							</div>
-						))}
+						{players
+							.map((player) => player.user!)
+							.map((user) => (
+								<div className="player-icon" key={user.id}>
+									<img src={user.avatar} alt="" className="user-avatar" />
+									<IonText>{user.name}</IonText>
+								</div>
+							))}
 					</IonCol>
 				</IonRow>
 			</IonCardContent>

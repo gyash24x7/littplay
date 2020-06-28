@@ -11,17 +11,17 @@ import { useJoinGameMutation } from "../generated";
 import { ErrorMsg } from "./ErrorMsg";
 
 export const JoinGame = () => {
-	const [gameCode, setGameCode] = useState("");
+	const [code, setCode] = useState("");
 	const [errorMsg, setErrorMsg] = useState<string>();
 	const history = useHistory();
 
 	const [joinGame, { loading }] = useJoinGameMutation({
-		variables: { gameCode },
-		onCompleted: ({ joinGame }) => history.push(`/game/${joinGame.id}`)
+		variables: { code },
+		onCompleted: ({ joinGame }) => history.push(`/game/${joinGame}`)
 	});
 
 	const validateData = () => {
-		if (!gameCode) return "GameCode is Required!";
+		if (!code) return "Code is Required!";
 		return;
 	};
 
@@ -39,8 +39,8 @@ export const JoinGame = () => {
 					<IonInput
 						className="app-input join-game"
 						placeholder="Game Code"
-						value={gameCode}
-						onInput={(e: any) => setGameCode(e.target.value.toUpperCase())}
+						value={code}
+						onInput={(e: any) => setCode(e.target.value.toUpperCase())}
 					/>
 				</IonItem>
 			</IonList>

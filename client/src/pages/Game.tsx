@@ -28,7 +28,7 @@ export const GamePage = () => {
 						<IonCol>
 							{data?.getGame.status === GameStatus.NotStarted && (
 								<NewGameCard
-									gameCode={data.getGame.gameCode}
+									gameCode={data.getGame.code}
 									displayToast={() => setIsToastVisible(true)}
 								/>
 							)}
@@ -39,7 +39,7 @@ export const GamePage = () => {
 							{data?.getGame && (
 								<PlayersCard
 									players={data.getGame.players}
-									gameCode={data.getGame.gameCode}
+									gameCode={data.getGame.code}
 								/>
 							)}
 						</IonCol>
@@ -49,7 +49,7 @@ export const GamePage = () => {
 					isOpen={isToastVisible}
 					duration={1000}
 					onDidDismiss={() => setIsToastVisible(false)}
-					message="Game Code copied to clipboard!"
+					message="Code copied to clipboard!"
 				/>
 			</IonContent>
 		</IonPage>

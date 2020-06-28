@@ -14,7 +14,7 @@ import { useCreateGameMutation } from "../generated";
 export const NewGamePage = () => {
 	const history = useHistory();
 	const [createGame, { loading }] = useCreateGameMutation({
-		onCompleted: (data) => history.push(`/game/${data.createGame.id}`)
+		onCompleted: (data) => history.push(`/game/${data.createGame}`)
 	});
 
 	return (

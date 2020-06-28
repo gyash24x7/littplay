@@ -37,8 +37,8 @@ type Query {
 }
 
 type Mutation {
-	createUser(data: CreateUserInput!): String
-	login(data: LoginInput!): String
+	createUser(data: CreateUserInput!): String!
+	login(data: LoginInput!): String!
 	createGame: String!
 	joinGame(code: String!): String!
 	createTeams(data: CreateTeamsInput!): Boolean!
