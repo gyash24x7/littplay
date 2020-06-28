@@ -1,4 +1,5 @@
 import { Module } from "@nestjs/common";
+import { ConfigModule } from "@nestjs/config";
 import { GraphQLModule } from "@nestjs/graphql";
 import { GameActivityModule } from "./game-activity/game-activity.module";
 import { GameModule } from "./game/game.module";
@@ -8,6 +9,7 @@ import { UserModule } from "./user/user.module";
 
 @Module({
 	imports: [
+		ConfigModule.forRoot({ envFilePath: "../prisma/.env" }),
 		GraphQLModule.forRoot({
 			autoSchemaFile: true,
 			installSubscriptionHandlers: true,

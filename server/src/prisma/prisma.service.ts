@@ -4,7 +4,9 @@ import {
 	OnModuleDestroy,
 	OnModuleInit
 } from "@nestjs/common";
+import { PrismaSelect } from "@paljs/plugins";
 import { PrismaClient } from "@prisma/client";
+import { GraphQLResolveInfo } from "graphql";
 
 @Injectable()
 export class PrismaService extends PrismaClient
@@ -26,5 +28,10 @@ export class PrismaService extends PrismaClient
 	async onModuleDestroy() {
 		await this.disconnect();
 		this.logger.log("Disconnected from DB!");
+	}
+
+	getSelectFromInfo(info: GraphQLResolveInfo) {
+		const select = new PrismaSelect(info);
+		return select.value;
 	}
 }

@@ -2,13 +2,11 @@ import { Module } from "@nestjs/common";
 import { JwtModule } from "@nestjs/jwt";
 import { PassportModule } from "@nestjs/passport";
 import { PrismaModule } from "../prisma/prisma.module";
-import { AvatarService } from "./avatar.service";
 import { JwtStrategy } from "./jwt.strategy";
 import { UserResolver } from "./user.resolver";
-import { UserService } from "./user.service";
 
 @Module({
-	providers: [UserResolver, UserService, AvatarService, JwtStrategy],
+	providers: [UserResolver, JwtStrategy],
 	imports: [
 		PassportModule.register({ defaultStrategy: "jwt" }),
 		JwtModule.register({
@@ -17,6 +15,6 @@ import { UserService } from "./user.service";
 		}),
 		PrismaModule
 	],
-	exports: [UserService, PassportModule, JwtStrategy]
+	exports: [PassportModule, JwtStrategy]
 })
 export class UserModule {}

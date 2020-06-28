@@ -1,0 +1,30 @@
+{
+  "version": "0.3.14-fixed",
+  "steps": [
+    {
+      "tag": "CreateEnum",
+      "enum": "GameActivityKind",
+      "values": [
+        "PLAYER_JOINED",
+        "TEAMS_CREATED",
+        "GAME_STARTED"
+      ]
+    },
+    {
+      "tag": "DeleteEnum",
+      "enum": "GameActivityType"
+    },
+    {
+      "tag": "CreateField",
+      "model": "GameActivity",
+      "field": "kind",
+      "type": "GameActivityKind",
+      "arity": "Required"
+    },
+    {
+      "tag": "DeleteField",
+      "model": "GameActivity",
+      "field": "type"
+    }
+  ]
+}

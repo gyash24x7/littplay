@@ -1,8 +1,4 @@
-import { Module } from '@nestjs/common';
-import { GameActivityResolver } from './game-activity.resolver';
-import { GameActivityService } from './game-activity.service';
+import { Module } from "@nestjs/common";
 
-@Module({
-  providers: [GameActivityResolver, GameActivityService]
-})
+@Module({})
 export class GameActivityModule {}
