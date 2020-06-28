@@ -1,6 +1,6 @@
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
+  url = "***"
 }
 
 generator client {
@@ -20,7 +20,7 @@ model User {
 model Player {
   id     String   @id @default(cuid())
   user   User     @relation(fields: [id], references: [id])
-  team   String   @default("")
+  team   String
   gameId String
   game   Game     @relation(fields: [gameId], references: [id])
   hand   String[]

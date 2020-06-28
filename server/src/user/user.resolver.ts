@@ -1,16 +1,21 @@
-import { Logger, UnauthorizedException, UseGuards } from "@nestjs/common";
+import {
+	ConflictException,
+	InternalServerErrorException,
+	Logger,
+	UnauthorizedException,
+	UseGuards
+} from "@nestjs/common";
 import { Args, Mutation, Query, Resolver } from "@nestjs/graphql";
 import { JwtService } from "@nestjs/jwt";
 import { User } from "@prisma/client";
 import bcrypt from "bcryptjs";
+import { CreateUserInput, LoginInput } from "../graphql/generated";
 import { PrismaService } from "../prisma/prisma.service";
 import { generateAvatar } from "../utils";
 import { AuthUser } from "./auth-user.decorator";
 import { GqlAuthGuard } from "./gql-auth.guard";
-import { CreateUserInput, LoginInput } from "./user.inputs";
-import { UserType } from "./user.type";
 
-@Resolver(() => UserType)
+@Resolver("User")
 export class UserResolver {
 	constructor(
 		private readonly prisma: PrismaService,
@@ -37,15 +42,23 @@ export class UserResolver {
 		const password = await bcrypt.hash(data.password, salt);
 		const avatar = generateAvatar();
 
-		const user = await this.prisma.user.create({
-			data: { ...data, password, salt, avatar }
-		});
+		let user: User | undefined;
 
-		this.logger.log(`User Created: ${user.id}`);
-		return this.jwtService.sign({ id: user.id });
+		try {
+			user = await this.prisma.user.create({
+				data: { ...data, password, salt, avatar }
+			});
+		} catch (error) {
+			if (error.code === "P2002")
+				throw new ConflictException("User Already Exists!");
+			else throw new InternalServerErrorException();
+		}
+
+		this.logger.log(`User Created: ${user!.id}`);
+		return this.jwtService.sign({ id: user!.id });
 	}
 
-	@Query(() => UserType)
+	@Query()
 	@UseGuards(GqlAuthGuard)
 	me(@AuthUser() user: User) {
 		return user;

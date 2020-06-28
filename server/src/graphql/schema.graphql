@@ -1,0 +1,73 @@
+type User {
+	id: ID!
+	name: String!
+	email: String!
+	avatar: String!
+}
+
+type Player {
+	id: ID!
+	user: User!
+	team: String!
+	game: Game!
+	hand: [String!]!
+}
+
+type Game {
+	id: ID!
+	code: String!
+	playerCount: Int!
+	players: [Player!]!
+	status: GameStatus!
+	teams: [String!]!
+	activity: [GameActivity!]!
+}
+
+type GameActivity {
+	id: ID!
+	description: String!
+	type: GameActivityType!
+	game: Game!
+}
+
+type Query {
+	me: User!
+	getGame(gameId: String!): Game!
+}
+
+type Mutation {
+	createUser(data: CreateUserInput!): String
+	login(data: LoginInput!): String
+	createGame: String!
+	joinGame(code: String!): String!
+	createTeams(data: CreateTeamsInput!): Boolean!
+}
+
+input CreateTeamsInput {
+	gameId: String!
+	teams: [String!]!
+}
+
+input LoginInput {
+	email: String!
+	password: String!
+}
+
+input CreateUserInput {
+	name: String!
+	email: String!
+	password: String!
+}
+
+enum GameActivityType {
+	PLAYER_JOINED
+	TEAMS_CREATED
+	GAME_STARTED
+}
+
+enum GameStatus {
+	NOT_STARTED
+	TEAMS_CREATED
+	IN_PROGRESS
+	COMPLETED
+}

@@ -11,7 +11,8 @@
 		"start": "nest start",
 		"start:dev": "nest start --watch",
 		"start:debug": "nest start --debug --watch",
-		"start:prod": "node dist/main"
+		"start:prod": "node dist/main",
+		"gen": "yarn prisma generate && ts-node ./src/utils/generateTypes.ts"
 	},
 	"dependencies": {
 		"@nestjs/common": "^7.2.0",
