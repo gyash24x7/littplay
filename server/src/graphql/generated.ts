@@ -19,23 +19,23 @@ export enum GameStatus {
     COMPLETED = "COMPLETED"
 }
 
-export interface CreateTeamsInput {
+export class CreateTeamsInput {
     gameId: string;
     teams: string[];
 }
 
-export interface CreateUserInput {
+export class CreateUserInput {
     name: string;
     email: string;
     password: string;
 }
 
-export interface LoginInput {
+export class LoginInput {
     email: string;
     password: string;
 }
 
-export interface Game {
+export class Game {
     id: string;
     code: string;
     playerCount: number;
@@ -43,24 +43,29 @@ export interface Game {
     status: GameStatus;
     teams: string[];
     activity: GameActivity[];
+    createdBy: User;
 }
 
-export interface GameActivity {
+export class GameActivity {
     id: string;
     description: string;
     type: GameActivityType;
     game: Game;
 }
 
-export interface IMutation {
-    createUser(data: CreateUserInput): string | Promise<string>;
-    login(data: LoginInput): string | Promise<string>;
-    createGame(): string | Promise<string>;
-    joinGame(code: string): string | Promise<string>;
-    createTeams(data: CreateTeamsInput): boolean | Promise<boolean>;
+export abstract class IMutation {
+    abstract createUser(data: CreateUserInput): string | Promise<string>;
+
+    abstract login(data: LoginInput): string | Promise<string>;
+
+    abstract createGame(): string | Promise<string>;
+
+    abstract joinGame(code: string): string | Promise<string>;
+
+    abstract createTeams(data: CreateTeamsInput): boolean | Promise<boolean>;
 }
 
-export interface Player {
+export class Player {
     id: string;
     user: User;
     team: string;
@@ -68,12 +73,13 @@ export interface Player {
     hand: string[];
 }
 
-export interface IQuery {
-    me(): User | Promise<User>;
-    getGame(gameId: string): Game | Promise<Game>;
+export abstract class IQuery {
+    abstract me(): User | Promise<User>;
+
+    abstract getGame(gameId: string): Game | Promise<Game>;
 }
 
-export interface User {
+export class User {
     id: string;
     name: string;
     email: string;

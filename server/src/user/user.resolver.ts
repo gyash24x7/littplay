@@ -1,4 +1,5 @@
 import {
+	BadRequestException,
 	ConflictException,
 	InternalServerErrorException,
 	Logger,
@@ -10,6 +11,10 @@ import { JwtService } from "@nestjs/jwt";
 import { User } from "@prisma/client";
 import bcrypt from "bcryptjs";
 import { CreateUserInput, LoginInput } from "../graphql/generated";
+import {
+	validateCreateUserInput,
+	validateLoginInput
+} from "../graphql/validateInputs";
 import { PrismaService } from "../prisma/prisma.service";
 import { generateAvatar } from "../utils";
 import { AuthUser } from "./auth-user.decorator";
@@ -26,6 +31,9 @@ export class UserResolver {
 
 	@Mutation(() => String)
 	async login(@Args("data") { email, password }: LoginInput) {
+		const errorMsg = validateLoginInput({ email, password });
+		if (errorMsg) throw new BadRequestException(errorMsg);
+
 		const user = await this.prisma.user.findOne({ where: { email } });
 		if (!user) throw new UnauthorizedException("Invalid Credentials!");
 
@@ -38,6 +46,9 @@ export class UserResolver {
 
 	@Mutation(() => String)
 	async createUser(@Args("data") data: CreateUserInput) {
+		const errorMsg = validateCreateUserInput(data);
+		if (errorMsg) throw new BadRequestException(errorMsg);
+
 		const salt = await bcrypt.genSalt(16);
 		const password = await bcrypt.hash(data.password, salt);
 		const avatar = generateAvatar();

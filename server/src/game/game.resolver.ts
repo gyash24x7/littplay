@@ -1,9 +1,16 @@
-import { Logger, NotFoundException, UseGuards } from "@nestjs/common";
+import {
+	BadRequestException,
+	InternalServerErrorException,
+	Logger,
+	NotFoundException,
+	UseGuards
+} from "@nestjs/common";
 import { Args, Info, Mutation, Query, Resolver } from "@nestjs/graphql";
-import { User } from "@prisma/client";
+import { Game, User } from "@prisma/client";
 import cuid from "cuid";
 import { GraphQLResolveInfo } from "graphql";
 import { CreateTeamsInput } from "../graphql/generated";
+import { validateCreateTeamsInput } from "../graphql/validateInputs";
 import { PrismaService } from "../prisma/prisma.service";
 import { AuthUser } from "../user/auth-user.decorator";
 import { GqlAuthGuard } from "../user/gql-auth.guard";
@@ -17,15 +24,21 @@ export class GameResolver {
 	@Mutation()
 	@UseGuards(GqlAuthGuard)
 	async createGame(@AuthUser() { id }: User) {
-		const game = await this.prisma.game.create({
-			data: {
-				code: cuid.slug().toUpperCase(),
-				players: { create: { user: { connect: { id } } } }
-			}
-		});
+		let game: Game | undefined;
+		try {
+			game = await this.prisma.game.create({
+				data: {
+					code: cuid.slug().toUpperCase(),
+					players: { create: { user: { connect: { id } } } },
+					createdBy: { connect: { id } }
+				}
+			});
+		} catch (error) {
+			throw new InternalServerErrorException(error);
+		}
 
 		this.logger.log(`New Game Created: ${game.code}`);
-		return game.id;
+		return game!.id;
 	}
 
 	@Mutation()
@@ -39,13 +52,18 @@ export class GameResolver {
 		if (!game) throw new NotFoundException("Game Not Found!");
 
 		if (game.playerCount === game.players.length)
-			throw new Error("This Game already has 6 players!");
+			throw new BadRequestException("This Game already has 6 players!");
 
-		game = await this.prisma.game.update({
-			where: { code },
-			data: { players: { create: { user: { connect: { id } } } } },
-			include: { players: true }
-		});
+		try {
+			game = await this.prisma.game.update({
+				where: { code },
+				data: { players: { create: { user: { connect: { id } } } } },
+				include: { players: true }
+			});
+		} catch (error) {
+			this.logger.error(error.message);
+			throw new InternalServerErrorException(error);
+		}
 
 		this.logger.log(`New Player Joined: ${game.code}, ${id}`);
 		return game.id;
@@ -54,6 +72,9 @@ export class GameResolver {
 	@Mutation()
 	@UseGuards(GqlAuthGuard)
 	async createTeams(@Args("data") data: CreateTeamsInput) {
+		const errorMsg = validateCreateTeamsInput(data);
+		if (errorMsg) throw new BadRequestException(errorMsg);
+
 		const game = await this.prisma.game.findOne({
 			where: { id: data.gameId },
 			select: { players: { select: { id: true } }, id: true }
@@ -61,23 +82,29 @@ export class GameResolver {
 
 		if (!game) throw new NotFoundException("Game Not Found!");
 
-		await Promise.all(
-			splitArray(shuffle(game.players).map(({ id }) => id)).map(
-				(playerIds, i) => {
-					return this.prisma.player.updateMany({
-						where: { id: { in: playerIds } },
-						data: { team: data.teams[i] }
-					});
-				}
-			)
-		);
+		try {
+			await Promise.all(
+				splitArray(shuffle(game.players).map(({ id }) => id)).map(
+					(playerIds, i) => {
+						return this.prisma.player.updateMany({
+							where: { id: { in: playerIds } },
+							data: { team: data.teams[i] }
+						});
+					}
+				)
+			);
 
-		let updatedGame = await this.prisma.game.update({
-			where: { id: game.id },
-			data: { teams: { set: data.teams } }
-		});
+			await this.prisma.game.update({
+				where: { id: game.id },
+				data: { teams: { set: data.teams } }
+			});
+		} catch (error) {
+			this.logger.error(error.message);
+			throw new InternalServerErrorException(error);
+		}
 
-		return !!updatedGame;
+		this.logger.log("Teams Created");
+		return true;
 	}
 
 	@Query()

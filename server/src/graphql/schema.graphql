@@ -21,6 +21,7 @@ type Game {
 	status: GameStatus!
 	teams: [String!]!
 	activity: [GameActivity!]!
+	createdBy: User!
 }
 
 type GameActivity {
