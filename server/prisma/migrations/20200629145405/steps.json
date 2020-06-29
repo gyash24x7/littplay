@@ -1,0 +1,22 @@
+{
+  "version": "0.3.14-fixed",
+  "steps": [
+    {
+      "tag": "UpdateEnum",
+      "enum": "GameActivityKind",
+      "createdValues": [
+        "ASK_CARD",
+        "GIVE_CARD",
+        "DECLINE_CARD",
+        "CALL_SET"
+      ]
+    },
+    {
+      "tag": "CreateField",
+      "model": "GameActivity",
+      "field": "data",
+      "type": "String",
+      "arity": "Required"
+    }
+  ]
+}

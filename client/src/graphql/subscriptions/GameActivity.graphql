@@ -1,0 +1,24 @@
+subscription GameActivity($gameId: String!) {
+	gameActivity(gameId: $gameId) {
+		id
+		description
+		data
+		type
+		game {
+			id
+			code
+			playerCount
+			status
+			teams
+			players {
+				id
+				team
+				user {
+					id
+					name
+					avatar
+				}
+			}
+		}
+	}
+}

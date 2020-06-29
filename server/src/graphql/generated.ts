@@ -9,7 +9,11 @@
 export enum GameActivityType {
     PLAYER_JOINED = "PLAYER_JOINED",
     TEAMS_CREATED = "TEAMS_CREATED",
-    GAME_STARTED = "GAME_STARTED"
+    GAME_STARTED = "GAME_STARTED",
+    ASK_CARD = "ASK_CARD",
+    GIVE_CARD = "GIVE_CARD",
+    DECLINE_CARD = "DECLINE_CARD",
+    CALL_SET = "CALL_SET"
 }
 
 export enum GameStatus {
@@ -51,6 +55,7 @@ export class GameActivity {
     description: string;
     type: GameActivityType;
     game: Game;
+    data: string;
 }
 
 export abstract class IMutation {
@@ -63,6 +68,8 @@ export abstract class IMutation {
     abstract joinGame(code: string): string | Promise<string>;
 
     abstract createTeams(data: CreateTeamsInput): boolean | Promise<boolean>;
+
+    abstract startGame(gameId: string): boolean | Promise<boolean>;
 }
 
 export class Player {
@@ -77,6 +84,10 @@ export abstract class IQuery {
     abstract me(): User | Promise<User>;
 
     abstract getGame(gameId: string): Game | Promise<Game>;
+}
+
+export abstract class ISubscription {
+    abstract gameActivity(gameId: string): GameActivity | Promise<GameActivity>;
 }
 
 export class User {

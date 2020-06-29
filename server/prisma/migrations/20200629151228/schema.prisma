@@ -1,6 +1,6 @@
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
+  url = "***"
 }
 
 generator client {
@@ -43,13 +43,13 @@ model Game {
 model GameActivity {
   id          String           @id @default(cuid())
   description String
-  type        GameActivityType
+  kind        GameActivityKind
   game        Game             @relation(fields: [gameId], references: [id])
   gameId      String
   data        String
 }
 
-enum GameActivityType {
+enum GameActivityKind {
   PLAYER_JOINED
   TEAMS_CREATED
   GAME_STARTED

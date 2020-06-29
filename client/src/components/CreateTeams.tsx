@@ -44,6 +44,9 @@ export const CreateTeams = () => {
 	};
 
 	return (
+
+							<IonRow>
+								<IonCol>
 		<IonCard className="game-play-card">
 			<IonLoading isOpen={loading} />
 			<IonCardHeader>
@@ -83,6 +86,8 @@ export const CreateTeams = () => {
 					{errorMsg && <ErrorMsg message={errorMsg} />}
 				</IonGrid>
 			</IonCardContent>
-		</IonCard>
+				</IonCard>
+				</IonCol>
+				</IonRow>
 	);
 };

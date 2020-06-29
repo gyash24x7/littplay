@@ -1,15 +1,24 @@
 import {
 	BadRequestException,
+	Inject,
 	InternalServerErrorException,
 	Logger,
 	NotFoundException,
 	UseGuards
 } from "@nestjs/common";
-import { Args, Info, Mutation, Query, Resolver } from "@nestjs/graphql";
-import { Game, GameStatus, User } from "@prisma/client";
+import {
+	Args,
+	Info,
+	Mutation,
+	Query,
+	Resolver,
+	Subscription
+} from "@nestjs/graphql";
+import { Game, GameActivityType, GameStatus, User } from "@prisma/client";
+import { PubSubEngine } from "apollo-server-fastify";
 import cuid from "cuid";
 import { GraphQLResolveInfo } from "graphql";
-import { CreateTeamsInput } from "../graphql/generated";
+import { CreateTeamsInput, GameActivity } from "../graphql/generated";
 import { validateCreateTeamsInput } from "../graphql/validateInputs";
 import { PrismaService } from "../prisma/prisma.service";
 import { AuthUser } from "../user/auth-user.decorator";
@@ -18,7 +27,11 @@ import { shuffle, splitArray } from "../utils";
 
 @Resolver("Game")
 export class GameResolver {
-	constructor(private readonly prisma: PrismaService) {}
+	constructor(
+		private readonly prisma: PrismaService,
+		@Inject("PubSub") private readonly pubsub: PubSubEngine
+	) {}
+
 	private readonly logger = new Logger("GameResolver");
 
 	@Mutation()
@@ -43,7 +56,7 @@ export class GameResolver {
 
 	@Mutation()
 	@UseGuards(GqlAuthGuard)
-	async joinGame(@Args("code") code: string, @AuthUser() { id }: User) {
+	async joinGame(@Args("code") code: string, @AuthUser() { id, name }: User) {
 		let game = await this.prisma.game.findOne({
 			where: { code },
 			include: { players: true }
@@ -54,7 +67,7 @@ export class GameResolver {
 		if (game.playerCount === game.players.length)
 			throw new BadRequestException("This Game already has 6 players!");
 
-		if (game.players.map((player) => player.id).includes(id)) {
+		if (game.players.map((player) => player.userId).includes(id)) {
 			return game.id;
 		}
 
@@ -64,6 +77,20 @@ export class GameResolver {
 				data: { players: { create: { user: { connect: { id } } } } },
 				include: { players: true }
 			});
+
+			const gameActivity = await this.prisma.gameActivity.create({
+				data: {
+					game: { connect: { id: game.id } },
+					description: `${name} joined the game.`,
+					type: GameActivityType.PLAYER_JOINED,
+					data: ""
+				},
+				include: { game: { include: { players: { include: { user: true } } } } }
+			});
+
+			this.logger.log(`Game Activity Created: ${gameActivity.id}`);
+			await this.pubsub.publish(game.id, gameActivity);
+			this.logger.log(`Player Join Notification Published!`);
 		} catch (error) {
 			this.logger.error(error.message);
 			throw new InternalServerErrorException(error);
@@ -124,5 +151,16 @@ export class GameResolver {
 		});
 		if (!game) throw new NotFoundException("Game Not Found!");
 		return game;
+	}
+
+	@Mutation()
+	@UseGuards(GqlAuthGuard)
+	async startGame(@Args("gameId") gameId: string) {
+		return !!gameId;
+	}
+
+	@Subscription(() => GameActivity, { resolve: (value) => value })
+	async gameActivity(@Args("gameId") gameId: string) {
+		return this.pubsub.asyncIterator(gameId);
 	}
 }

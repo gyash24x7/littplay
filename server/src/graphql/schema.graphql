@@ -29,6 +29,7 @@ type GameActivity {
 	description: String!
 	type: GameActivityType!
 	game: Game!
+	data: String!
 }
 
 type Query {
@@ -42,6 +43,11 @@ type Mutation {
 	createGame: String!
 	joinGame(code: String!): String!
 	createTeams(data: CreateTeamsInput!): Boolean!
+	startGame(gameId: String!): Boolean!
+}
+
+type Subscription {
+	gameActivity(gameId: String!): GameActivity!
 }
 
 input CreateTeamsInput {
@@ -64,6 +70,10 @@ enum GameActivityType {
 	PLAYER_JOINED
 	TEAMS_CREATED
 	GAME_STARTED
+	ASK_CARD
+	GIVE_CARD
+	DECLINE_CARD
+	CALL_SET
 }
 
 enum GameStatus {

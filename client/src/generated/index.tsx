@@ -39,12 +39,17 @@ export type GameActivity = {
   description: Scalars['String'];
   type: GameActivityType;
   game: Game;
+  data: Scalars['String'];
 };
 
 export enum GameActivityType {
   PlayerJoined = 'PLAYER_JOINED',
   TeamsCreated = 'TEAMS_CREATED',
-  GameStarted = 'GAME_STARTED'
+  GameStarted = 'GAME_STARTED',
+  AskCard = 'ASK_CARD',
+  GiveCard = 'GIVE_CARD',
+  DeclineCard = 'DECLINE_CARD',
+  CallSet = 'CALL_SET'
 }
 
 export enum GameStatus {
@@ -65,6 +70,7 @@ export type Mutation = {
   createGame: Scalars['String'];
   joinGame: Scalars['String'];
   createTeams: Scalars['Boolean'];
+  startGame: Scalars['Boolean'];
 };
 
 
@@ -87,6 +93,11 @@ export type MutationCreateTeamsArgs = {
   data: CreateTeamsInput;
 };
 
+
+export type MutationStartGameArgs = {
+  gameId: Scalars['String'];
+};
+
 export type Player = {
   id: Scalars['ID'];
   user: User;
@@ -102,6 +113,15 @@ export type Query = {
 
 
 export type QueryGetGameArgs = {
+  gameId: Scalars['String'];
+};
+
+export type Subscription = {
+  gameActivity: GameActivity;
+};
+
+
+export type SubscriptionGameActivityArgs = {
   gameId: Scalars['String'];
 };
 
@@ -160,6 +180,13 @@ export type MeQueryVariables = Exact<{ [key: string]: never; }>;
 
 
 export type MeQuery = { me: { id: string, name: string, email: string, avatar: string } };
+
+export type GameActivitySubscriptionVariables = Exact<{
+  gameId: Scalars['String'];
+}>;
+
+
+export type GameActivitySubscription = { gameActivity: { id: string, description: string, data: string, type: GameActivityType, game: { id: string, code: string, playerCount: number, status: GameStatus, teams: Array<string>, players: Array<{ id: string, team: string, user: { id: string, name: string, avatar: string } }> } } };
 
 
 export const CreateGameDocument = gql`
@@ -276,3 +303,34 @@ export type MeQueryResult = ApolloReactCommon.QueryResult<MeQuery, MeQueryVariab
 export function refetchMeQuery(variables?: MeQueryVariables) {
       return { query: MeDocument, variables: variables }
     }
+export const GameActivityDocument = gql`
+    subscription GameActivity($gameId: String!) {
+  gameActivity(gameId: $gameId) {
+    id
+    description
+    data
+    type
+    game {
+      id
+      code
+      playerCount
+      status
+      teams
+      players {
+        id
+        team
+        user {
+          id
+          name
+          avatar
+        }
+      }
+    }
+  }
+}
+    `;
+export function useGameActivitySubscription(baseOptions?: ApolloReactHooks.SubscriptionHookOptions<GameActivitySubscription, GameActivitySubscriptionVariables>) {
+        return ApolloReactHooks.useSubscription<GameActivitySubscription, GameActivitySubscriptionVariables>(GameActivityDocument, baseOptions);
+      }
+export type GameActivitySubscriptionHookResult = ReturnType<typeof useGameActivitySubscription>;
+export type GameActivitySubscriptionResult = ApolloReactCommon.SubscriptionResult<GameActivitySubscription>;

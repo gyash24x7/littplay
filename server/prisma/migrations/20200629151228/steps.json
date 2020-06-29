@@ -1,0 +1,26 @@
+{
+  "version": "0.3.14-fixed",
+  "steps": [
+    {
+      "tag": "CreateField",
+      "model": "Player",
+      "field": "userId",
+      "type": "String",
+      "arity": "Required"
+    },
+    {
+      "tag": "UpdateArgument",
+      "location": {
+        "tag": "Directive",
+        "path": {
+          "tag": "Field",
+          "model": "Player",
+          "field": "user"
+        },
+        "directive": "relation"
+      },
+      "argument": "fields",
+      "newValue": "[userId]"
+    }
+  ]
+}

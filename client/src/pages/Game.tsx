@@ -14,25 +14,39 @@ import { ErrorMsg } from "../components/ErrorMsg";
 import { NewGameCard } from "../components/NewGameCard";
 import { PlayersCard } from "../components/PlayersCard";
 import { TeamCard } from "../components/TeamCard";
-import { Game, GameStatus, useGetGameQuery } from "../generated";
+import {
+	Game,
+	GameStatus,
+	useGameActivitySubscription,
+	useGetGameQuery
+} from "../generated";
 import { DeepPartial } from "../generated/types";
 import { UserContext } from "../utils/context";
 
 export const GamePage = () => {
-	const [isToastVisible, setIsToastVisible] = useState(false);
+	const [toastContent, setToastContent] = useState<string>();
 	const [game, setGame] = useState<DeepPartial<Game>>();
 	const { gameId } = useParams();
+	const user = useContext(UserContext)!;
+
 	const { loading, error } = useGetGameQuery({
 		variables: { gameId },
 		onCompleted: (data) => setGame(data.getGame)
 	});
-	const user = useContext(UserContext)!;
+
+	useGameActivitySubscription({
+		variables: { gameId },
+		onSubscriptionData({ subscriptionData: { data } }) {
+			setToastContent(data?.gameActivity.description);
+			setGame(data?.gameActivity.game);
+		}
+	});
 
 	if (loading) return <IonLoading isOpen />;
 
 	if (
 		game?.players &&
-		!game.players.map((player) => player?.id).includes(user.id)
+		!game.players.map((player) => player?.user?.id).includes(user.id)
 	) {
 		return <Redirect to="/game" />;
 	}
@@ -41,38 +55,17 @@ export const GamePage = () => {
 		<IonPage>
 			<IonContent>
 				<IonGrid className="game-play-container">
-					{error && (
-						<IonRow>
-							<IonCol>
-								<ErrorMsg message={error.message} />
-							</IonCol>
-						</IonRow>
-					)}
+					{error && <ErrorMsg message={error.message} />}
 					{game && (
-						<IonRow>
-							<IonCol>
-								<NewGameCard
-									gameCode={game.code!}
-									displayToast={() => setIsToastVisible(true)}
-								/>
-							</IonCol>
-						</IonRow>
+						<NewGameCard
+							gameCode={game.code!}
+							displayToast={() => setToastContent("Code copied to clipboard!")}
+						/>
 					)}
 					{game?.status === GameStatus.NotStarted && (
 						<Fragment>
-							<IonRow>
-								<IonCol>
-									<PlayersCard
-										players={game.players || []}
-										gameCode={game.code!}
-									/>
-								</IonCol>
-							</IonRow>
-							<IonRow>
-								<IonCol>
-									<CreateTeams />
-								</IonCol>
-							</IonRow>
+							<PlayersCard players={game.players || []} />
+							{game.players?.length === game.playerCount && <CreateTeams />}
 						</Fragment>
 					)}
 					{game?.status === GameStatus.TeamsCreated && (
@@ -92,10 +85,10 @@ export const GamePage = () => {
 					)}
 				</IonGrid>
 				<IonToast
-					isOpen={isToastVisible}
+					isOpen={!!toastContent}
 					duration={1000}
-					onDidDismiss={() => setIsToastVisible(false)}
-					message="Code copied to clipboard!"
+					onDidDismiss={() => setToastContent(undefined)}
+					message={toastContent}
 				/>
 			</IonContent>
 		</IonPage>
