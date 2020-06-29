@@ -6,7 +6,7 @@ import {
 	UseGuards
 } from "@nestjs/common";
 import { Args, Info, Mutation, Query, Resolver } from "@nestjs/graphql";
-import { Game, User } from "@prisma/client";
+import { Game, GameStatus, User } from "@prisma/client";
 import cuid from "cuid";
 import { GraphQLResolveInfo } from "graphql";
 import { CreateTeamsInput } from "../graphql/generated";
@@ -100,7 +100,7 @@ export class GameResolver {
 
 			await this.prisma.game.update({
 				where: { id: game.id },
-				data: { teams: { set: data.teams } }
+				data: { teams: { set: data.teams }, status: GameStatus.TEAMS_CREATED }
 			});
 		} catch (error) {
 			this.logger.error(error.message);

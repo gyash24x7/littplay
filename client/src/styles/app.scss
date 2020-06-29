@@ -157,14 +157,13 @@
 
 .players-wrapper {
 	display: flex;
-	justify-content: center;
+	justify-content: space-around;
 	flex-wrap: wrap;
 	margin: -10px;
 }
 
 .player-icon {
 	margin: 10px;
-	min-width: 100px;
 	display: flex;
 	flex-direction: column;
 	align-items: center;
@@ -173,5 +172,6 @@
 
 	.user-avatar {
 		padding: 10px;
+		width: 100px;
 	}
 }

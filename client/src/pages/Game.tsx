@@ -7,23 +7,33 @@ import {
 	IonRow,
 	IonToast
 } from "@ionic/react";
-import React, { useContext, useState } from "react";
+import React, { Fragment, useContext, useState } from "react";
 import { Redirect, useParams } from "react-router";
+import { CreateTeams } from "../components/CreateTeams";
 import { ErrorMsg } from "../components/ErrorMsg";
 import { NewGameCard } from "../components/NewGameCard";
 import { PlayersCard } from "../components/PlayersCard";
-import { GameStatus, useGetGameQuery } from "../generated";
+import { TeamCard } from "../components/TeamCard";
+import { Game, GameStatus, useGetGameQuery } from "../generated";
+import { DeepPartial } from "../generated/types";
 import { UserContext } from "../utils/context";
 
 export const GamePage = () => {
 	const [isToastVisible, setIsToastVisible] = useState(false);
+	const [game, setGame] = useState<DeepPartial<Game>>();
 	const { gameId } = useParams();
-	const { data, loading, error } = useGetGameQuery({ variables: { gameId } });
+	const { loading, error } = useGetGameQuery({
+		variables: { gameId },
+		onCompleted: (data) => setGame(data.getGame)
+	});
 	const user = useContext(UserContext)!;
 
 	if (loading) return <IonLoading isOpen />;
 
-	if (!data?.getGame.players.map((player) => player.id).includes(user.id)) {
+	if (
+		game?.players &&
+		!game.players.map((player) => player?.id).includes(user.id)
+	) {
 		return <Redirect to="/game" />;
 	}
 
@@ -31,27 +41,55 @@ export const GamePage = () => {
 		<IonPage>
 			<IonContent>
 				<IonGrid className="game-play-container">
-					<IonRow>
-						<IonCol>
-							{error && <ErrorMsg message={error.message} />}
-							{data?.getGame.status === GameStatus.NotStarted && (
+					{error && (
+						<IonRow>
+							<IonCol>
+								<ErrorMsg message={error.message} />
+							</IonCol>
+						</IonRow>
+					)}
+					{game && (
+						<IonRow>
+							<IonCol>
 								<NewGameCard
-									gameCode={data.getGame.code}
+									gameCode={game.code!}
 									displayToast={() => setIsToastVisible(true)}
 								/>
-							)}
-						</IonCol>
-					</IonRow>
-					<IonRow>
-						<IonCol>
-							{data?.getGame && (
-								<PlayersCard
-									players={data.getGame.players}
-									gameCode={data.getGame.code}
-								/>
-							)}
-						</IonCol>
-					</IonRow>
+							</IonCol>
+						</IonRow>
+					)}
+					{game?.status === GameStatus.NotStarted && (
+						<Fragment>
+							<IonRow>
+								<IonCol>
+									<PlayersCard
+										players={game.players || []}
+										gameCode={game.code!}
+									/>
+								</IonCol>
+							</IonRow>
+							<IonRow>
+								<IonCol>
+									<CreateTeams />
+								</IonCol>
+							</IonRow>
+						</Fragment>
+					)}
+					{game?.status === GameStatus.TeamsCreated && (
+						<IonRow>
+							{game.teams?.map((team) => (
+								<IonCol key={team} sizeMd="6" size="12">
+									<TeamCard
+										team={team!}
+										players={
+											game.players?.filter((player) => player?.team === team) ||
+											[]
+										}
+									/>
+								</IonCol>
+							))}
+						</IonRow>
+					)}
 				</IonGrid>
 				<IonToast
 					isOpen={isToastVisible}

@@ -12,7 +12,7 @@ import { Player } from "../generated";
 import { DeepPartial } from "../generated/types";
 
 interface PlayersCardProps {
-	players: DeepPartial<Player>[];
+	players: (DeepPartial<Player> | undefined)[];
 	gameCode: string;
 }
 
@@ -23,10 +23,22 @@ export const PlayersCard = ({ players }: PlayersCardProps) => {
 				<IonCardTitle>PLAYERS</IonCardTitle>
 			</IonCardHeader>
 			<IonCardContent>
-				<IonRow>
-					<IonCol className="players-wrapper">
+				<IonRow style={{ justifyContent: "center" }}>
+					<IonCol sizeLg="4" sizeMd="8" size="12" className="players-wrapper">
 						{players
-							.map((player) => player.user!)
+							.slice(0, 3)
+							.map((player) => player?.user!)
+							.map((user) => (
+								<div className="player-icon" key={user.id}>
+									<img src={user.avatar} alt="" className="user-avatar" />
+									<IonText>{user.name}</IonText>
+								</div>
+							))}
+					</IonCol>
+					<IonCol sizeLg="4" sizeMd="8" size="12" className="players-wrapper">
+						{players
+							.slice(3, 6)
+							.map((player) => player?.user!)
 							.map((user) => (
 								<div className="player-icon" key={user.id}>
 									<img src={user.avatar} alt="" className="user-avatar" />
