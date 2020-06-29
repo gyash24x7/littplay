@@ -44,50 +44,49 @@ export const CreateTeams = () => {
 	};
 
 	return (
-
-							<IonRow>
-								<IonCol>
-		<IonCard className="game-play-card">
-			<IonLoading isOpen={loading} />
-			<IonCardHeader>
-				<IonCardTitle>CREATE TEAMS</IonCardTitle>
-			</IonCardHeader>
-			<IonCardContent>
-				<IonGrid>
-					<IonRow style={{ justifyContent: "center" }}>
-						<IonCol sizeLg="4" sizeMd="5" sizeSm="8" size="12">
-							<IonItem>
-								<IonInput
-									className="app-input"
-									placeholder="Team A Name"
-									value={teamA}
-									onInput={(e: any) => setTeamA(e.target.value)}
-								/>
-							</IonItem>
-						</IonCol>
-						<IonCol sizeLg="4" sizeMd="5" sizeSm="8" size="12">
-							<IonItem>
-								<IonInput
-									className="app-input"
-									placeholder="Team B Name"
-									value={teamB}
-									onInput={(e: any) => setTeamB(e.target.value)}
-								/>
-							</IonItem>
-						</IonCol>
-					</IonRow>
-					<IonRow style={{ justifyContent: "center" }}>
-						<IonCol sizeLg="4" sizeMd="5" sizeSm="8" size="12">
-							<IonButton className="app-button" onClick={handleSubmit}>
-								Submit
-							</IonButton>
-						</IonCol>
-					</IonRow>
-					{errorMsg && <ErrorMsg message={errorMsg} />}
-				</IonGrid>
-			</IonCardContent>
+		<IonRow>
+			<IonCol>
+				<IonCard className="game-play-card">
+					<IonLoading isOpen={loading} />
+					<IonCardHeader>
+						<IonCardTitle>CREATE TEAMS</IonCardTitle>
+					</IonCardHeader>
+					<IonCardContent>
+						<IonGrid>
+							<IonRow style={{ justifyContent: "center" }}>
+								<IonCol sizeLg="4" sizeMd="5" sizeSm="8" size="12">
+									<IonItem>
+										<IonInput
+											className="app-input"
+											placeholder="Team A Name"
+											value={teamA}
+											onInput={(e: any) => setTeamA(e.target.value)}
+										/>
+									</IonItem>
+								</IonCol>
+								<IonCol sizeLg="4" sizeMd="5" sizeSm="8" size="12">
+									<IonItem>
+										<IonInput
+											className="app-input"
+											placeholder="Team B Name"
+											value={teamB}
+											onInput={(e: any) => setTeamB(e.target.value)}
+										/>
+									</IonItem>
+								</IonCol>
+							</IonRow>
+							<IonRow style={{ justifyContent: "center" }}>
+								<IonCol sizeLg="4" sizeMd="5" sizeSm="8" size="12">
+									<IonButton className="app-button" onClick={handleSubmit}>
+										Submit
+									</IonButton>
+								</IonCol>
+							</IonRow>
+							{errorMsg && <ErrorMsg message={errorMsg} />}
+						</IonGrid>
+					</IonCardContent>
 				</IonCard>
-				</IonCol>
-				</IonRow>
+			</IonCol>
+		</IonRow>
 	);
 };

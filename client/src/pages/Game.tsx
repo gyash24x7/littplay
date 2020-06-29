@@ -1,19 +1,17 @@
 import {
-	IonCol,
 	IonContent,
 	IonGrid,
 	IonLoading,
 	IonPage,
-	IonRow,
 	IonToast
 } from "@ionic/react";
-import React, { Fragment, useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Redirect, useParams } from "react-router";
 import { CreateTeams } from "../components/CreateTeams";
 import { ErrorMsg } from "../components/ErrorMsg";
-import { NewGameCard } from "../components/NewGameCard";
+import { GameDescription } from "../components/GameDescription";
 import { PlayersCard } from "../components/PlayersCard";
-import { TeamCard } from "../components/TeamCard";
+import { TeamsCard } from "../components/TeamsCard";
 import {
 	Game,
 	GameStatus,
@@ -29,10 +27,7 @@ export const GamePage = () => {
 	const { gameId } = useParams();
 	const user = useContext(UserContext)!;
 
-	const { loading, error } = useGetGameQuery({
-		variables: { gameId },
-		onCompleted: (data) => setGame(data.getGame)
-	});
+	const { loading, error, data } = useGetGameQuery({ variables: { gameId } });
 
 	useGameActivitySubscription({
 		variables: { gameId },
@@ -41,6 +36,10 @@ export const GamePage = () => {
 			setGame(data?.gameActivity.game);
 		}
 	});
+
+	useEffect(() => {
+		if (data?.getGame) setGame(data.getGame);
+	}, [data]);
 
 	if (loading) return <IonLoading isOpen />;
 
@@ -55,33 +54,23 @@ export const GamePage = () => {
 		<IonPage>
 			<IonContent>
 				<IonGrid className="game-play-container">
-					{error && <ErrorMsg message={error.message} />}
 					{game && (
-						<NewGameCard
-							gameCode={game.code!}
+						<GameDescription
+							game={game}
 							displayToast={() => setToastContent("Code copied to clipboard!")}
 						/>
 					)}
-					{game?.status === GameStatus.NotStarted && (
-						<Fragment>
-							<PlayersCard players={game.players || []} />
-							{game.players?.length === game.playerCount && <CreateTeams />}
-						</Fragment>
+					{error && <ErrorMsg message={error.message} />}
+					{(game?.status === GameStatus.NotStarted ||
+						game?.status === GameStatus.PlayersReady) && (
+						<PlayersCard players={game.players || []} />
 					)}
+					{game?.status === GameStatus.PlayersReady && <CreateTeams />}
 					{game?.status === GameStatus.TeamsCreated && (
-						<IonRow>
-							{game.teams?.map((team) => (
-								<IonCol key={team} sizeMd="6" size="12">
-									<TeamCard
-										team={team!}
-										players={
-											game.players?.filter((player) => player?.team === team) ||
-											[]
-										}
-									/>
-								</IonCol>
-							))}
-						</IonRow>
+						<TeamsCard
+							teams={game?.teams || []}
+							players={game?.players || []}
+						/>
 					)}
 				</IonGrid>
 				<IonToast

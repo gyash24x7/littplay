@@ -54,6 +54,7 @@ export enum GameActivityType {
 
 export enum GameStatus {
   NotStarted = 'NOT_STARTED',
+  PlayersReady = 'PLAYERS_READY',
   TeamsCreated = 'TEAMS_CREATED',
   InProgress = 'IN_PROGRESS',
   Completed = 'COMPLETED'
@@ -169,6 +170,13 @@ export type LoginMutationVariables = Exact<{
 
 export type LoginMutation = { login: string };
 
+export type StartGameMutationVariables = Exact<{
+  gameId: Scalars['String'];
+}>;
+
+
+export type StartGameMutation = { startGame: boolean };
+
 export type GetGameQueryVariables = Exact<{
   gameId: Scalars['String'];
 }>;
@@ -249,6 +257,18 @@ export function useLoginMutation(baseOptions?: ApolloReactHooks.MutationHookOpti
 export type LoginMutationHookResult = ReturnType<typeof useLoginMutation>;
 export type LoginMutationResult = ApolloReactCommon.MutationResult<LoginMutation>;
 export type LoginMutationOptions = ApolloReactCommon.BaseMutationOptions<LoginMutation, LoginMutationVariables>;
+export const StartGameDocument = gql`
+    mutation StartGame($gameId: String!) {
+  startGame(gameId: $gameId)
+}
+    `;
+export type StartGameMutationFn = ApolloReactCommon.MutationFunction<StartGameMutation, StartGameMutationVariables>;
+export function useStartGameMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<StartGameMutation, StartGameMutationVariables>) {
+        return ApolloReactHooks.useMutation<StartGameMutation, StartGameMutationVariables>(StartGameDocument, baseOptions);
+      }
+export type StartGameMutationHookResult = ReturnType<typeof useStartGameMutation>;
+export type StartGameMutationResult = ApolloReactCommon.MutationResult<StartGameMutation>;
+export type StartGameMutationOptions = ApolloReactCommon.BaseMutationOptions<StartGameMutation, StartGameMutationVariables>;
 export const GetGameDocument = gql`
     query GetGame($gameId: String!) {
   getGame(gameId: $gameId) {

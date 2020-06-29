@@ -61,6 +61,10 @@
 	font-family: "montserrat-bold";
 	text-transform: uppercase;
 	width: 100%;
+
+	&.small {
+		height: 40px;
+	}
 }
 
 .login-bottom-links {
@@ -107,7 +111,11 @@
 	text-transform: uppercase;
 }
 
-.header-container {
+.montserrat {
+	font-family: "montserrat";
+}
+
+.montserrat-bold {
 	font-family: "montserrat-bold";
 }
 
@@ -116,9 +124,12 @@
 	font-family: "montserrat";
 	text-align: center;
 	margin: 5px 10px;
+	box-shadow: unset;
+	border: 1px solid #303030;
 }
 
-.game-code {
+.game-code,
+.game-score {
 	font-size: 36px;
 	font-family: "montserrat-bold";
 	cursor: pointer;
@@ -127,6 +138,7 @@
 .card-subtitle {
 	font-size: 16px;
 	text-transform: uppercase;
+	font-family: "montserrat";
 }
 
 .app-menu-list {

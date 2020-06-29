@@ -78,6 +78,7 @@ enum GameActivityType {
 
 enum GameStatus {
 	NOT_STARTED
+	PLAYERS_READY
 	TEAMS_CREATED
 	IN_PROGRESS
 	COMPLETED

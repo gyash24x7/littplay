@@ -14,7 +14,7 @@ export const AppHeader = () => {
 				<IonButtons slot="start">
 					<IonMenuButton menu="appMenu" />
 				</IonButtons>
-				<IonTitle className="header-container">LITERATURE</IonTitle>
+				<IonTitle className="montserrat-bold">LITERATURE</IonTitle>
 			</IonToolbar>
 		</IonHeader>
 	);

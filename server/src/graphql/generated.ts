@@ -18,6 +18,7 @@ export enum GameActivityType {
 
 export enum GameStatus {
     NOT_STARTED = "NOT_STARTED",
+    PLAYERS_READY = "PLAYERS_READY",
     TEAMS_CREATED = "TEAMS_CREATED",
     IN_PROGRESS = "IN_PROGRESS",
     COMPLETED = "COMPLETED"

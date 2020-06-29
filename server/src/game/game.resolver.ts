@@ -74,7 +74,13 @@ export class GameResolver {
 		try {
 			game = await this.prisma.game.update({
 				where: { code },
-				data: { players: { create: { user: { connect: { id } } } } },
+				data: {
+					players: { create: { user: { connect: { id } } } },
+					status:
+						game.players.length + 1 === game.playerCount
+							? GameStatus.PLAYERS_READY
+							: GameStatus.NOT_STARTED
+				},
 				include: { players: true }
 			});
 
@@ -156,7 +162,15 @@ export class GameResolver {
 	@Mutation()
 	@UseGuards(GqlAuthGuard)
 	async startGame(@Args("gameId") gameId: string) {
-		return !!gameId;
+		let game = await this.prisma.game.findOne({ where: { id: gameId } });
+		if (!game) throw new NotFoundException("Game Not Found!");
+
+		game = await this.prisma.game.update({
+			where: { id: gameId },
+			data: { status: GameStatus.IN_PROGRESS }
+		});
+
+		return !!game;
 	}
 
 	@Subscription(() => GameActivity, { resolve: (value) => value })
