@@ -34,7 +34,13 @@ export class UserResolver {
 		const errorMsg = validateLoginInput({ email, password });
 		if (errorMsg) throw new BadRequestException(errorMsg);
 
-		const user = await this.prisma.user.findOne({ where: { email } });
+		const user = await this.prisma.user
+			.findOne({ where: { email } })
+			.catch((err) => {
+				this.logger.error(err);
+				throw new InternalServerErrorException();
+			});
+
 		if (!user) throw new UnauthorizedException("Invalid Credentials!");
 
 		const hash = await bcrypt.hash(password, user?.salt);
@@ -53,19 +59,16 @@ export class UserResolver {
 		const password = await bcrypt.hash(data.password, salt);
 		const avatar = generateAvatar();
 
-		let user: User | undefined;
-
-		try {
-			user = await this.prisma.user.create({
-				data: { ...data, password, salt, avatar }
+		let user = await this.prisma.user
+			.create({ data: { ...data, password, salt, avatar } })
+			.catch((err) => {
+				this.logger.error(err);
+				if (err.code === "P2002")
+					throw new ConflictException("User Already Exists!");
+				else throw new InternalServerErrorException();
 			});
-		} catch (error) {
-			if (error.code === "P2002")
-				throw new ConflictException("User Already Exists!");
-			else throw new InternalServerErrorException();
-		}
 
-		this.logger.log(`User Created: ${user!.id}`);
+		this.logger.log(`User Created: ${user.id}`);
 		return this.jwtService.sign({ id: user!.id });
 	}
 

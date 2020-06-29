@@ -182,7 +182,7 @@ export type GetGameQueryVariables = Exact<{
 }>;
 
 
-export type GetGameQuery = { getGame: { id: string, code: string, playerCount: number, status: GameStatus, teams: Array<string>, players: Array<{ id: string, team: string, user: { id: string, name: string, avatar: string } }> } };
+export type GetGameQuery = { getGame: { id: string, code: string, playerCount: number, status: GameStatus, teams: Array<string>, players: Array<{ id: string, team: string, hand: Array<string>, user: { id: string, name: string, avatar: string } }> } };
 
 export type MeQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -194,7 +194,7 @@ export type GameActivitySubscriptionVariables = Exact<{
 }>;
 
 
-export type GameActivitySubscription = { gameActivity: { id: string, description: string, data: string, type: GameActivityType, game: { id: string, code: string, playerCount: number, status: GameStatus, teams: Array<string>, players: Array<{ id: string, team: string, user: { id: string, name: string, avatar: string } }> } } };
+export type GameActivitySubscription = { gameActivity: { id: string, description: string, data: string, type: GameActivityType, game: { id: string, code: string, playerCount: number, status: GameStatus, teams: Array<string>, players: Array<{ id: string, team: string, hand: Array<string>, user: { id: string, name: string, avatar: string } }> } } };
 
 
 export const CreateGameDocument = gql`
@@ -280,6 +280,7 @@ export const GetGameDocument = gql`
     players {
       id
       team
+      hand
       user {
         id
         name
@@ -339,6 +340,7 @@ export const GameActivityDocument = gql`
       players {
         id
         team
+        hand
         user {
           id
           name

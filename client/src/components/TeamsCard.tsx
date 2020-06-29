@@ -9,12 +9,11 @@ import {
 	IonText
 } from "@ionic/react";
 import React from "react";
-import { Player } from "../generated";
-import { DeepPartial } from "../generated/types";
+import { GetGameQuery } from "../generated";
 
 interface TeamCardProps {
-	teams: (string | undefined)[];
-	players: (DeepPartial<Player> | undefined)[];
+	teams: string[];
+	players: GetGameQuery["getGame"]["players"];
 }
 
 export const TeamsCard = ({ teams, players }: TeamCardProps) => {
@@ -26,7 +25,7 @@ export const TeamsCard = ({ teams, players }: TeamCardProps) => {
 						<IonCardHeader>
 							<IonCardSubtitle className="montserrat">Team</IonCardSubtitle>
 							<IonCardTitle className="montserrat-bold">
-								{team?.toUpperCase()}
+								{team.toUpperCase()}
 							</IonCardTitle>
 						</IonCardHeader>
 						<IonCardContent>
@@ -34,16 +33,11 @@ export const TeamsCard = ({ teams, players }: TeamCardProps) => {
 								<IonCol sizeLg="8" sizeMd="12" sizeSm="10" size="12">
 									<div className="players-wrapper">
 										{players
-											.filter((player) => player?.team === team)
-											.map((player) => player?.user!)
-											.map((user) => (
-												<div className="player-icon" key={user.id}>
-													<img
-														src={user.avatar}
-														alt=""
-														className="user-avatar"
-													/>
-													<IonText>{user.name}</IonText>
+											.filter((player) => player.team === team)
+											.map(({ user: { id, avatar, name } }) => (
+												<div className="player-icon" key={id}>
+													<img src={avatar} alt="" className="user-avatar" />
+													<IonText>{name}</IonText>
 												</div>
 											))}
 									</div>

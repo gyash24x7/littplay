@@ -10,22 +10,22 @@ import { Redirect, useParams } from "react-router";
 import { CreateTeams } from "../components/CreateTeams";
 import { ErrorMsg } from "../components/ErrorMsg";
 import { GameDescription } from "../components/GameDescription";
+import { HandCard } from "../components/HandCard";
 import { PlayersCard } from "../components/PlayersCard";
 import { TeamsCard } from "../components/TeamsCard";
 import {
-	Game,
 	GameStatus,
+	GetGameQuery,
 	useGameActivitySubscription,
 	useGetGameQuery
 } from "../generated";
-import { DeepPartial } from "../generated/types";
 import { UserContext } from "../utils/context";
 
 export const GamePage = () => {
 	const [toastContent, setToastContent] = useState<string>();
-	const [game, setGame] = useState<DeepPartial<Game>>();
+	const [game, setGame] = useState<GetGameQuery["getGame"]>();
 	const { gameId } = useParams();
-	const user = useContext(UserContext)!;
+	const { id } = useContext(UserContext)!;
 
 	const { loading, error, data } = useGetGameQuery({ variables: { gameId } });
 
@@ -41,36 +41,34 @@ export const GamePage = () => {
 		if (data?.getGame) setGame(data.getGame);
 	}, [data]);
 
-	if (loading) return <IonLoading isOpen />;
+	if (error) return <ErrorMsg message={error.message} />;
 
-	if (
-		game?.players &&
-		!game.players.map((player) => player?.user?.id).includes(user.id)
-	) {
+	if (loading || !game) return <IonLoading isOpen />;
+
+	if (!game.players.map(({ user: { id } }) => id).includes(id)) {
 		return <Redirect to="/game" />;
 	}
+
+	const { status, players, teams } = game;
 
 	return (
 		<IonPage>
 			<IonContent>
 				<IonGrid className="game-play-container">
-					{game && (
-						<GameDescription
-							game={game}
-							displayToast={() => setToastContent("Code copied to clipboard!")}
-						/>
+					<GameDescription
+						game={game}
+						displayToast={() => setToastContent("Code copied to clipboard!")}
+					/>
+					{(status === GameStatus.NotStarted ||
+						status === GameStatus.PlayersReady) && (
+						<PlayersCard players={players} />
 					)}
-					{error && <ErrorMsg message={error.message} />}
-					{(game?.status === GameStatus.NotStarted ||
-						game?.status === GameStatus.PlayersReady) && (
-						<PlayersCard players={game.players || []} />
+					{status === GameStatus.PlayersReady && <CreateTeams />}
+					{status === GameStatus.TeamsCreated && (
+						<TeamsCard teams={teams} players={players} />
 					)}
-					{game?.status === GameStatus.PlayersReady && <CreateTeams />}
-					{game?.status === GameStatus.TeamsCreated && (
-						<TeamsCard
-							teams={game?.teams || []}
-							players={game?.players || []}
-						/>
+					{status === GameStatus.InProgress && (
+						<HandCard player={players.find(({ user }) => id === user.id)!} />
 					)}
 				</IonGrid>
 				<IonToast

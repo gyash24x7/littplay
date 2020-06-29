@@ -13,6 +13,7 @@ subscription GameActivity($gameId: String!) {
 			players {
 				id
 				team
+				hand
 				user {
 					id
 					name
