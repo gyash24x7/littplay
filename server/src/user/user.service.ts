@@ -1,27 +1,25 @@
 import {
 	ConflictException,
+	Inject,
 	Injectable,
+	InternalServerErrorException,
 	Logger,
 	UnauthorizedException
 } from "@nestjs/common";
-import { InjectModel } from "@nestjs/mongoose";
 import bcrypt from "bcryptjs";
-import { Model } from "mongoose";
+import { Db } from "mongodb";
 import { generateAvatar } from "../utils";
 import { CreateUserInput, LoginInput } from "./user.inputs";
-import { User } from "./user.schema";
+import { User } from "./user.type";
 
 @Injectable()
 export class UserService {
-	constructor(
-		@InjectModel("User")
-		private readonly userModel: Model<User>
-	) {}
+	constructor(@Inject("Database") private readonly db: Db) {}
 
 	private readonly logger = new Logger("UserService");
 
 	async login({ email, password }: LoginInput) {
-		const user = await this.userModel.findOne({ email }).exec();
+		const user = await this.db.collection("users").findOne<User>({ email });
 		if (!user) throw new UnauthorizedException("Invalid Credentials!");
 
 		const hash = await bcrypt.hash(password, user?.salt);
@@ -36,13 +34,20 @@ export class UserService {
 		const password = await bcrypt.hash(pwd, salt);
 		const avatar = generateAvatar();
 
-		const exists = await this.userModel.exists({ email });
-		if (exists) throw new ConflictException("User Already Exists!");
+		let user = await this.db.collection<User>("users").findOne({ email });
+		if (user) throw new ConflictException("User Already Exists!");
 
-		let user = new this.userModel({ name, email, password, avatar, salt });
-		user = await user.save();
-		this.logger.log(`User Created: ${user.id}`);
+		const { insertedId } = await this.db
+			.collection<User>("users")
+			.insertOne({ name, salt, password, avatar, email })
+			.catch((err) => {
+				this.logger.error(err);
+				throw new InternalServerErrorException();
+			});
 
-		return user;
+		this.logger.log(`User Created: ${insertedId}`);
+		return this.db.collection<User>("users").findOne({ _id: insertedId });
+
+		return;
 	}
 }

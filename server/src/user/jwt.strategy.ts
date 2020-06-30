@@ -1,16 +1,20 @@
-import { Injectable, UnauthorizedException } from "@nestjs/common";
+import {
+	Inject,
+	Injectable,
+	InternalServerErrorException,
+	Logger,
+	UnauthorizedException
+} from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
-import { InjectModel } from "@nestjs/mongoose";
 import { PassportStrategy } from "@nestjs/passport";
-import { Model } from "mongoose";
+import { Db, ObjectID } from "mongodb";
 import { ExtractJwt, Strategy } from "passport-jwt";
-import { User } from "./user.schema";
+import { User } from "./user.type";
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
 	constructor(
-		@InjectModel("User")
-		private readonly userModel: Model<User>,
+		@Inject("Database") private readonly db: Db,
 		configService: ConfigService
 	) {
 		super({
@@ -20,8 +24,17 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
 		});
 	}
 
-	async validate({ id }: { id: string }) {
-		const user = await this.userModel.findById(id).exec();
+	private logger = new Logger("JwtStrategy");
+
+	async validate({ _id }: any) {
+		const user = await this.db
+			.collection<User>("users")
+			.findOne({ _id: new ObjectID(_id) })
+			.catch((err) => {
+				this.logger.error(err);
+				throw new InternalServerErrorException();
+			});
+
 		if (!user) throw new UnauthorizedException();
 		return user;
 	}
