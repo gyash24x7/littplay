@@ -2,6 +2,8 @@ import { Module } from "@nestjs/common";
 import { ConfigModule } from "@nestjs/config";
 import { GraphQLModule } from "@nestjs/graphql";
 import { DatabaseModule } from "./database/database.module";
+import { GameModule } from "./game/game.module";
+import { GameService } from "./game/game.service";
 import { UserModule } from "./user/user.module";
 
 @Module({
@@ -13,7 +15,9 @@ import { UserModule } from "./user/user.module";
 			context: ({ req }) => ({ req })
 		}),
 		UserModule,
-		DatabaseModule
-	]
+		DatabaseModule,
+		GameModule
+	],
+	providers: [GameService]
 })
 export class AppModule {}

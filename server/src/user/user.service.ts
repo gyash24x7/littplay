@@ -47,7 +47,5 @@ export class UserService {
 
 		this.logger.log(`User Created: ${insertedId}`);
 		return this.db.collection<User>("users").findOne({ _id: insertedId });
-
-		return;
 	}
 }

@@ -3,7 +3,7 @@ import { ObjectID } from "mongodb";
 
 @ObjectType()
 export class User {
-	@Field(() => ID) _id?: ObjectID;
+	@Field(() => ID) _id: ObjectID;
 	@Field() name: string;
 	@Field() email: string;
 	@Field() avatar: string;
