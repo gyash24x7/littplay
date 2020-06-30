@@ -1,22 +1,25 @@
 import { Module } from "@nestjs/common";
 import { ConfigModule } from "@nestjs/config";
 import { GraphQLModule } from "@nestjs/graphql";
-import { join } from "path";
-import { GameModule } from "./game/game.module";
-import { PrismaModule } from "./prisma/prisma.module";
+import { MongooseModule } from "@nestjs/mongoose";
 import { UserModule } from "./user/user.module";
 
 @Module({
 	imports: [
-		ConfigModule.forRoot({ envFilePath: "../prisma/.env" }),
+		ConfigModule.forRoot(),
 		GraphQLModule.forRoot({
-			typePaths: [join(process.cwd(), "src/graphql/schema.graphql")],
+			autoSchemaFile: true,
 			installSubscriptionHandlers: true,
 			context: ({ req }) => ({ req })
 		}),
-		UserModule,
-		GameModule,
-		PrismaModule
-	]
+		MongooseModule.forRoot(process.env.DATABASE_URL!, {
+			useCreateIndex: true,
+			useNewUrlParser: true,
+			useUnifiedTopology: true,
+			useFindAndModify: true
+		}),
+		UserModule
+	],
+	exports: [ConfigModule]
 })
 export class AppModule {}

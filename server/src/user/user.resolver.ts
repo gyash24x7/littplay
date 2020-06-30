@@ -1,78 +1,33 @@
-import {
-	BadRequestException,
-	ConflictException,
-	InternalServerErrorException,
-	Logger,
-	UnauthorizedException,
-	UseGuards
-} from "@nestjs/common";
+import { UseGuards, ValidationPipe } from "@nestjs/common";
 import { Args, Mutation, Query, Resolver } from "@nestjs/graphql";
 import { JwtService } from "@nestjs/jwt";
-import { User } from "@prisma/client";
-import bcrypt from "bcryptjs";
-import { CreateUserInput, LoginInput } from "../graphql/generated";
-import {
-	validateCreateUserInput,
-	validateLoginInput
-} from "../graphql/validateInputs";
-import { PrismaService } from "../prisma/prisma.service";
-import { generateAvatar } from "../utils";
 import { AuthUser } from "./auth-user.decorator";
 import { GqlAuthGuard } from "./gql-auth.guard";
+import { CreateUserInput, LoginInput } from "./user.inputs";
+import { User } from "./user.schema";
+import { UserService } from "./user.service";
+import { UserType } from "./user.type";
 
-@Resolver("User")
+@Resolver(() => UserType)
 export class UserResolver {
 	constructor(
-		private readonly prisma: PrismaService,
+		private readonly userService: UserService,
 		private readonly jwtService: JwtService
 	) {}
 
-	private readonly logger = new Logger("UserResolver");
-
 	@Mutation(() => String)
-	async login(@Args("data") { email, password }: LoginInput) {
-		const errorMsg = validateLoginInput({ email, password });
-		if (errorMsg) throw new BadRequestException(errorMsg);
-
-		const user = await this.prisma.user
-			.findOne({ where: { email } })
-			.catch((err) => {
-				this.logger.error(err);
-				throw new InternalServerErrorException();
-			});
-
-		if (!user) throw new UnauthorizedException("Invalid Credentials!");
-
-		const hash = await bcrypt.hash(password, user?.salt);
-		if (hash !== user.password)
-			throw new UnauthorizedException("Invalid Creadentials!");
-
+	async login(@Args("data", ValidationPipe) data: LoginInput) {
+		const user = await this.userService.login(data);
 		return this.jwtService.sign({ id: user.id });
 	}
 
 	@Mutation(() => String)
-	async createUser(@Args("data") data: CreateUserInput) {
-		const errorMsg = validateCreateUserInput(data);
-		if (errorMsg) throw new BadRequestException(errorMsg);
-
-		const salt = await bcrypt.genSalt(16);
-		const password = await bcrypt.hash(data.password, salt);
-		const avatar = generateAvatar();
-
-		let user = await this.prisma.user
-			.create({ data: { ...data, password, salt, avatar } })
-			.catch((err) => {
-				this.logger.error(err);
-				if (err.code === "P2002")
-					throw new ConflictException("User Already Exists!");
-				else throw new InternalServerErrorException();
-			});
-
-		this.logger.log(`User Created: ${user.id}`);
+	async createUser(@Args("data", ValidationPipe) data: CreateUserInput) {
+		const user = await this.userService.createUser(data);
 		return this.jwtService.sign({ id: user!.id });
 	}
 
-	@Query()
+	@Query(() => UserType)
 	@UseGuards(GqlAuthGuard)
 	me(@AuthUser() user: User) {
 		return user;
