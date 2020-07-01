@@ -5,7 +5,7 @@ import { WebSocketLink } from "@apollo/link-ws";
 import { AsyncStorage } from "react-native";
 
 const wsLink = new WebSocketLink({
-	uri: `ws://localhost:8000/graphql`,
+	uri: `ws://192.168.43.59:8000/graphql`,
 	options: {
 		reconnect: true,
 		connectionParams: async () => {
@@ -25,7 +25,7 @@ const authLink = setContext(async (_, { headers }) => {
 	};
 });
 
-const httpLink = new HttpLink({ uri: "http://localhost:8000/graphql" });
+const httpLink = new HttpLink({ uri: "http://192.168.43.59:8000/graphql" });
 
 const splitLink = split(
 	({ query }) => {

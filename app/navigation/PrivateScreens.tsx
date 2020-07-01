@@ -1,4 +1,5 @@
 import { createDrawerNavigator } from "@react-navigation/drawer";
+import React from "react";
 import { ShowError } from "../components/ShowError";
 import { useMeQuery } from "../generated";
 import { GameScreen } from "../screens/Game";

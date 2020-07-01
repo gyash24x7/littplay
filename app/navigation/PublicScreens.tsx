@@ -1,15 +1,15 @@
 import { createStackNavigator } from "@react-navigation/stack";
 import React from "react";
 import { LoginScreen } from "../screens/Login";
-import { SignupSCreen } from "../screens/Signup";
+import { SignupScreen } from "../screens/Signup";
 
 const { Navigator, Screen } = createStackNavigator();
 
 export const PublicScreens = () => {
 	return (
-		<Navigator>
+		<Navigator headerMode="none">
 			<Screen name="Login" component={LoginScreen} />
-			<Screen name="Signup" component={SignupSCreen} />
+			<Screen name="Signup" component={SignupScreen} />
 		</Navigator>
 	);
 };

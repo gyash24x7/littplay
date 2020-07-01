@@ -1,19 +1,13 @@
 import { ApolloProvider } from "@apollo/client";
 import * as eva from "@eva-design/eva";
-import {
-	ApplicationProvider,
-	IconRegistry,
-	Layout,
-	Text
-} from "@ui-kitten/components";
+import { ApplicationProvider, IconRegistry } from "@ui-kitten/components";
 import { EvaIconsPack } from "@ui-kitten/eva-icons";
 import { useFonts } from "@use-expo/font";
 import { AppLoading } from "expo";
 import React from "react";
-import { StyleSheet } from "react-native";
 import { SafeAreaProvider } from "react-native-safe-area-context";
-import { ShowError } from "./components/ShowError";
 import { client } from "./graphql";
+import { AppNavigation } from "./navigation";
 import { default as mapping } from "./theme/mapping.json";
 
 export default function App() {
@@ -33,10 +27,7 @@ export default function App() {
 						theme={{ ...eva.light }}
 						customMapping={{ ...eva.mapping, ...mapping }}
 					>
-						<Layout style={styles.container}>
-							<Text>Hello</Text>
-							<ShowError />
-						</Layout>
+						<AppNavigation />
 					</ApplicationProvider>
 				</ApolloProvider>
 			</SafeAreaProvider>
@@ -45,11 +36,3 @@ export default function App() {
 		return <AppLoading />;
 	}
 }
-
-const styles = StyleSheet.create({
-	container: {
-		flex: 1,
-		alignItems: "center",
-		justifyContent: "center"
-	}
-});
