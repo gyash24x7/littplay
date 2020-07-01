@@ -1,4 +1,11 @@
-import { shuffle } from ".";
+export function shuffle<T>(array: T[]) {
+	let arr = [...array];
+	for (let i = arr.length - 1; i > 0; i--) {
+		let j = Math.floor(Math.random() * (i + 1));
+		[arr[i], arr[j]] = [arr[j], arr[i]];
+	}
+	return arr;
+}
 
 export class GameCard {
 	rank: string;
@@ -18,27 +25,15 @@ export class Deck {
 	cards: GameCard[] = [];
 
 	constructor() {
-		this.cards = shuffle(SORTED_DECK);
-	}
-
-	static handContains(hand: GameCard[], card: GameCard) {
-		const foundCard = hand.find(
-			({ rank, suit }) => card.rank === rank && card.suit === suit
+		this.cards = shuffle(
+			RANKS.flatMap((rank) =>
+				SUITS.map((suit) => new GameCard(rank + " OF " + suit))
+			)
 		);
-		return !!foundCard;
-	}
-
-	static sortHand(hand: GameCard[]) {
-		let sortedHand: GameCard[] = [];
-		SORTED_DECK.forEach((card) => {
-			if (Deck.handContains(hand, card)) sortedHand.push(card);
-		});
-		return sortedHand;
 	}
 
 	removeCardsOfRank(rank: string) {
 		this.cards = this.cards.filter((card) => card.rank !== rank);
-		return this;
 	}
 
 	generateHands(handCount: number) {
@@ -69,4 +64,4 @@ export const RANKS = [
 
 export const SORTED_DECK = SUITS.flatMap((suit) =>
 	RANKS.map((rank) => new GameCard(rank + " OF " + suit))
-);
+).map((card) => card.getCardString());

@@ -1,27 +1,32 @@
-import { UseGuards } from "@nestjs/common";
+import { UseGuards, ValidationPipe } from "@nestjs/common";
 import { Args, Mutation, Query, Resolver } from "@nestjs/graphql";
+import { JwtService } from "@nestjs/jwt";
 import { AuthUser } from "./auth-user.decorator";
 import { GqlAuthGuard } from "./gql-auth.guard";
-import { User } from "./user.entity";
 import { CreateUserInput, LoginInput } from "./user.inputs";
 import { UserService } from "./user.service";
-import { UserType } from "./user.type";
+import { User } from "./user.type";
 
-@Resolver(() => UserType)
+@Resolver(() => User)
 export class UserResolver {
-	constructor(private readonly userService: UserService) {}
+	constructor(
+		private readonly userService: UserService,
+		private readonly jwtService: JwtService
+	) {}
 
 	@Mutation(() => String)
-	login(@Args("data") data: LoginInput) {
-		return this.userService.login(data);
+	async login(@Args("data", ValidationPipe) data: LoginInput) {
+		const { _id } = await this.userService.login(data);
+		return this.jwtService.sign({ _id });
 	}
 
 	@Mutation(() => String)
-	createUser(@Args("data") data: CreateUserInput) {
-		return this.userService.signUp(data);
+	async createUser(@Args("data", ValidationPipe) data: CreateUserInput) {
+		const { _id } = (await this.userService.createUser(data))!;
+		return this.jwtService.sign({ _id });
 	}
 
-	@Query(() => UserType)
+	@Query(() => User)
 	@UseGuards(GqlAuthGuard)
 	me(@AuthUser() user: User) {
 		return user;

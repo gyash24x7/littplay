@@ -14,58 +14,32 @@ export type Scalars = {
 
 export type CreateTeamsInput = {
   gameId: Scalars['String'];
-  teamA: Scalars['String'];
-  teamB: Scalars['String'];
+  teams: Array<Scalars['String']>;
 };
 
 export type CreateUserInput = {
-  email: Scalars['String'];
   name: Scalars['String'];
+  email: Scalars['String'];
   password: Scalars['String'];
 };
 
 export type Game = {
-  id: Scalars['ID'];
-  gameCode: Scalars['String'];
+  _id: Scalars['ID'];
+  code: Scalars['String'];
+  createdBy: User;
+  players: Array<Player>;
   status: GameStatus;
-  noOfPlayers: Scalars['Int'];
-  teamA?: Maybe<Scalars['String']>;
-  teamB?: Maybe<Scalars['String']>;
-  teamAScore: Scalars['Int'];
-  teamBScore: Scalars['Int'];
-  teamAMembers: Array<GameToUser>;
-  teamBMembers: Array<GameToUser>;
-  players: Array<User>;
+  playerCount: Scalars['Int'];
+  teams: Array<Scalars['String']>;
 };
-
-export type GameActivity = {
-  id: Scalars['ID'];
-  game: Game;
-  description: Scalars['String'];
-  kind: GameActivityKind;
-};
-
-export enum GameActivityKind {
-  PlayerJoined = 'PLAYER_JOINED',
-  GameStarted = 'GAME_STARTED',
-  AskPlayer = 'ASK_PLAYER',
-  CardGiven = 'CARD_GIVEN',
-  CardDeclined = 'CARD_DECLINED',
-  CallingSet = 'CALLING_SET',
-  SetCalled = 'SET_CALLED',
-  TeamsCreated = 'TEAMS_CREATED'
-}
 
 export enum GameStatus {
   NotStarted = 'NOT_STARTED',
-  Started = 'STARTED',
+  PlayersReady = 'PLAYERS_READY',
+  TeamsCreated = 'TEAMS_CREATED',
+  InProgress = 'IN_PROGRESS',
   Completed = 'COMPLETED'
 }
-
-export type GameToUser = {
-  user: User;
-  hand?: Maybe<Array<Scalars['String']>>;
-};
 
 export type LoginInput = {
   email: Scalars['String'];
@@ -73,11 +47,27 @@ export type LoginInput = {
 };
 
 export type Mutation = {
+  createGame: Scalars['String'];
+  joinGame: Scalars['String'];
+  createTeams: Scalars['Boolean'];
+  startGame: Scalars['Boolean'];
   login: Scalars['String'];
   createUser: Scalars['String'];
-  createGame: Game;
-  joinGame: Game;
-  createTeams: Game;
+};
+
+
+export type MutationJoinGameArgs = {
+  code: Scalars['String'];
+};
+
+
+export type MutationCreateTeamsArgs = {
+  data: CreateTeamsInput;
+};
+
+
+export type MutationStartGameArgs = {
+  gameId: Scalars['String'];
 };
 
 
@@ -90,19 +80,18 @@ export type MutationCreateUserArgs = {
   data: CreateUserInput;
 };
 
-
-export type MutationJoinGameArgs = {
-  gameCode: Scalars['String'];
-};
-
-
-export type MutationCreateTeamsArgs = {
-  data: CreateTeamsInput;
+export type Player = {
+  _id: Scalars['ID'];
+  name: Scalars['String'];
+  email: Scalars['String'];
+  avatar: Scalars['String'];
+  hand: Array<Scalars['String']>;
+  team: Scalars['String'];
 };
 
 export type Query = {
-  me: User;
   getGame: Game;
+  me: User;
 };
 
 
@@ -110,17 +99,8 @@ export type QueryGetGameArgs = {
   gameId: Scalars['String'];
 };
 
-export type Subscription = {
-  gameActivity: GameActivity;
-};
-
-
-export type SubscriptionGameActivityArgs = {
-  gameCode: Scalars['String'];
-};
-
 export type User = {
-  id: Scalars['ID'];
+  _id: Scalars['ID'];
   name: Scalars['String'];
   email: Scalars['String'];
   avatar: Scalars['String'];
@@ -129,7 +109,15 @@ export type User = {
 export type CreateGameMutationVariables = Exact<{ [key: string]: never; }>;
 
 
-export type CreateGameMutation = { createGame: { id: string, gameCode: string, noOfPlayers: number } };
+export type CreateGameMutation = { createGame: string };
+
+export type CreateTeamsMutationVariables = Exact<{
+  teams: Array<Scalars['String']>;
+  gameId: Scalars['String'];
+}>;
+
+
+export type CreateTeamsMutation = { createTeams: boolean };
 
 export type CreateUserMutationVariables = Exact<{
   name: Scalars['String'];
@@ -141,11 +129,11 @@ export type CreateUserMutationVariables = Exact<{
 export type CreateUserMutation = { createUser: string };
 
 export type JoinGameMutationVariables = Exact<{
-  gameCode: Scalars['String'];
+  code: Scalars['String'];
 }>;
 
 
-export type JoinGameMutation = { joinGame: { id: string } };
+export type JoinGameMutation = { joinGame: string };
 
 export type LoginMutationVariables = Exact<{
   email: Scalars['String'];
@@ -155,33 +143,29 @@ export type LoginMutationVariables = Exact<{
 
 export type LoginMutation = { login: string };
 
+export type StartGameMutationVariables = Exact<{
+  gameId: Scalars['String'];
+}>;
+
+
+export type StartGameMutation = { startGame: boolean };
+
 export type GetGameQueryVariables = Exact<{
   gameId: Scalars['String'];
 }>;
 
 
-export type GetGameQuery = { getGame: { id: string, gameCode: string, noOfPlayers: number, status: GameStatus, players: Array<{ id: string, name: string, avatar: string }> } };
+export type GetGameQuery = { getGame: { _id: string, teams: Array<string>, status: GameStatus, code: string, playerCount: number, players: Array<{ _id: string, team: string, hand: Array<string>, name: string, avatar: string }> } };
 
 export type MeQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type MeQuery = { me: { id: string, name: string, email: string, avatar: string } };
-
-export type PlayerJoinActivitySubscriptionVariables = Exact<{
-  gameCode: Scalars['String'];
-}>;
-
-
-export type PlayerJoinActivitySubscription = { gameActivity: { id: string, kind: GameActivityKind, game: { players: Array<{ id: string, name: string, avatar: string }> } } };
+export type MeQuery = { me: { _id: string, name: string, email: string, avatar: string } };
 
 
 export const CreateGameDocument = gql`
     mutation CreateGame {
-  createGame {
-    id
-    gameCode
-    noOfPlayers
-  }
+  createGame
 }
     `;
 export type CreateGameMutationFn = ApolloReactCommon.MutationFunction<CreateGameMutation, CreateGameMutationVariables>;
@@ -191,6 +175,18 @@ export function useCreateGameMutation(baseOptions?: ApolloReactHooks.MutationHoo
 export type CreateGameMutationHookResult = ReturnType<typeof useCreateGameMutation>;
 export type CreateGameMutationResult = ApolloReactCommon.MutationResult<CreateGameMutation>;
 export type CreateGameMutationOptions = ApolloReactCommon.BaseMutationOptions<CreateGameMutation, CreateGameMutationVariables>;
+export const CreateTeamsDocument = gql`
+    mutation CreateTeams($teams: [String!]!, $gameId: String!) {
+  createTeams(data: {teams: $teams, gameId: $gameId})
+}
+    `;
+export type CreateTeamsMutationFn = ApolloReactCommon.MutationFunction<CreateTeamsMutation, CreateTeamsMutationVariables>;
+export function useCreateTeamsMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<CreateTeamsMutation, CreateTeamsMutationVariables>) {
+        return ApolloReactHooks.useMutation<CreateTeamsMutation, CreateTeamsMutationVariables>(CreateTeamsDocument, baseOptions);
+      }
+export type CreateTeamsMutationHookResult = ReturnType<typeof useCreateTeamsMutation>;
+export type CreateTeamsMutationResult = ApolloReactCommon.MutationResult<CreateTeamsMutation>;
+export type CreateTeamsMutationOptions = ApolloReactCommon.BaseMutationOptions<CreateTeamsMutation, CreateTeamsMutationVariables>;
 export const CreateUserDocument = gql`
     mutation CreateUser($name: String!, $email: String!, $password: String!) {
   createUser(data: {email: $email, password: $password, name: $name})
@@ -204,10 +200,8 @@ export type CreateUserMutationHookResult = ReturnType<typeof useCreateUserMutati
 export type CreateUserMutationResult = ApolloReactCommon.MutationResult<CreateUserMutation>;
 export type CreateUserMutationOptions = ApolloReactCommon.BaseMutationOptions<CreateUserMutation, CreateUserMutationVariables>;
 export const JoinGameDocument = gql`
-    mutation JoinGame($gameCode: String!) {
-  joinGame(gameCode: $gameCode) {
-    id
-  }
+    mutation JoinGame($code: String!) {
+  joinGame(code: $code)
 }
     `;
 export type JoinGameMutationFn = ApolloReactCommon.MutationFunction<JoinGameMutation, JoinGameMutationVariables>;
@@ -229,15 +223,30 @@ export function useLoginMutation(baseOptions?: ApolloReactHooks.MutationHookOpti
 export type LoginMutationHookResult = ReturnType<typeof useLoginMutation>;
 export type LoginMutationResult = ApolloReactCommon.MutationResult<LoginMutation>;
 export type LoginMutationOptions = ApolloReactCommon.BaseMutationOptions<LoginMutation, LoginMutationVariables>;
+export const StartGameDocument = gql`
+    mutation StartGame($gameId: String!) {
+  startGame(gameId: $gameId)
+}
+    `;
+export type StartGameMutationFn = ApolloReactCommon.MutationFunction<StartGameMutation, StartGameMutationVariables>;
+export function useStartGameMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<StartGameMutation, StartGameMutationVariables>) {
+        return ApolloReactHooks.useMutation<StartGameMutation, StartGameMutationVariables>(StartGameDocument, baseOptions);
+      }
+export type StartGameMutationHookResult = ReturnType<typeof useStartGameMutation>;
+export type StartGameMutationResult = ApolloReactCommon.MutationResult<StartGameMutation>;
+export type StartGameMutationOptions = ApolloReactCommon.BaseMutationOptions<StartGameMutation, StartGameMutationVariables>;
 export const GetGameDocument = gql`
     query GetGame($gameId: String!) {
   getGame(gameId: $gameId) {
-    id
-    gameCode
-    noOfPlayers
+    _id
+    teams
     status
+    code
+    playerCount
     players {
-      id
+      _id
+      team
+      hand
       name
       avatar
     }
@@ -259,7 +268,7 @@ export function refetchGetGameQuery(variables?: GetGameQueryVariables) {
 export const MeDocument = gql`
     query Me {
   me {
-    id
+    _id
     name
     email
     avatar
@@ -278,23 +287,3 @@ export type MeQueryResult = ApolloReactCommon.QueryResult<MeQuery, MeQueryVariab
 export function refetchMeQuery(variables?: MeQueryVariables) {
       return { query: MeDocument, variables: variables }
     }
-export const PlayerJoinActivityDocument = gql`
-    subscription PlayerJoinActivity($gameCode: String!) {
-  gameActivity(gameCode: $gameCode) {
-    id
-    kind
-    game {
-      players {
-        id
-        name
-        avatar
-      }
-    }
-  }
-}
-    `;
-export function usePlayerJoinActivitySubscription(baseOptions?: ApolloReactHooks.SubscriptionHookOptions<PlayerJoinActivitySubscription, PlayerJoinActivitySubscriptionVariables>) {
-        return ApolloReactHooks.useSubscription<PlayerJoinActivitySubscription, PlayerJoinActivitySubscriptionVariables>(PlayerJoinActivityDocument, baseOptions);
-      }
-export type PlayerJoinActivitySubscriptionHookResult = ReturnType<typeof usePlayerJoinActivitySubscription>;
-export type PlayerJoinActivitySubscriptionResult = ApolloReactCommon.SubscriptionResult<PlayerJoinActivitySubscription>;

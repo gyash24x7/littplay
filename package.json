@@ -13,6 +13,8 @@
 	"scripts": {
 		"dev:client": "yarn workspace client dev",
 		"dev:server": "yarn workspace server start:dev",
-		"gen:client": "yarn workspace client gen"
+		"gen:client": "yarn workspace client gen",
+		"gen:server": "yarn workspace server gen",
+		"migrate:db": "yarn workspace server migrate"
 	}
 }

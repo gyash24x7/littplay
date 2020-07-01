@@ -7,41 +7,53 @@ import {
 	IonRow,
 	IonText
 } from "@ionic/react";
-import React, { useState } from "react";
-import { usePlayerJoinActivitySubscription, User } from "../generated";
+import React from "react";
+import { GetGameQuery } from "../generated";
 
 interface PlayersCardProps {
-	players: Partial<User>[];
-	gameCode: string;
+	players: GetGameQuery["getGame"]["players"];
 }
 
-export const PlayersCard = ({ players, gameCode }: PlayersCardProps) => {
-	const [playerData, setPlayerData] = useState(players);
-
-	usePlayerJoinActivitySubscription({
-		variables: { gameCode },
-		onSubscriptionData({ subscriptionData: { data } }) {
-			setPlayerData(data?.gameActivity.game.players || players);
-		}
-	});
-
+export const PlayersCard = ({ players }: PlayersCardProps) => {
 	return (
-		<IonCard className="game-play-card">
-			<IonCardHeader>
-				<IonCardTitle>PLAYERS {players.length}</IonCardTitle>
-			</IonCardHeader>
-			<IonCardContent>
-				<IonRow>
-					<IonCol className="players-wrapper">
-						{playerData.map((player) => (
-							<div className="player-icon" key={player.id}>
-								<img src={player.avatar} alt="" className="user-avatar" />
-								<IonText>{player.name}</IonText>
-							</div>
-						))}
-					</IonCol>
-				</IonRow>
-			</IonCardContent>
-		</IonCard>
+		<IonRow>
+			<IonCol>
+				<IonCard className="game-play-card">
+					<IonCardHeader>
+						<IonCardTitle>PLAYERS</IonCardTitle>
+					</IonCardHeader>
+					<IonCardContent>
+						<IonRow style={{ justifyContent: "center" }}>
+							<IonCol
+								sizeLg="4"
+								sizeMd="8"
+								size="12"
+								className="players-wrapper"
+							>
+								{players.slice(0, 3).map(({ _id, avatar, name }) => (
+									<div className="player-icon" key={_id}>
+										<img src={avatar} alt="" className="user-avatar" />
+										<IonText>{name}</IonText>
+									</div>
+								))}
+							</IonCol>
+							<IonCol
+								sizeLg="4"
+								sizeMd="8"
+								size="12"
+								className="players-wrapper"
+							>
+								{players.slice(3).map(({ _id, avatar, name }) => (
+									<div className="player-icon" key={_id}>
+										<img src={avatar} alt="" className="user-avatar" />
+										<IonText>{name}</IonText>
+									</div>
+								))}
+							</IonCol>
+						</IonRow>
+					</IonCardContent>
+				</IonCard>
+			</IonCol>
+		</IonRow>
 	);
 };

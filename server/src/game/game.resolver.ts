@@ -1,76 +1,43 @@
 import { UseGuards } from "@nestjs/common";
-import {
-	Args,
-	Mutation,
-	Parent,
-	Query,
-	ResolveField,
-	Resolver
-} from "@nestjs/graphql";
-import { GameToUserType } from "../game-to-user/game-to-user.type";
+import { Args, Mutation, Query, Resolver } from "@nestjs/graphql";
 import { AuthUser } from "../user/auth-user.decorator";
 import { GqlAuthGuard } from "../user/gql-auth.guard";
-import { User } from "../user/user.entity";
-import { UserType } from "../user/user.type";
-import { Game } from "./game.entity";
+import { User } from "../user/user.type";
 import { CreateTeamsInput } from "./game.inputs";
 import { GameService } from "./game.service";
-import { GameType } from "./game.type";
+import { Game } from "./game.type";
 
-@Resolver(() => GameType)
+@Resolver(() => Game)
 export class GameResolver {
 	constructor(private readonly gameService: GameService) {}
 
-	@Mutation(() => GameType)
+	@Mutation(() => String)
 	@UseGuards(GqlAuthGuard)
 	async createGame(@AuthUser() user: User) {
-		const game = await this.gameService.createGame(user);
-		return game;
+		return this.gameService.createGame(user);
 	}
 
-	@Mutation(() => GameType)
-	@UseGuards(GqlAuthGuard)
-	async joinGame(@Args("gameCode") gameCode: string, @AuthUser() user: User) {
-		const game = await this.gameService.joinGame(gameCode, user);
-		return game;
-	}
-
-	@Query(() => GameType)
+	@Query(() => Game)
 	@UseGuards(GqlAuthGuard)
 	async getGame(@Args("gameId") gameId: string) {
-		return this.gameService.getGame(gameId);
+		return this.gameService.getGameById(gameId);
 	}
 
-	@Mutation(() => GameType)
+	@Mutation(() => String)
 	@UseGuards(GqlAuthGuard)
-	async createTeams(
-		@Args("data") data: CreateTeamsInput,
-		@AuthUser() user: User
-	) {
-		const game = await this.gameService.createTeams(data, user);
-		return game;
+	async joinGame(@Args("code") code: string, @AuthUser() user: User) {
+		return this.gameService.joinGame({ code, user });
 	}
 
-	@ResolveField(() => [GameToUserType])
-	teamAMembers(@Parent() game: Game) {
-		if (game.teamA)
-			return game.gameToUsers
-				.filter((gameToUser) => gameToUser.team === game.teamA)
-				.map<GameToUserType>(({ user, hand }) => ({ user, hand }));
-		else return [];
+	@Mutation(() => Boolean)
+	@UseGuards(GqlAuthGuard)
+	async createTeams(@Args("data") data: CreateTeamsInput) {
+		return this.gameService.createTeams(data);
 	}
 
-	@ResolveField(() => [GameToUserType])
-	teamBMembers(@Parent() game: Game) {
-		if (game.teamB)
-			return game.gameToUsers
-				.filter((gameToUser) => gameToUser.team === game.teamB)
-				.map<GameToUserType>(({ user, hand }) => ({ user, hand }));
-		return [];
-	}
-
-	@ResolveField(() => [UserType])
-	players(@Parent() game: Game) {
-		return game.gameToUsers?.map((gameToUser) => gameToUser.user) || [];
+	@Mutation(() => Boolean)
+	@UseGuards(GqlAuthGuard)
+	async startGame(@Args("gameId") gameId: string) {
+		return this.gameService.startGame(gameId);
 	}
 }

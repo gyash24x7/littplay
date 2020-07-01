@@ -61,6 +61,10 @@
 	font-family: "montserrat-bold";
 	text-transform: uppercase;
 	width: 100%;
+
+	&.small {
+		height: 40px;
+	}
 }
 
 .login-bottom-links {
@@ -107,7 +111,11 @@
 	text-transform: uppercase;
 }
 
-.header-container {
+.montserrat {
+	font-family: "montserrat";
+}
+
+.montserrat-bold {
 	font-family: "montserrat-bold";
 }
 
@@ -116,17 +124,19 @@
 	font-family: "montserrat";
 	text-align: center;
 	margin: 5px 10px;
+	box-shadow: unset;
 }
 
-.game-code {
+.game-code,
+.game-score {
 	font-size: 36px;
 	font-family: "montserrat-bold";
-	cursor: pointer;
 }
 
 .card-subtitle {
 	font-size: 16px;
 	text-transform: uppercase;
+	font-family: "montserrat";
 }
 
 .app-menu-list {
@@ -153,18 +163,18 @@
 
 .game-play-container {
 	padding-top: 71px;
+	background-color: #edeeef;
 }
 
 .players-wrapper {
 	display: flex;
-	justify-content: center;
+	justify-content: space-around;
 	flex-wrap: wrap;
 	margin: -10px;
 }
 
 .player-icon {
 	margin: 10px;
-	min-width: 100px;
 	display: flex;
 	flex-direction: column;
 	align-items: center;
@@ -173,5 +183,52 @@
 
 	.user-avatar {
 		padding: 10px;
+		width: 100px;
 	}
+}
+
+.game-description-row {
+	justify-content: space-between;
+	align-items: center;
+	text-align: left;
+}
+
+.game-cards-wrapper {
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: center;
+}
+
+.game-card {
+	width: 100px;
+	border: 1px solid #303030;
+	border-radius: 5px;
+	height: 150px;
+	display: flex;
+	padding: 15px;
+	flex-direction: column;
+	align-items: center;
+	margin: 5px;
+
+	.card-suit {
+		width: 80%;
+		height: auto;
+	}
+
+	.card-rank {
+		font-family: "montserrat-bold";
+		font-size: 48px;
+	}
+}
+
+.team-score-card {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+}
+
+.avatar-group {
+	display: flex;
+	justify-content: center;
+	flex-wrap: wrap;
 }

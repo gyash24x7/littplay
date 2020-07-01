@@ -1,57 +1,51 @@
 import {
 	ConflictException,
+	Inject,
 	Injectable,
 	InternalServerErrorException,
 	Logger,
 	UnauthorizedException
 } from "@nestjs/common";
-import { JwtService } from "@nestjs/jwt";
-import { InjectRepository } from "@nestjs/typeorm";
 import bcrypt from "bcryptjs";
-import cuid from "cuid";
-import { Repository } from "typeorm";
-import { generateAvatar } from "../utils/generateAvatar";
-import { User } from "./user.entity";
+import { Db } from "mongodb";
+import { generateAvatar } from "../utils";
 import { CreateUserInput, LoginInput } from "./user.inputs";
+import { User } from "./user.type";
 
 @Injectable()
 export class UserService {
-	constructor(
-		@InjectRepository(User) private readonly userRepo: Repository<User>,
-		private readonly jwtService: JwtService
-	) {}
+	constructor(@Inject("Database") private readonly db: Db) {}
 
 	private readonly logger = new Logger("UserService");
 
-	async signUp(data: CreateUserInput) {
-		let user: User;
-		const id = cuid();
-		const avatar = generateAvatar();
-		const salt = await bcrypt.genSalt(15);
-		const password = await bcrypt.hash(data.password, salt);
-
-		try {
-			user = await this.userRepo.save({ ...data, id, avatar, salt, password });
-			this.logger.log(`User Created: ${user.id}`);
-		} catch (error) {
-			if (error.code === "23505") {
-				throw new ConflictException("User Already Exists!");
-			} else throw new InternalServerErrorException(error);
-		}
-
-		const accessToken = this.jwtService.sign({ id: user.id });
-		return accessToken;
-	}
-
 	async login({ email, password }: LoginInput) {
-		const user = await this.userRepo.findOne({ where: { email } });
+		const user = await this.db.collection("users").findOne<User>({ email });
 		if (!user) throw new UnauthorizedException("Invalid Credentials!");
 
-		const valid = await bcrypt.compare(password, user.password);
-		if (!valid) throw new UnauthorizedException("Invalid Credentials!");
+		const hash = await bcrypt.hash(password, user?.salt);
+		if (hash !== user.password)
+			throw new UnauthorizedException("Invalid Creadentials!");
 
-		this.logger.log(`User logged in: ${user.id}`);
-		const accessToken = this.jwtService.sign({ id: user.id });
-		return accessToken;
+		return user;
+	}
+
+	async createUser({ email, password: pwd, name }: CreateUserInput) {
+		const salt = await bcrypt.genSalt(16);
+		const password = await bcrypt.hash(pwd, salt);
+		const avatar = generateAvatar();
+
+		let user = await this.db.collection<User>("users").findOne({ email });
+		if (user) throw new ConflictException("User Already Exists!");
+
+		const { insertedId } = await this.db
+			.collection<User>("users")
+			.insertOne({ name, salt, password, avatar, email })
+			.catch((err) => {
+				this.logger.error(err);
+				throw new InternalServerErrorException();
+			});
+
+		this.logger.log(`User Created: ${insertedId}`);
+		return this.db.collection<User>("users").findOne({ _id: insertedId });
 	}
 }
