@@ -34,8 +34,8 @@ export const TeamsCard = ({ teams, players }: TeamCardProps) => {
 									<div className="players-wrapper">
 										{players
 											.filter((player) => player.team === team)
-											.map(({ user: { id, avatar, name } }) => (
-												<div className="player-icon" key={id}>
+											.map(({ _id, avatar, name }) => (
+												<div className="player-icon" key={_id}>
 													<img src={avatar} alt="" className="user-avatar" />
 													<IonText>{name}</IonText>
 												</div>

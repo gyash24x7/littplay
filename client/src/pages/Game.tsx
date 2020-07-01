@@ -13,29 +13,16 @@ import { GameDescription } from "../components/GameDescription";
 import { HandCard } from "../components/HandCard";
 import { PlayersCard } from "../components/PlayersCard";
 import { TeamsCard } from "../components/TeamsCard";
-import {
-	GameStatus,
-	GetGameQuery,
-	useGameActivitySubscription,
-	useGetGameQuery
-} from "../generated";
+import { GameStatus, GetGameQuery, useGetGameQuery } from "../generated";
 import { UserContext } from "../utils/context";
 
 export const GamePage = () => {
 	const [toastContent, setToastContent] = useState<string>();
 	const [game, setGame] = useState<GetGameQuery["getGame"]>();
 	const { gameId } = useParams();
-	const { id } = useContext(UserContext)!;
+	const { _id } = useContext(UserContext)!;
 
 	const { loading, error, data } = useGetGameQuery({ variables: { gameId } });
-
-	useGameActivitySubscription({
-		variables: { gameId },
-		onSubscriptionData({ subscriptionData: { data } }) {
-			setToastContent(data?.gameActivity.description);
-			setGame(data?.gameActivity.game);
-		}
-	});
 
 	useEffect(() => {
 		if (data?.getGame) setGame(data.getGame);
@@ -45,7 +32,7 @@ export const GamePage = () => {
 
 	if (loading || !game) return <IonLoading isOpen />;
 
-	if (!game.players.map(({ user: { id } }) => id).includes(id)) {
+	if (!game.players.map(({ _id }) => _id).includes(_id)) {
 		return <Redirect to="/game" />;
 	}
 
@@ -68,12 +55,12 @@ export const GamePage = () => {
 						<TeamsCard teams={teams} players={players} />
 					)}
 					{status === GameStatus.InProgress && (
-						<HandCard player={players.find(({ user }) => id === user.id)!} />
+						<HandCard player={players.find((player) => _id === player._id)!} />
 					)}
 				</IonGrid>
 				<IonToast
 					isOpen={!!toastContent}
-					duration={1000}
+					duration={2500}
 					onDidDismiss={() => setToastContent(undefined)}
 					message={toastContent}
 				/>

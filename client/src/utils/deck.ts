@@ -61,3 +61,7 @@ export const RANKS = [
 	"QUEEN",
 	"KING"
 ];
+
+export const SORTED_DECK = SUITS.flatMap((suit) =>
+	RANKS.map((rank) => new GameCard(rank + " OF " + suit))
+).map((card) => card.getCardString());

@@ -24,33 +24,14 @@ export type CreateUserInput = {
 };
 
 export type Game = {
-  id: Scalars['ID'];
+  _id: Scalars['ID'];
   code: Scalars['String'];
-  playerCount: Scalars['Int'];
+  createdBy: User;
   players: Array<Player>;
   status: GameStatus;
+  playerCount: Scalars['Int'];
   teams: Array<Scalars['String']>;
-  activity: Array<GameActivity>;
-  createdBy: User;
 };
-
-export type GameActivity = {
-  id: Scalars['ID'];
-  description: Scalars['String'];
-  type: GameActivityType;
-  game: Game;
-  data: Scalars['String'];
-};
-
-export enum GameActivityType {
-  PlayerJoined = 'PLAYER_JOINED',
-  TeamsCreated = 'TEAMS_CREATED',
-  GameStarted = 'GAME_STARTED',
-  AskCard = 'ASK_CARD',
-  GiveCard = 'GIVE_CARD',
-  DeclineCard = 'DECLINE_CARD',
-  CallSet = 'CALL_SET'
-}
 
 export enum GameStatus {
   NotStarted = 'NOT_STARTED',
@@ -66,22 +47,12 @@ export type LoginInput = {
 };
 
 export type Mutation = {
-  createUser: Scalars['String'];
-  login: Scalars['String'];
   createGame: Scalars['String'];
   joinGame: Scalars['String'];
   createTeams: Scalars['Boolean'];
   startGame: Scalars['Boolean'];
-};
-
-
-export type MutationCreateUserArgs = {
-  data: CreateUserInput;
-};
-
-
-export type MutationLoginArgs = {
-  data: LoginInput;
+  login: Scalars['String'];
+  createUser: Scalars['String'];
 };
 
 
@@ -99,17 +70,28 @@ export type MutationStartGameArgs = {
   gameId: Scalars['String'];
 };
 
+
+export type MutationLoginArgs = {
+  data: LoginInput;
+};
+
+
+export type MutationCreateUserArgs = {
+  data: CreateUserInput;
+};
+
 export type Player = {
-  id: Scalars['ID'];
-  user: User;
-  team: Scalars['String'];
-  game: Game;
+  _id: Scalars['ID'];
+  name: Scalars['String'];
+  email: Scalars['String'];
+  avatar: Scalars['String'];
   hand: Array<Scalars['String']>;
+  team: Scalars['String'];
 };
 
 export type Query = {
-  me: User;
   getGame: Game;
+  me: User;
 };
 
 
@@ -117,17 +99,8 @@ export type QueryGetGameArgs = {
   gameId: Scalars['String'];
 };
 
-export type Subscription = {
-  gameActivity: GameActivity;
-};
-
-
-export type SubscriptionGameActivityArgs = {
-  gameId: Scalars['String'];
-};
-
 export type User = {
-  id: Scalars['ID'];
+  _id: Scalars['ID'];
   name: Scalars['String'];
   email: Scalars['String'];
   avatar: Scalars['String'];
@@ -182,19 +155,12 @@ export type GetGameQueryVariables = Exact<{
 }>;
 
 
-export type GetGameQuery = { getGame: { id: string, code: string, playerCount: number, status: GameStatus, teams: Array<string>, players: Array<{ id: string, team: string, hand: Array<string>, user: { id: string, name: string, avatar: string } }> } };
+export type GetGameQuery = { getGame: { _id: string, teams: Array<string>, status: GameStatus, code: string, playerCount: number, players: Array<{ _id: string, team: string, hand: Array<string>, name: string, avatar: string }> } };
 
 export type MeQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type MeQuery = { me: { id: string, name: string, email: string, avatar: string } };
-
-export type GameActivitySubscriptionVariables = Exact<{
-  gameId: Scalars['String'];
-}>;
-
-
-export type GameActivitySubscription = { gameActivity: { id: string, description: string, data: string, type: GameActivityType, game: { id: string, code: string, playerCount: number, status: GameStatus, teams: Array<string>, players: Array<{ id: string, team: string, hand: Array<string>, user: { id: string, name: string, avatar: string } }> } } };
+export type MeQuery = { me: { _id: string, name: string, email: string, avatar: string } };
 
 
 export const CreateGameDocument = gql`
@@ -272,20 +238,17 @@ export type StartGameMutationOptions = ApolloReactCommon.BaseMutationOptions<Sta
 export const GetGameDocument = gql`
     query GetGame($gameId: String!) {
   getGame(gameId: $gameId) {
-    id
+    _id
+    teams
+    status
     code
     playerCount
-    status
-    teams
     players {
-      id
+      _id
       team
       hand
-      user {
-        id
-        name
-        avatar
-      }
+      name
+      avatar
     }
   }
 }
@@ -305,7 +268,7 @@ export function refetchGetGameQuery(variables?: GetGameQueryVariables) {
 export const MeDocument = gql`
     query Me {
   me {
-    id
+    _id
     name
     email
     avatar
@@ -324,35 +287,3 @@ export type MeQueryResult = ApolloReactCommon.QueryResult<MeQuery, MeQueryVariab
 export function refetchMeQuery(variables?: MeQueryVariables) {
       return { query: MeDocument, variables: variables }
     }
-export const GameActivityDocument = gql`
-    subscription GameActivity($gameId: String!) {
-  gameActivity(gameId: $gameId) {
-    id
-    description
-    data
-    type
-    game {
-      id
-      code
-      playerCount
-      status
-      teams
-      players {
-        id
-        team
-        hand
-        user {
-          id
-          name
-          avatar
-        }
-      }
-    }
-  }
-}
-    `;
-export function useGameActivitySubscription(baseOptions?: ApolloReactHooks.SubscriptionHookOptions<GameActivitySubscription, GameActivitySubscriptionVariables>) {
-        return ApolloReactHooks.useSubscription<GameActivitySubscription, GameActivitySubscriptionVariables>(GameActivityDocument, baseOptions);
-      }
-export type GameActivitySubscriptionHookResult = ReturnType<typeof useGameActivitySubscription>;
-export type GameActivitySubscriptionResult = ApolloReactCommon.SubscriptionResult<GameActivitySubscription>;

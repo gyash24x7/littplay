@@ -12,12 +12,7 @@ import {
 	IonText
 } from "@ionic/react";
 import React from "react";
-import {
-	GameStatus,
-	GetGameQuery,
-	refetchGetGameQuery,
-	useStartGameMutation
-} from "../generated";
+import { GameStatus, GetGameQuery, useStartGameMutation } from "../generated";
 import { ErrorMsg } from "./ErrorMsg";
 
 interface StartGameProps {
@@ -27,8 +22,7 @@ interface StartGameProps {
 
 export const GameDescription = ({ game, displayToast }: StartGameProps) => {
 	const [startGame, { loading, error }] = useStartGameMutation({
-		variables: { gameId: game.id },
-		refetchQueries: [refetchGetGameQuery({ gameId: game.id })]
+		variables: { gameId: game._id }
 	});
 
 	const copyCode = () =>
@@ -83,9 +77,9 @@ export const GameDescription = ({ game, displayToast }: StartGameProps) => {
 											<div className="avatar-group">
 												{game.players
 													.filter((player) => player.team === team)
-													.map(({ user }) => (
-														<IonAvatar key={user.id}>
-															<img src={user.avatar} alt="" />
+													.map(({ avatar, _id }) => (
+														<IonAvatar key={_id}>
+															<img src={avatar} alt="" />
 														</IonAvatar>
 													))}
 											</div>

@@ -30,10 +30,10 @@ export const PlayersCard = ({ players }: PlayersCardProps) => {
 								size="12"
 								className="players-wrapper"
 							>
-								{players.slice(0, 3).map(({ user }) => (
-									<div className="player-icon" key={user.id}>
-										<img src={user.avatar} alt="" className="user-avatar" />
-										<IonText>{user.name}</IonText>
+								{players.slice(0, 3).map(({ _id, avatar, name }) => (
+									<div className="player-icon" key={_id}>
+										<img src={avatar} alt="" className="user-avatar" />
+										<IonText>{name}</IonText>
 									</div>
 								))}
 							</IonCol>
@@ -43,10 +43,10 @@ export const PlayersCard = ({ players }: PlayersCardProps) => {
 								size="12"
 								className="players-wrapper"
 							>
-								{players.slice(3).map(({ user }) => (
-									<div className="player-icon" key={user.id}>
-										<img src={user.avatar} alt="" className="user-avatar" />
-										<IonText>{user.name}</IonText>
+								{players.slice(3).map(({ _id, avatar, name }) => (
+									<div className="player-icon" key={_id}>
+										<img src={avatar} alt="" className="user-avatar" />
+										<IonText>{name}</IonText>
 									</div>
 								))}
 							</IonCol>

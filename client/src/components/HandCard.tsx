@@ -12,7 +12,7 @@ import Diamond from "../assets/diamond.png";
 import Heart from "../assets/heart.png";
 import Spade from "../assets/spade.png";
 import { GetGameQuery } from "../generated";
-import { GameCard } from "../utils/deck";
+import { GameCard, RANKS, SORTED_DECK } from "../utils/deck";
 
 interface HandCardProps {
 	player: GetGameQuery["getGame"]["players"][0];
@@ -25,7 +25,7 @@ export const HandCard = ({ player }: HandCardProps) => {
 		} else return "#141414";
 	};
 
-	const getSuitIcon = (suit: string) => {
+	const getSuitIcon = ({ suit }: GameCard) => {
 		switch (suit) {
 			case "SPADES":
 				return Spade;
@@ -38,6 +38,30 @@ export const HandCard = ({ player }: HandCardProps) => {
 		}
 	};
 
+	const getRank = ({ rank }: GameCard) => {
+		const idx = RANKS.findIndex((RANK) => rank === RANK) + 1;
+		switch (idx) {
+			case 1:
+				return "A";
+			case 11:
+				return "J";
+			case 12:
+				return "Q";
+			case 13:
+				return "K";
+			default:
+				return idx.toString();
+		}
+	};
+
+	const getSortedHand = (hand: string[]) => {
+		const sortedHand: GameCard[] = [];
+		SORTED_DECK.forEach((cardString) => {
+			if (hand.includes(cardString)) sortedHand.push(new GameCard(cardString));
+		});
+		return sortedHand;
+	};
+
 	return (
 		<IonRow>
 			<IonCol>
@@ -47,23 +71,21 @@ export const HandCard = ({ player }: HandCardProps) => {
 					</IonCardHeader>
 					<IonCardContent>
 						<div className="game-cards-wrapper">
-							{player.hand
-								.map((cardString) => new GameCard(cardString))
-								.map((gameCard) => (
-									<div className="game-card" key={gameCard.getCardString()}>
-										<img
-											src={getSuitIcon(gameCard.suit)}
-											alt=""
-											className="card-suit"
-										/>
-										<div
-											className="card-rank"
-											style={{ color: getCardColor(gameCard) }}
-										>
-											A
-										</div>
+							{getSortedHand(player.hand).map((gameCard) => (
+								<div className="game-card" key={gameCard.getCardString()}>
+									<img
+										src={getSuitIcon(gameCard)}
+										alt=""
+										className="card-suit"
+									/>
+									<div
+										className="card-rank"
+										style={{ color: getCardColor(gameCard) }}
+									>
+										{getRank(gameCard)}
 									</div>
-								))}
+								</div>
+							))}
 						</div>
 					</IonCardContent>
 				</IonCard>

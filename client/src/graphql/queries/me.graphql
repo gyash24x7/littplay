@@ -1,6 +1,6 @@
 query Me {
 	me {
-		id
+		_id
 		name
 		email
 		avatar
