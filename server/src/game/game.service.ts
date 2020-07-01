@@ -7,10 +7,11 @@ import {
 	NotFoundException
 } from "@nestjs/common";
 import cuid from "cuid";
-import { Db, ObjectID, UpdateQuery } from "mongodb";
+import { Db, ObjectId, UpdateQuery } from "mongodb";
 import { User } from "../user/user.type";
+import { Deck } from "../utils/deck";
 import { CreateTeamsInput, JoinGameDto } from "./game.inputs";
-import { Game } from "./game.type";
+import { Game, GameStatus } from "./game.type";
 
 @Injectable()
 export class GameService {
@@ -25,7 +26,7 @@ export class GameService {
 				playerCount: 6,
 				createdBy: user,
 				players: [{ ...user, hand: [], team: "" }],
-				status: "NOT_STARTED",
+				status: GameStatus.NOT_STARTED,
 				teams: []
 			})
 			.catch((err) => {
@@ -37,10 +38,12 @@ export class GameService {
 		return insertedId;
 	}
 
-	async getGameById(_id: string) {
+	async getGameById(_id: string | ObjectId) {
+		if (typeof _id === "string") _id = new ObjectId(_id);
+
 		const game = await this.db
 			.collection<Game>("games")
-			.findOne({ _id: new ObjectID(_id) })
+			.findOne({ _id })
 			.catch((err) => {
 				this.logger.error(err);
 				throw new InternalServerErrorException();
@@ -59,7 +62,12 @@ export class GameService {
 
 		if (!game.players.find(({ _id }) => user._id === _id)) {
 			const players = game.players.concat({ ...user, hand: [], team: "" });
-			await this.updateGameById(game._id, { $set: { players } });
+			let updateQuery: UpdateQuery<Game> = { $set: { players } };
+
+			if (players.length === game.playerCount)
+				updateQuery = { $set: { players, status: GameStatus.PLAYERS_READY } };
+
+			await this.updateGameById(game._id, updateQuery);
 		}
 
 		return game._id;
@@ -75,14 +83,41 @@ export class GameService {
 		}
 
 		players = teams.flatMap((team, i) =>
-			players.slice(i * 3, (i + 1) * 3).map((player) => ({ ...player, team }))
+			players
+				.slice((i * playerCount) / 2, ((i + 1) * playerCount) / 2)
+				.map((player) => ({ ...player, team }))
 		);
 
-		await this.updateGameById(_id, { $set: { teams, players } });
+		await this.updateGameById(_id, {
+			$set: { teams, players, status: GameStatus.TEAMS_CREATED }
+		});
 		return true;
 	}
 
-	async updateGameById(_id: ObjectID, data: UpdateQuery<Game>) {
+	async startGame(gameId: string) {
+		let { playerCount, players, status, _id } = await this.getGameById(gameId);
+		if (status !== GameStatus.TEAMS_CREATED)
+			throw new BadRequestException("Teams Not Created!");
+
+		const deck = new Deck();
+		deck
+			.removeCardsOfRank("SEVEN")
+			.generateHands(playerCount)
+			.map(Deck.sortHand)
+			.forEach((hand, i) => {
+				players[i].hand = hand.map((card) => card.getCardString());
+			});
+
+		await this.updateGameById(_id, {
+			$set: { players, status: GameStatus.IN_PROGRESS }
+		});
+
+		return true;
+	}
+
+	async updateGameById(_id: string | ObjectId, data: UpdateQuery<Game>) {
+		if (typeof _id === "string") _id = new ObjectId(_id);
+
 		const { modifiedCount } = await this.db
 			.collection<Game>("games")
 			.updateOne({ _id }, data)

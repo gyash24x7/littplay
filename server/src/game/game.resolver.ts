@@ -34,4 +34,10 @@ export class GameResolver {
 	async createTeams(@Args("data") data: CreateTeamsInput) {
 		return this.gameService.createTeams(data);
 	}
+
+	@Mutation(() => Boolean)
+	@UseGuards(GqlAuthGuard)
+	async startGame(@Args("gameId") gameId: string) {
+		return this.gameService.startGame(gameId);
+	}
 }

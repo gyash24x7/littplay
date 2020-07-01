@@ -18,15 +18,27 @@ export class Deck {
 	cards: GameCard[] = [];
 
 	constructor() {
-		this.cards = shuffle(
-			RANKS.flatMap((rank) =>
-				SUITS.map((suit) => new GameCard(rank + " OF " + suit))
-			)
+		this.cards = shuffle(SORTED_DECK);
+	}
+
+	static handContains(hand: GameCard[], card: GameCard) {
+		const foundCard = hand.find(
+			({ rank, suit }) => card.rank === rank && card.suit === suit
 		);
+		return !!foundCard;
+	}
+
+	static sortHand(hand: GameCard[]) {
+		let sortedHand: GameCard[] = [];
+		SORTED_DECK.forEach((card) => {
+			if (Deck.handContains(hand, card)) sortedHand.push(card);
+		});
+		return sortedHand;
 	}
 
 	removeCardsOfRank(rank: string) {
 		this.cards = this.cards.filter((card) => card.rank !== rank);
+		return this;
 	}
 
 	generateHands(handCount: number) {
@@ -54,3 +66,7 @@ export const RANKS = [
 	"QUEEN",
 	"KING"
 ];
+
+export const SORTED_DECK = SUITS.flatMap((suit) =>
+	RANKS.map((rank) => new GameCard(rank + " OF " + suit))
+);
