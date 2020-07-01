@@ -1,0 +1,16 @@
+query GetGame($gameId: String!) {
+	getGame(gameId: $gameId) {
+		_id
+		teams
+		status
+		code
+		playerCount
+		players {
+			_id
+			team
+			hand
+			name
+			avatar
+		}
+	}
+}

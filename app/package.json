@@ -1,0 +1,53 @@
+{
+	"name": "app",
+	"version": "1.0.0",
+	"main": "node_modules/expo/AppEntry.js",
+	"scripts": {
+		"start": "expo start",
+		"android": "expo start --android",
+		"ios": "expo start --ios",
+		"web": "expo start --web",
+		"eject": "expo eject",
+		"gen": "graphql-codegen"
+	},
+	"dependencies": {
+		"@apollo/client": "^3.0.0-rc.10",
+		"@apollo/link-context": "^2.0.0-beta.3",
+		"@apollo/link-ws": "^2.0.0-beta.3",
+		"@eva-design/eva": "^2.0.0",
+		"@react-native-community/masked-view": "0.1.10",
+		"@react-navigation/bottom-tabs": "^5.6.1",
+		"@react-navigation/drawer": "^5.8.4",
+		"@react-navigation/native": "^5.6.1",
+		"@react-navigation/stack": "^5.6.2",
+		"@ui-kitten/components": "^5.0.0",
+		"@ui-kitten/eva-icons": "^5.0.0",
+		"@use-expo/font": "^2.0.0",
+		"expo": "~38.0.8",
+		"expo-font": "~8.2.1",
+		"expo-status-bar": "^1.0.2",
+		"graphql": "14.6.0",
+		"graphql-tag": "^2.10.3",
+		"react": "~16.11.0",
+		"react-dom": "~16.11.0",
+		"react-native": "https://github.com/expo/react-native/archive/sdk-38.0.1.tar.gz",
+		"react-native-gesture-handler": "~1.6.0",
+		"react-native-reanimated": "~1.9.0",
+		"react-native-safe-area-context": "~3.0.7",
+		"react-native-screens": "~2.9.0",
+		"react-native-svg": "12.1.0",
+		"react-native-web": "~0.11.7",
+		"subscriptions-transport-ws": "^0.9.16"
+	},
+	"devDependencies": {
+		"@babel/core": "^7.8.6",
+		"@graphql-codegen/cli": "^1.16.0",
+		"@graphql-codegen/typescript": "^1.16.0",
+		"@graphql-codegen/typescript-operations": "^1.16.0",
+		"@graphql-codegen/typescript-react-apollo": "^1.16.0",
+		"@types/react": "~16.9.41",
+		"@types/react-native": "~0.62.13",
+		"typescript": "~3.9.5"
+	},
+	"private": true
+}
