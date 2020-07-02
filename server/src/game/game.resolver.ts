@@ -1,5 +1,6 @@
-import { UseGuards } from "@nestjs/common";
-import { Args, Mutation, Query, Resolver } from "@nestjs/graphql";
+import { Inject, UseGuards } from "@nestjs/common";
+import { Args, Mutation, Query, Resolver, Subscription } from "@nestjs/graphql";
+import { PubSub } from "apollo-server-fastify";
 import { AuthUser } from "../user/auth-user.decorator";
 import { GqlAuthGuard } from "../user/gql-auth.guard";
 import { User } from "../user/user.type";
@@ -9,7 +10,10 @@ import { Game } from "./game.type";
 
 @Resolver(() => Game)
 export class GameResolver {
-	constructor(private readonly gameService: GameService) {}
+	constructor(
+		private readonly gameService: GameService,
+		@Inject("PubSub") private readonly pubsub: PubSub
+	) {}
 
 	@Mutation(() => String)
 	@UseGuards(GqlAuthGuard)
@@ -26,18 +30,29 @@ export class GameResolver {
 	@Mutation(() => String)
 	@UseGuards(GqlAuthGuard)
 	async joinGame(@Args("code") code: string, @AuthUser() user: User) {
-		return this.gameService.joinGame({ code, user });
+		const game = await this.gameService.joinGame({ code, user });
+		await this.pubsub.publish(game._id.toHexString(), game);
+		return game._id.toHexString();
 	}
 
 	@Mutation(() => Boolean)
 	@UseGuards(GqlAuthGuard)
 	async createTeams(@Args("data") data: CreateTeamsInput) {
-		return this.gameService.createTeams(data);
+		const game = await this.gameService.createTeams(data);
+		await this.pubsub.publish(game._id.toHexString(), game);
+		return true;
 	}
 
 	@Mutation(() => Boolean)
 	@UseGuards(GqlAuthGuard)
 	async startGame(@Args("gameId") gameId: string) {
-		return this.gameService.startGame(gameId);
+		const game = await this.gameService.startGame(gameId);
+		await this.pubsub.publish(game._id.toHexString(), game);
+		return true;
+	}
+
+	@Subscription(() => Game, { resolve: (value) => value })
+	async game(@Args("gameId") gameId: string) {
+		return this.pubsub.asyncIterator(gameId);
 	}
 }

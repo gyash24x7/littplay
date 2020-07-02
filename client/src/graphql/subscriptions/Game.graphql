@@ -1,0 +1,30 @@
+subscription Game($gameId: String!) {
+	game(gameId: $gameId) {
+		_id
+		teams
+		status
+		code
+		createdBy {
+			_id
+			name
+			avatar
+			email
+		}
+		playerCount
+		players {
+			_id
+			team
+			hand
+			name
+			avatar
+		}
+		lastMove {
+			type
+			turn
+			description
+			askedFrom
+			askedFor
+			askedBy
+		}
+	}
+}

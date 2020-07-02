@@ -10,8 +10,14 @@ import cuid from "cuid";
 import { Db, ObjectId, UpdateQuery } from "mongodb";
 import { User } from "../user/user.type";
 import { Deck } from "../utils/deck";
-import { CreateTeamsInput, JoinGameDto } from "./game.inputs";
-import { Game, GameStatus } from "./game.type";
+import {
+	AskCardInput,
+	CreateTeamsInput,
+	DeclineCardInput,
+	GiveCardInput,
+	JoinGameDto
+} from "./game.inputs";
+import { Game, GameStatus, MoveType } from "./game.type";
 
 @Injectable()
 export class GameService {
@@ -54,7 +60,7 @@ export class GameService {
 	}
 
 	async joinGame({ code, user }: JoinGameDto) {
-		const game = await this.getGameByCode(code);
+		let game = await this.getGameByCode(code);
 
 		if (game.players.length === game.playerCount) {
 			throw new BadRequestException("Game Capacity Full!");
@@ -67,10 +73,10 @@ export class GameService {
 			if (players.length === game.playerCount)
 				updateQuery = { $set: { players, status: GameStatus.PLAYERS_READY } };
 
-			await this.updateGameById(game._id, updateQuery);
+			game = await this.updateGameById(game._id, updateQuery);
 		}
 
-		return game._id;
+		return game;
 	}
 
 	async createTeams({ gameId, teams }: CreateTeamsInput) {
@@ -88,31 +94,115 @@ export class GameService {
 				.map((player) => ({ ...player, team }))
 		);
 
-		await this.updateGameById(_id, {
+		const game = await this.updateGameById(_id, {
 			$set: { teams, players, status: GameStatus.TEAMS_CREATED }
 		});
-		return true;
+		return game;
 	}
 
 	async startGame(gameId: string) {
-		let { playerCount, players, status, _id } = await this.getGameById(gameId);
-		if (status !== GameStatus.TEAMS_CREATED)
+		let game = await this.getGameById(gameId);
+		if (game.status !== GameStatus.TEAMS_CREATED)
 			throw new BadRequestException("Teams Not Created!");
 
 		const deck = new Deck();
 		deck
 			.removeCardsOfRank("SEVEN")
-			.generateHands(playerCount)
+			.generateHands(game.playerCount)
 			.map(Deck.sortHand)
 			.forEach((hand, i) => {
-				players[i].hand = hand.map((card) => card.getCardString());
+				game.players[i].hand = hand.map((card) => card.getCardString());
 			});
 
-		await this.updateGameById(_id, {
-			$set: { players, status: GameStatus.IN_PROGRESS }
+		game = await this.updateGameById(game._id, {
+			$set: {
+				players: game.players,
+				status: GameStatus.IN_PROGRESS,
+				currentMove: {
+					type: MoveType.TURN,
+					description: `${game.createdBy.name}'s Turn`,
+					turn: game.createdBy._id.toHexString()
+				}
+			}
 		});
 
-		return true;
+		return game;
+	}
+
+	// async callSet({ callData, gameId }: CallSetInput, user: User) {
+	// 	let { players, currentMove } = await this.getGameById(gameId);
+	// 	const callSetData: Record<string, string[]> = JSON.parse(callData);
+
+	// 	for (const userId in callSetData) {
+	// 		if (callSetData.hasOwnProperty(userId)) {
+	// 			const cards = callSetData[userId];
+	// 			const player = players.find(({ _id }) => _id.toHexString() === userId)!;
+	// 			player.hand.filter;
+	// 		}
+	// 	}
+	// }
+
+	async declineCard({ gameId, cardDeclined }: DeclineCardInput, user: User) {
+		let game = await this.getGameById(gameId);
+		game = await this.updateGameById(gameId, {
+			$set: {
+				lastMove: game.currentMove,
+				currentMove: {
+					description: `${user.name} declined ${cardDeclined}. Now it's ${user.name}'s turn`,
+					type: MoveType.TURN,
+					turn: user._id.toHexString()
+				}
+			}
+		});
+		return game;
+	}
+
+	async giveCard({ cardToGive, gameId, giveTo }: GiveCardInput, user: User) {
+		let { players, currentMove } = await this.getGameById(gameId);
+		let takingPlayer = players.find(({ _id }) => _id.toHexString() === giveTo)!;
+		takingPlayer.hand.push(cardToGive);
+
+		let givingPlayer = players.find(({ _id }) => _id === user._id)!;
+		givingPlayer.hand = givingPlayer.hand.filter((card) => card !== cardToGive);
+
+		players = players.map((player) => {
+			if (player._id === givingPlayer._id) return givingPlayer;
+			if (player._id === takingPlayer?._id) return takingPlayer;
+			return player;
+		});
+
+		let game = await this.updateGameById(gameId, {
+			$set: {
+				players,
+				lastMove: currentMove,
+				currentMove: {
+					type: MoveType.TURN,
+					turn: giveTo,
+					description: `${user.name} gave ${cardToGive} to ${takingPlayer.name}. Now it's ${takingPlayer.name}'s turn`
+				}
+			}
+		});
+
+		return game;
+	}
+
+	async askCard({ gameId, askedFor, askedFrom }: AskCardInput, user: User) {
+		let { players, currentMove } = await this.getGameById(gameId);
+		const player = players.find(({ _id }) => _id.toHexString() === askedFrom);
+
+		let game = await this.updateGameById(gameId, {
+			$set: {
+				lastMove: currentMove,
+				currentMove: {
+					description: `${user.name} asked ${player?.name} for ${askedFor}`,
+					type: MoveType.ASK,
+					askedFor,
+					askedBy: user._id.toHexString(),
+					askedFrom
+				}
+			}
+		});
+		return game;
 	}
 
 	async updateGameById(_id: string | ObjectId, data: UpdateQuery<Game>) {
@@ -127,6 +217,7 @@ export class GameService {
 			});
 
 		if (modifiedCount !== 1) throw new InternalServerErrorException();
+		return await this.getGameById(_id);
 	}
 
 	async getGameByCode(code: string) {

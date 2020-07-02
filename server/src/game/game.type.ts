@@ -10,7 +10,31 @@ export enum GameStatus {
 	COMPLETED = "COMPLETED"
 }
 
+export enum MoveType {
+	ASK = "ASK",
+	TURN = "TURN",
+	CALL = "CALL"
+}
+
 registerEnumType(GameStatus, { name: "GameStatus" });
+registerEnumType(MoveType, { name: "MoveType" });
+
+@ObjectType()
+export class Player extends User {
+	@Field(() => [String]) hand: string[];
+	@Field() team: string;
+}
+
+@ObjectType()
+export class Move {
+	@Field(() => MoveType) type: MoveType;
+	@Field() description: string;
+	@Field({ nullable: true }) turn?: string;
+
+	@Field({ nullable: true }) askedFrom?: string;
+	@Field({ nullable: true }) askedBy?: string;
+	@Field({ nullable: true }) askedFor?: string;
+}
 
 @ObjectType()
 export class Game {
@@ -21,16 +45,6 @@ export class Game {
 	@Field(() => GameStatus) status: GameStatus;
 	@Field(() => Int) playerCount: number;
 	@Field(() => [String]) teams: string[];
-}
-
-@ObjectType()
-export class Player extends User {
-	@Field(() => [String]) hand: string[];
-	@Field() team: string;
-}
-
-@ObjectType()
-export class Move {
-	type: string;
-	turn?: string;
+	@Field(() => Move, { nullable: true }) lastMove?: Move;
+	@Field(() => Move, { nullable: true }) currentMove?: Move;
 }

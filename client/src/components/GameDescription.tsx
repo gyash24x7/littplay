@@ -2,14 +2,14 @@ import {
 	IonAvatar,
 	IonButton,
 	IonCard,
-	IonCardContent,
 	IonCardHeader,
 	IonCardSubtitle,
 	IonCardTitle,
 	IonCol,
 	IonLoading,
 	IonRow,
-	IonText
+	IonText,
+	IonTitle
 } from "@ionic/react";
 import React from "react";
 import { GameStatus, GetGameQuery, useStartGameMutation } from "../generated";
@@ -35,7 +35,7 @@ export const GameDescription = ({ game, displayToast }: StartGameProps) => {
 					{loading && <IonLoading isOpen />}
 					<IonCardHeader>
 						<IonRow className="game-description-row">
-							<IonCol>
+							<IonCol sizeSm="4">
 								<IonCardSubtitle className="card-subtitle">
 									GAME CODE
 								</IonCardSubtitle>
@@ -65,29 +65,29 @@ export const GameDescription = ({ game, displayToast }: StartGameProps) => {
 									</IonButton>
 								</IonCol>
 							)}
-						</IonRow>
-						<IonRow>
-							{game.status === GameStatus.InProgress &&
-								game.teams.map((team) => (
-									<IonCard key={team} className="game-play-card">
-										<IonCardHeader>
-											<IonCardTitle className="montserrat">{team}</IonCardTitle>
-										</IonCardHeader>
-										<IonCardContent className="team-score-card">
-											<div className="avatar-group">
-												{game.players
-													.filter((player) => player.team === team)
-													.map(({ avatar, _id }) => (
-														<IonAvatar key={_id}>
-															<img src={avatar} alt="" />
-														</IonAvatar>
-													))}
-											</div>
-											<br />
-											<IonText className="game-score">0</IonText>
-										</IonCardContent>
-									</IonCard>
-								))}
+							{game.status === GameStatus.InProgress && (
+								<IonCol sizeMd="8" size="12">
+									<IonRow>
+										{game.teams.map((team) => (
+											<IonCol className="team-score-card" key={team}>
+												<IonTitle className="montserrat">{team}</IonTitle>
+												<br />
+												<div className="avatar-group">
+													{game.players
+														.filter((player) => player.team === team)
+														.map(({ avatar, _id }) => (
+															<IonAvatar key={_id}>
+																<img src={avatar} alt="" />
+															</IonAvatar>
+														))}
+												</div>
+												<br />
+												<IonText className="game-score">0</IonText>
+											</IonCol>
+										))}
+									</IonRow>
+								</IonCol>
+							)}
 						</IonRow>
 						{error && <ErrorMsg message={error.message} />}
 					</IonCardHeader>

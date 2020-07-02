@@ -1,3 +1,0 @@
-mutation CreateTeams($teams: [String!]!, $gameId: String!) {
-	createTeams(data: { teams: $teams, gameId: $gameId })
-}

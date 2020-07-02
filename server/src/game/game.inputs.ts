@@ -16,3 +16,25 @@ export class JoinGameDto {
 	code: string;
 	user: User;
 }
+
+export class AskCardInput {
+	gameId: string;
+	askedFrom: string;
+	askedFor: string;
+}
+
+export class GiveCardInput {
+	gameId: string;
+	cardToGive: string;
+	giveTo: string;
+}
+
+export class DeclineCardInput {
+	cardDeclined: string;
+	gameId: string;
+}
+
+export class CallSetInput {
+	callData: string; //stringified JSON of type: Record<userId,cardArray>
+	gameId: string;
+}

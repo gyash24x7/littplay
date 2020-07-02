@@ -31,6 +31,8 @@ export type Game = {
   status: GameStatus;
   playerCount: Scalars['Int'];
   teams: Array<Scalars['String']>;
+  lastMove?: Maybe<Move>;
+  currentMove?: Maybe<Move>;
 };
 
 export enum GameStatus {
@@ -45,6 +47,21 @@ export type LoginInput = {
   email: Scalars['String'];
   password: Scalars['String'];
 };
+
+export type Move = {
+  type: MoveType;
+  description: Scalars['String'];
+  turn?: Maybe<Scalars['String']>;
+  askedFrom?: Maybe<Scalars['String']>;
+  askedBy?: Maybe<Scalars['String']>;
+  askedFor?: Maybe<Scalars['String']>;
+};
+
+export enum MoveType {
+  Ask = 'ASK',
+  Turn = 'TURN',
+  Call = 'CALL'
+}
 
 export type Mutation = {
   createGame: Scalars['String'];
@@ -96,6 +113,15 @@ export type Query = {
 
 
 export type QueryGetGameArgs = {
+  gameId: Scalars['String'];
+};
+
+export type Subscription = {
+  game: Game;
+};
+
+
+export type SubscriptionGameArgs = {
   gameId: Scalars['String'];
 };
 
@@ -155,12 +181,19 @@ export type GetGameQueryVariables = Exact<{
 }>;
 
 
-export type GetGameQuery = { getGame: { _id: string, teams: Array<string>, status: GameStatus, code: string, playerCount: number, players: Array<{ _id: string, team: string, hand: Array<string>, name: string, avatar: string }> } };
+export type GetGameQuery = { getGame: { _id: string, teams: Array<string>, status: GameStatus, code: string, playerCount: number, createdBy: { _id: string, name: string, avatar: string, email: string }, players: Array<{ _id: string, team: string, hand: Array<string>, name: string, avatar: string }>, lastMove?: Maybe<{ type: MoveType, turn?: Maybe<string>, description: string, askedFrom?: Maybe<string>, askedFor?: Maybe<string>, askedBy?: Maybe<string> }>, currentMove?: Maybe<{ type: MoveType, turn?: Maybe<string>, description: string, askedFrom?: Maybe<string>, askedFor?: Maybe<string>, askedBy?: Maybe<string> }> } };
 
 export type MeQueryVariables = Exact<{ [key: string]: never; }>;
 
 
 export type MeQuery = { me: { _id: string, name: string, email: string, avatar: string } };
+
+export type GameSubscriptionVariables = Exact<{
+  gameId: Scalars['String'];
+}>;
+
+
+export type GameSubscription = { game: { _id: string, teams: Array<string>, status: GameStatus, code: string, playerCount: number, createdBy: { _id: string, name: string, avatar: string, email: string }, players: Array<{ _id: string, team: string, hand: Array<string>, name: string, avatar: string }>, lastMove?: Maybe<{ type: MoveType, turn?: Maybe<string>, description: string, askedFrom?: Maybe<string>, askedFor?: Maybe<string>, askedBy?: Maybe<string> }> } };
 
 
 export const CreateGameDocument = gql`
@@ -242,6 +275,12 @@ export const GetGameDocument = gql`
     teams
     status
     code
+    createdBy {
+      _id
+      name
+      avatar
+      email
+    }
     playerCount
     players {
       _id
@@ -249,6 +288,22 @@ export const GetGameDocument = gql`
       hand
       name
       avatar
+    }
+    lastMove {
+      type
+      turn
+      description
+      askedFrom
+      askedFor
+      askedBy
+    }
+    currentMove {
+      type
+      turn
+      description
+      askedFrom
+      askedFor
+      askedBy
     }
   }
 }
@@ -287,3 +342,40 @@ export type MeQueryResult = ApolloReactCommon.QueryResult<MeQuery, MeQueryVariab
 export function refetchMeQuery(variables?: MeQueryVariables) {
       return { query: MeDocument, variables: variables }
     }
+export const GameDocument = gql`
+    subscription Game($gameId: String!) {
+  game(gameId: $gameId) {
+    _id
+    teams
+    status
+    code
+    createdBy {
+      _id
+      name
+      avatar
+      email
+    }
+    playerCount
+    players {
+      _id
+      team
+      hand
+      name
+      avatar
+    }
+    lastMove {
+      type
+      turn
+      description
+      askedFrom
+      askedFor
+      askedBy
+    }
+  }
+}
+    `;
+export function useGameSubscription(baseOptions?: ApolloReactHooks.SubscriptionHookOptions<GameSubscription, GameSubscriptionVariables>) {
+        return ApolloReactHooks.useSubscription<GameSubscription, GameSubscriptionVariables>(GameDocument, baseOptions);
+      }
+export type GameSubscriptionHookResult = ReturnType<typeof useGameSubscription>;
+export type GameSubscriptionResult = ApolloReactCommon.SubscriptionResult<GameSubscription>;

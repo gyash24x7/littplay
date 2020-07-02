@@ -4,6 +4,12 @@ query GetGame($gameId: String!) {
 		teams
 		status
 		code
+		createdBy {
+			_id
+			name
+			avatar
+			email
+		}
 		playerCount
 		players {
 			_id
@@ -11,6 +17,22 @@ query GetGame($gameId: String!) {
 			hand
 			name
 			avatar
+		}
+		lastMove {
+			type
+			turn
+			description
+			askedFrom
+			askedFor
+			askedBy
+		}
+		currentMove {
+			type
+			turn
+			description
+			askedFrom
+			askedFor
+			askedBy
 		}
 	}
 }

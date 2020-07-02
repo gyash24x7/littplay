@@ -232,3 +232,19 @@
 	justify-content: center;
 	flex-wrap: wrap;
 }
+
+.banner {
+	font-family: "montserrat";
+	width: fit-content;
+	padding: 0px 50px;
+	text-align: center;
+	text-transform: uppercase;
+	margin: 5px 10px;
+	box-shadow: unset;
+	border-radius: 5px;
+}
+
+.moves-container {
+	display: flex;
+	justify-content: center;
+}
