@@ -28,7 +28,7 @@
 		"class-validator": "^0.12.2",
 		"cuid": "^2.1.8",
 		"fastify-static": "^2.7.0",
-		"graphql": "14.6.0",
+		"graphql": "15.2.0",
 		"helmet": "^3.23.3",
 		"mongodb": "^3.5.9",
 		"passport": "^0.4.1",
