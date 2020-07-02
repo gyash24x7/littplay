@@ -15,6 +15,7 @@
 		"dev:client": "yarn workspace client dev",
 		"dev:server": "yarn workspace server start:dev",
 		"build:server": "yarn workspace server build",
+		"build:client": "yarn workspace client build",
 		"gen:client": "yarn workspace client gen",
 		"gen:server": "yarn workspace server gen",
 		"migrate:db": "yarn workspace server migrate",

@@ -1,3 +1,4 @@
+import { Logger } from "@nestjs/common";
 import { NestFactory } from "@nestjs/core";
 import {
 	FastifyAdapter,
@@ -12,9 +13,17 @@ async function bootstrap() {
 		new FastifyAdapter()
 	);
 
+	let host = "localhost";
+
 	app.use(helmet());
-	app.enableCors({ origin: "http://192.168.43.59:3000", credentials: true });
-	await app.listen(8000, "192.168.43.59");
+	const logger = new Logger("Bootstrap");
+	if (process.env.NODE_ENV !== "production") {
+		app.enableCors({ origin: "http://192.168.43.59:3000", credentials: true });
+		host = "192.168.43.59";
+	}
+	logger.log(process.env.NODE_ENV);
+
+	await app.listen(8000, host);
 }
 
 bootstrap();

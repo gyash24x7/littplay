@@ -3,7 +3,7 @@ import { ConfigService } from "@nestjs/config";
 import { MongoClient } from "mongodb";
 
 export const DatabaseFactory = async (configService: ConfigService) => {
-	const logger = new Logger("DatabaseProvideFactory");
+	const logger = new Logger("DatabaseProviderFactory");
 
 	const client = await MongoClient.connect(
 		configService.get<string>("DATABASE_URL")!,

@@ -15,8 +15,8 @@ import { UserModule } from "./user/user.module";
 			autoSchemaFile: true,
 			installSubscriptionHandlers: true,
 			context: ({ req }) => ({ req }),
-			playground: process.env.NODE_ENV === "development",
-			introspection: process.env.NODE_ENV === "development"
+			playground: process.env.NODE_ENV !== "production",
+			introspection: process.env.NODE_ENV !== "production"
 		}),
 		ServeStaticModule.forRoot({
 			rootPath: join(__dirname, "..", "..", "client", "build")
