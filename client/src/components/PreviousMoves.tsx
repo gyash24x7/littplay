@@ -8,13 +8,17 @@ interface PreviousMovesProps {
 	currentMove: GetGameQuery["getGame"]["currentMove"];
 }
 
-export const PreviousMoves = ({ currentMove }: PreviousMovesProps) => {
+export const PreviousMoves = ({
+	currentMove,
+	lastMove
+}: PreviousMovesProps) => {
 	return (
 		<IonRow>
 			<IonCol>
 				<IonCard className="game-play-card">
 					<IonCardContent className="moves-container">
-						<Banner content={currentMove!.description} />
+						<Banner content={currentMove?.description} color="danger" />
+						<Banner content={lastMove?.description} color="success" />
 					</IonCardContent>
 				</IonCard>
 			</IonCol>

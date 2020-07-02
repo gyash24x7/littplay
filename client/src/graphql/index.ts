@@ -5,7 +5,7 @@ import { WebSocketLink } from "@apollo/link-ws";
 const token = localStorage.getItem("authToken");
 
 const wsLink = new WebSocketLink({
-	uri: `ws://localhost:8000/graphql`,
+	uri: `ws://192.168.43.59:8000/graphql`,
 	options: {
 		reconnect: true,
 		connectionParams: { authToken: token && `Bearer ${token}` }
@@ -13,7 +13,7 @@ const wsLink = new WebSocketLink({
 });
 
 const httpLink = new HttpLink({
-	uri: "http://localhost:8000/graphql",
+	uri: "http://192.168.43.59:8000/graphql",
 	headers: { Authorization: token && `Bearer ${token}` }
 });
 

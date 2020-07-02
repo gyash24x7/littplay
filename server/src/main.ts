@@ -13,8 +13,8 @@ async function bootstrap() {
 	);
 
 	app.use(helmet());
-	app.enableCors({ origin: "http://localhost:3000", credentials: true });
-	await app.listen(8000);
+	app.enableCors({ origin: "http://192.168.43.59:3000", credentials: true });
+	await app.listen(8000, "192.168.43.59");
 }
 
 bootstrap();

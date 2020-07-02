@@ -17,10 +17,11 @@ export class JoinGameDto {
 	user: User;
 }
 
+@InputType()
 export class AskCardInput {
-	gameId: string;
-	askedFrom: string;
-	askedFor: string;
+	@Field() @IsNotEmpty() @IsMongoId() gameId: string;
+	@Field() @IsNotEmpty() @IsMongoId() askedFrom: string;
+	@Field() @IsNotEmpty() @IsMongoId() askedFor: string;
 }
 
 export class GiveCardInput {

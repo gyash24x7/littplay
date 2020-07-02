@@ -2,11 +2,12 @@ import { IonCard, IonCardContent, IonCardTitle } from "@ionic/react";
 import React from "react";
 
 interface BannerProps {
-	content: string;
+	content?: string;
+	color: "success" | "warning" | "danger";
 }
 
-export const Banner = ({ content }: BannerProps) => (
-	<IonCard className="banner" color="success">
+export const Banner = ({ content, color }: BannerProps) => (
+	<IonCard className="banner" color={color}>
 		<IonCardContent>
 			<IonCardTitle>
 				<IonCardTitle>{content}</IonCardTitle>

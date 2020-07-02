@@ -26,5 +26,14 @@ subscription Game($gameId: String!) {
 			askedFor
 			askedBy
 		}
+
+		currentMove {
+			type
+			turn
+			description
+			askedFrom
+			askedFor
+			askedBy
+		}
 	}
 }

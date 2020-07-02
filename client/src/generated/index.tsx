@@ -12,6 +12,12 @@ export type Scalars = {
   Float: number;
 };
 
+export type AskCardInput = {
+  gameId: Scalars['String'];
+  askedFrom: Scalars['String'];
+  askedFor: Scalars['String'];
+};
+
 export type CreateTeamsInput = {
   gameId: Scalars['String'];
   teams: Array<Scalars['String']>;
@@ -68,6 +74,7 @@ export type Mutation = {
   joinGame: Scalars['String'];
   createTeams: Scalars['Boolean'];
   startGame: Scalars['Boolean'];
+  askCard: Scalars['Boolean'];
   login: Scalars['String'];
   createUser: Scalars['String'];
 };
@@ -85,6 +92,11 @@ export type MutationCreateTeamsArgs = {
 
 export type MutationStartGameArgs = {
   gameId: Scalars['String'];
+};
+
+
+export type MutationAskCardArgs = {
+  data: AskCardInput;
 };
 
 
@@ -131,6 +143,15 @@ export type User = {
   email: Scalars['String'];
   avatar: Scalars['String'];
 };
+
+export type AskCardMutationVariables = Exact<{
+  gameId: Scalars['String'];
+  askedFor: Scalars['String'];
+  askedFrom: Scalars['String'];
+}>;
+
+
+export type AskCardMutation = { askCard: boolean };
 
 export type CreateGameMutationVariables = Exact<{ [key: string]: never; }>;
 
@@ -193,9 +214,21 @@ export type GameSubscriptionVariables = Exact<{
 }>;
 
 
-export type GameSubscription = { game: { _id: string, teams: Array<string>, status: GameStatus, code: string, playerCount: number, createdBy: { _id: string, name: string, avatar: string, email: string }, players: Array<{ _id: string, team: string, hand: Array<string>, name: string, avatar: string }>, lastMove?: Maybe<{ type: MoveType, turn?: Maybe<string>, description: string, askedFrom?: Maybe<string>, askedFor?: Maybe<string>, askedBy?: Maybe<string> }> } };
+export type GameSubscription = { game: { _id: string, teams: Array<string>, status: GameStatus, code: string, playerCount: number, createdBy: { _id: string, name: string, avatar: string, email: string }, players: Array<{ _id: string, team: string, hand: Array<string>, name: string, avatar: string }>, lastMove?: Maybe<{ type: MoveType, turn?: Maybe<string>, description: string, askedFrom?: Maybe<string>, askedFor?: Maybe<string>, askedBy?: Maybe<string> }>, currentMove?: Maybe<{ type: MoveType, turn?: Maybe<string>, description: string, askedFrom?: Maybe<string>, askedFor?: Maybe<string>, askedBy?: Maybe<string> }> } };
 
 
+export const AskCardDocument = gql`
+    mutation AskCard($gameId: String!, $askedFor: String!, $askedFrom: String!) {
+  askCard(data: {gameId: $gameId, askedFor: $askedFor, askedFrom: $askedFrom})
+}
+    `;
+export type AskCardMutationFn = ApolloReactCommon.MutationFunction<AskCardMutation, AskCardMutationVariables>;
+export function useAskCardMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<AskCardMutation, AskCardMutationVariables>) {
+        return ApolloReactHooks.useMutation<AskCardMutation, AskCardMutationVariables>(AskCardDocument, baseOptions);
+      }
+export type AskCardMutationHookResult = ReturnType<typeof useAskCardMutation>;
+export type AskCardMutationResult = ApolloReactCommon.MutationResult<AskCardMutation>;
+export type AskCardMutationOptions = ApolloReactCommon.BaseMutationOptions<AskCardMutation, AskCardMutationVariables>;
 export const CreateGameDocument = gql`
     mutation CreateGame {
   createGame
@@ -364,6 +397,14 @@ export const GameDocument = gql`
       avatar
     }
     lastMove {
+      type
+      turn
+      description
+      askedFrom
+      askedFor
+      askedBy
+    }
+    currentMove {
       type
       turn
       description

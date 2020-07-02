@@ -35,7 +35,7 @@
 		"test": "react-scripts test",
 		"eject": "react-scripts eject",
 		"gen": "graphql-codegen --watch",
-		"dev": "ionic serve --port 3000 --no-open"
+		"dev": "ionic serve --port 3000 --no-open --host 192.168.43.59"
 	},
 	"eslintConfig": {
 		"extends": "react-app"

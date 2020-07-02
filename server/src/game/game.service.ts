@@ -62,11 +62,15 @@ export class GameService {
 	async joinGame({ code, user }: JoinGameDto) {
 		let game = await this.getGameByCode(code);
 
-		if (game.players.length === game.playerCount) {
-			throw new BadRequestException("Game Capacity Full!");
-		}
+		if (
+			!game.players.find(
+				({ _id }) => user._id.toHexString() === _id.toHexString()
+			)
+		) {
+			if (game.players.length === game.playerCount) {
+				throw new BadRequestException("Game Capacity Full!");
+			}
 
-		if (!game.players.find(({ _id }) => user._id === _id)) {
 			const players = game.players.concat({ ...user, hand: [], team: "" });
 			let updateQuery: UpdateQuery<Game> = { $set: { players } };
 

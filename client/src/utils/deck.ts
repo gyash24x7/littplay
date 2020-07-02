@@ -10,10 +10,13 @@ export function shuffle<T>(array: T[]) {
 export class GameCard {
 	rank: string;
 	suit: string;
+	set: string;
 
 	constructor(cardString: string) {
 		this.rank = cardString.split(" OF ")[0];
 		this.suit = cardString.split(" OF ")[1];
+		this.set =
+			RANKS.indexOf(this.rank) > 5 ? `BIG ${this.suit}` : `SMALL ${this.suit}`;
 	}
 
 	getCardString() {
@@ -53,7 +56,6 @@ export const RANKS = [
 	"FOUR",
 	"FIVE",
 	"SIX",
-	"SEVEN",
 	"EIGHT",
 	"NINE",
 	"TEN",
@@ -65,3 +67,31 @@ export const RANKS = [
 export const SORTED_DECK = SUITS.flatMap((suit) =>
 	RANKS.map((rank) => new GameCard(rank + " OF " + suit))
 ).map((card) => card.getCardString());
+
+export const SETS = [
+	"SMALL HEARTS",
+	"SMALL CLUBS",
+	"SMALL SPADES",
+	"SMALL DIAMONDS",
+	"BIG DIAMONDS",
+	"BIG CLUBS",
+	"BIG SPADES",
+	"BIG HEARTS"
+];
+
+export const getHandRecord = (hand: GameCard[]) => {
+	const handRecord: Record<string, Set<string>> = {};
+
+	hand.forEach((card) => {
+		if (!handRecord[card.set]) {
+			handRecord[card.set] = new Set<string>();
+		}
+
+		SORTED_DECK.map((card) => new GameCard(card))
+			.filter(({ rank, set }) => rank !== card.rank && set === card.set)
+			.map((card) => card.getCardString())
+			.forEach((cardString) => handRecord[card.set].add(cardString));
+	});
+
+	return handRecord;
+};

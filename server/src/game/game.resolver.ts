@@ -4,7 +4,7 @@ import { PubSub } from "apollo-server-fastify";
 import { AuthUser } from "../user/auth-user.decorator";
 import { GqlAuthGuard } from "../user/gql-auth.guard";
 import { User } from "../user/user.type";
-import { CreateTeamsInput } from "./game.inputs";
+import { AskCardInput, CreateTeamsInput } from "./game.inputs";
 import { GameService } from "./game.service";
 import { Game } from "./game.type";
 
@@ -47,6 +47,14 @@ export class GameResolver {
 	@UseGuards(GqlAuthGuard)
 	async startGame(@Args("gameId") gameId: string) {
 		const game = await this.gameService.startGame(gameId);
+		await this.pubsub.publish(game._id.toHexString(), game);
+		return true;
+	}
+
+	@Mutation(() => Boolean)
+	@UseGuards(GqlAuthGuard)
+	async askCard(@Args("data") data: AskCardInput, @AuthUser() user: User) {
+		const game = await this.gameService.askCard(data, user);
 		await this.pubsub.publish(game._id.toHexString(), game);
 		return true;
 	}

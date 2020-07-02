@@ -11,8 +11,9 @@ import {
 	IonText,
 	IonTitle
 } from "@ionic/react";
-import React from "react";
+import React, { useContext } from "react";
 import { GameStatus, GetGameQuery, useStartGameMutation } from "../generated";
+import { UserContext } from "../utils/context";
 import { ErrorMsg } from "./ErrorMsg";
 
 interface StartGameProps {
@@ -25,8 +26,13 @@ export const GameDescription = ({ game, displayToast }: StartGameProps) => {
 		variables: { gameId: game._id }
 	});
 
+	const user = useContext(UserContext)!;
+
 	const copyCode = () =>
-		navigator.clipboard.writeText(game.code).then(displayToast);
+		navigator?.clipboard
+			?.writeText(game.code)
+			.then(displayToast)
+			.catch((err) => console.log(err));
 
 	return (
 		<IonRow>
@@ -35,7 +41,7 @@ export const GameDescription = ({ game, displayToast }: StartGameProps) => {
 					{loading && <IonLoading isOpen />}
 					<IonCardHeader>
 						<IonRow className="game-description-row">
-							<IonCol sizeSm="4">
+							<IonCol sizeSm="6" sizeMd="4">
 								<IonCardSubtitle className="card-subtitle">
 									GAME CODE
 								</IonCardSubtitle>
@@ -55,16 +61,17 @@ export const GameDescription = ({ game, displayToast }: StartGameProps) => {
 									</IonButton>
 								</IonCol>
 							)}
-							{game.status === GameStatus.TeamsCreated && (
-								<IonCol sizeXl="3" sizeSm="4" size="12">
-									<IonButton
-										className="app-button small"
-										onClick={() => startGame()}
-									>
-										Start Game
-									</IonButton>
-								</IonCol>
-							)}
+							{game.status === GameStatus.TeamsCreated &&
+								game.createdBy._id === user._id && (
+									<IonCol sizeXl="3" sizeSm="4" size="12">
+										<IonButton
+											className="app-button small"
+											onClick={() => startGame()}
+										>
+											Start Game
+										</IonButton>
+									</IonCol>
+								)}
 							{game.status === GameStatus.InProgress && (
 								<IonCol sizeMd="8" size="12">
 									<IonRow>

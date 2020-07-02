@@ -1,0 +1,3 @@
+mutation AskCard($gameId: String!, $askedFor: String!, $askedFrom: String!) {
+	askCard(data: { gameId: $gameId, askedFor: $askedFor, askedFrom: $askedFrom })
+}
