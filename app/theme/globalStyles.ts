@@ -9,16 +9,16 @@ export default StyleSheet.create({
 	},
 
 	topNavigation: {
-		borderBottomColor: "#303030",
+		borderBottomColor: "#d9d9d9",
 		borderBottomWidth: 1,
 		height: 70
 	},
 
-	list: { width: "100%", flex: 1, borderWidth: 1, borderColor: "#303030" },
+	list: { width: "100%", flex: 1, borderWidth: 1, borderColor: "#d9d9d9" },
 
 	drawerNavigation: {
-		backgroundColor: "#141414",
-		borderRightColor: "#303030",
+		backgroundColor: "#ffffff",
+		borderRightColor: "#d9d9d9",
 		borderRightWidth: 1
 	},
 
@@ -54,7 +54,7 @@ export default StyleSheet.create({
 		width: "100%",
 		padding: 15,
 		borderWidth: 1,
-		borderColor: "#303030",
+		borderColor: "#d9d9d9",
 		borderRadius: 5
 	}
 });

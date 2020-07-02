@@ -25,3 +25,5 @@ environment.ts
 nginx.conf
 
 server3
+
+web

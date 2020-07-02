@@ -19,9 +19,9 @@ export const PrivateScreens = () => {
 		return (
 			<UserContext.Provider value={data.me}>
 				<Navigator>
+					<Screen name="Profile" component={ProfileScreen} />
 					<Screen name="NewGame" component={NewGameScreen} />
 					<Screen name="Game" component={GameScreen} />
-					<Screen name="Profile" component={ProfileScreen} />
 				</Navigator>
 			</UserContext.Provider>
 		);
