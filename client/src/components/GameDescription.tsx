@@ -1,3 +1,4 @@
+import { Clipboard } from "@ionic-native/clipboard";
 import {
 	IonAvatar,
 	IonButton,
@@ -9,7 +10,8 @@ import {
 	IonLoading,
 	IonRow,
 	IonText,
-	IonTitle
+	IonTitle,
+	isPlatform
 } from "@ionic/react";
 import React, { useContext } from "react";
 import { GameStatus, GetGameQuery, useStartGameMutation } from "../generated";
@@ -28,11 +30,17 @@ export const GameDescription = ({ game, displayToast }: StartGameProps) => {
 
 	const user = useContext(UserContext)!;
 
-	const copyCode = () =>
-		navigator?.clipboard
-			?.writeText(game.code)
-			.then(displayToast)
-			.catch((err) => console.log(err));
+	const copyCode = () => {
+		if (isPlatform("desktop")) {
+			navigator.permissions.query({ name: "clipboard" }).then((result) => {
+				if (result.state == "granted" || result.state == "prompt") {
+					navigator.clipboard?.writeText(game.code).then(displayToast);
+				}
+			});
+		} else {
+			Clipboard.copy(game.code).then(displayToast);
+		}
+	};
 
 	return (
 		<IonRow>

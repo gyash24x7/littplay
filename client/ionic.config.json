@@ -1,8 +1,8 @@
 {
-  "name": "client",
-  "integrations": {
-    "capacitor": {}
-  },
-  "type": "react",
-  "id": "995af075"
+	"name": "Literature",
+	"integrations": {
+		"capacitor": {}
+	},
+	"type": "react",
+	"id": "995af075"
 }
