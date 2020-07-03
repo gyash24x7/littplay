@@ -7,14 +7,11 @@ import {
 	IonRow,
 	IonText
 } from "@ionic/react";
-import React from "react";
-import { GetGameQuery } from "../generated";
+import React, { useContext } from "react";
+import { GameContext } from "../utils/context";
 
-interface PlayersCardProps {
-	players: GetGameQuery["getGame"]["players"];
-}
-
-export const PlayersCard = ({ players }: PlayersCardProps) => {
+export const PlayersCard = () => {
+	const { players } = useContext(GameContext)!;
 	return (
 		<IonRow>
 			<IonCol>

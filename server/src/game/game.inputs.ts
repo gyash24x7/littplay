@@ -37,7 +37,9 @@ export class DeclineCardInput {
 	@Field() @IsNotEmpty() @IsMongoId() gameId: string;
 }
 
+@InputType()
 export class CallSetInput {
-	callData: string; //stringified JSON of type: Record<userId,cardArray>
-	gameId: string;
+	@Field() @IsNotEmpty() set: string;
+	@Field() @IsNotEmpty() callData: string; //stringified JSON of type: Record<userId,cardArray>
+	@Field() @IsNotEmpty() @IsMongoId() gameId: string;
 }

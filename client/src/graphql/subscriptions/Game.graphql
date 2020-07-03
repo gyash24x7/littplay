@@ -1,7 +1,10 @@
 subscription Game($gameId: String!) {
 	game(gameId: $gameId) {
 		_id
-		teams
+		teams {
+			name
+			score
+		}
 		status
 		code
 		createdBy {
@@ -20,13 +23,8 @@ subscription Game($gameId: String!) {
 		}
 		lastMove {
 			type
-			turn
 			description
-			askedFrom
-			askedFor
-			askedBy
 		}
-
 		currentMove {
 			type
 			turn

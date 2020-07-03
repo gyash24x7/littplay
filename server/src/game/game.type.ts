@@ -34,6 +34,14 @@ export class Move {
 	@Field({ nullable: true }) askedFrom?: string;
 	@Field({ nullable: true }) askedBy?: string;
 	@Field({ nullable: true }) askedFor?: string;
+
+	@Field({ nullable: true }) callSetData?: string;
+}
+
+@ObjectType()
+export class Team {
+	@Field() name: string;
+	@Field(() => Int) score: number;
 }
 
 @ObjectType()
@@ -44,7 +52,7 @@ export class Game {
 	@Field(() => [Player]) players: Player[];
 	@Field(() => GameStatus) status: GameStatus;
 	@Field(() => Int) playerCount: number;
-	@Field(() => [String]) teams: string[];
+	@Field(() => [Team]) teams: Team[];
 	@Field(() => Move, { nullable: true }) lastMove?: Move;
 	@Field(() => Move, { nullable: true }) currentMove?: Move;
 }

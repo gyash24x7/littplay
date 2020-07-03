@@ -7,20 +7,13 @@ import {
 	IonRow
 } from "@ionic/react";
 import React, { useContext, useState } from "react";
-import {
-	GetGameQuery,
-	useDeclineCardMutation,
-	useGiveCardMutation
-} from "../generated";
-import { UserContext } from "../utils/context";
+import { useDeclineCardMutation, useGiveCardMutation } from "../generated";
+import { GameContext, UserContext } from "../utils/context";
 import { ErrorMsg } from "./ErrorMsg";
 
-interface GiveOrDeclineProps {
-	game: GetGameQuery["getGame"];
-}
-
-export const GiveOrDecline = ({ game }: GiveOrDeclineProps) => {
+export const GiveOrDecline = () => {
 	const user = useContext(UserContext)!;
+	const game = useContext(GameContext)!;
 	const { hand } = game.players.find(({ _id }) => _id === user._id)!;
 	const [errorMsg, setErrorMsg] = useState<string>();
 
@@ -48,33 +41,26 @@ export const GiveOrDecline = ({ game }: GiveOrDeclineProps) => {
 	});
 
 	return (
-		<IonRow>
-			<IonCol>
+		<IonCard>
+			<IonCardContent>
+				<IonRow style={{ justifyContent: "center" }}>
+					{hasCard ? (
+						<IonCol>
+							<IonButton className="app-button" onClick={() => giveCard()}>
+								GIVE CARD
+							</IonButton>
+						</IonCol>
+					) : (
+						<IonCol>
+							<IonButton className="app-button" onClick={() => declineCard()}>
+								DECLINE CARD
+							</IonButton>
+						</IonCol>
+					)}
+				</IonRow>
+				{errorMsg && <ErrorMsg message={errorMsg} />}
 				<IonLoading isOpen={giveLoading || declineLoading} />
-				<IonCard>
-					<IonCardContent>
-						<IonRow style={{ justifyContent: "center" }}>
-							{hasCard ? (
-								<IonCol sizeLg="3" sizeMd="4" sizeSm="6" size="12">
-									<IonButton className="app-button" onClick={() => giveCard()}>
-										GIVE CARD
-									</IonButton>
-								</IonCol>
-							) : (
-								<IonCol sizeLg="3" sizeMd="4" sizeSm="6" size="12">
-									<IonButton
-										className="app-button"
-										onClick={() => declineCard()}
-									>
-										DECLINE CARD
-									</IonButton>
-								</IonCol>
-							)}
-						</IonRow>
-						{errorMsg && <ErrorMsg message={errorMsg} />}
-					</IonCardContent>
-				</IonCard>
-			</IonCol>
-		</IonRow>
+			</IonCardContent>
+		</IonCard>
 	);
 };

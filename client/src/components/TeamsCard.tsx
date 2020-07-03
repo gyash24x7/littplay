@@ -8,24 +8,20 @@ import {
 	IonRow,
 	IonText
 } from "@ionic/react";
-import React from "react";
-import { GetGameQuery } from "../generated";
+import React, { useContext } from "react";
+import { GameContext } from "../utils/context";
 
-interface TeamCardProps {
-	teams: string[];
-	players: GetGameQuery["getGame"]["players"];
-}
-
-export const TeamsCard = ({ teams, players }: TeamCardProps) => {
+export const TeamsCard = () => {
+	const { teams, players } = useContext(GameContext)!;
 	return (
 		<IonRow>
 			{teams?.map((team) => (
-				<IonCol key={team} sizeMd="6" size="12">
+				<IonCol key={team.name} sizeMd="6" size="12">
 					<IonCard className="game-play-card">
 						<IonCardHeader>
 							<IonCardSubtitle className="montserrat">Team</IonCardSubtitle>
 							<IonCardTitle className="montserrat-bold">
-								{team.toUpperCase()}
+								{team.name.toUpperCase()}
 							</IonCardTitle>
 						</IonCardHeader>
 						<IonCardContent>
@@ -33,7 +29,7 @@ export const TeamsCard = ({ teams, players }: TeamCardProps) => {
 								<IonCol sizeLg="8" sizeMd="12" sizeSm="10" size="12">
 									<div className="players-wrapper">
 										{players
-											.filter((player) => player.team === team)
+											.filter((player) => player.team === team.name)
 											.map(({ _id, avatar, name }) => (
 												<div className="player-icon" key={_id}>
 													<img src={avatar} alt="" className="user-avatar" />

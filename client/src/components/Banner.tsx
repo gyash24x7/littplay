@@ -13,7 +13,7 @@ interface BannerProps {
 }
 
 export const Banner = ({ content, color, isLast }: BannerProps) => (
-	<IonCard className="banner" color={color}>
+	<IonCard className="game-play-card" color={color}>
 		<IonCardContent>
 			<IonCardTitle>
 				<IonCardSubtitle className="subtitle">

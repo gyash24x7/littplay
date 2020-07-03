@@ -1,0 +1,3 @@
+mutation CallSet($gameId: String!, $set: String!, $callData: String!) {
+	callSet(data: { gameId: $gameId, set: $set, callData: $callData })
+}

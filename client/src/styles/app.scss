@@ -125,6 +125,12 @@
 	text-align: center;
 	margin: 5px 10px;
 	box-shadow: unset;
+
+	.subtitle {
+		color: #000 !important;
+		margin-bottom: 5px;
+		font-family: "montserrat-bold";
+	}
 }
 
 .game-code,
@@ -233,26 +239,20 @@
 	flex-wrap: wrap;
 }
 
-.banner {
-	font-family: "montserrat";
-	width: fit-content;
-	padding: 0px 50px;
-	text-align: center;
-	text-transform: uppercase;
-	margin: 5px 10px;
-	box-shadow: unset;
-	border-radius: 5px;
-
-	.subtitle {
-		color: #000 !important;
-		margin-bottom: 5px;
-		font-family: "montserrat-bold";
-	}
-}
-
 .moves-container {
 	display: flex;
 	justify-content: center;
 	align-items: center;
 	flex-direction: column;
+}
+
+.user-container {
+	display: flex;
+	align-items: center;
+	padding: 5px 0px;
+	margin: 5px 0px;
+
+	.user-details {
+		margin-left: 15px;
+	}
 }

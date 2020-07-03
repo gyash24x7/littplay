@@ -6,6 +6,7 @@ import { GqlAuthGuard } from "../user/gql-auth.guard";
 import { User } from "../user/user.type";
 import {
 	AskCardInput,
+	CallSetInput,
 	CreateTeamsInput,
 	DeclineCardInput,
 	GiveCardInput
@@ -86,6 +87,19 @@ export class GameResolver {
 	) {
 		const game = await this.gameService.declineCard(data, user);
 		await this.pubsub.publish(game._id.toHexString(), game);
+		return true;
+	}
+
+	@Mutation(() => Boolean)
+	@UseGuards(GqlAuthGuard)
+	async callSet(
+		@Args("data", ValidationPipe) data: CallSetInput,
+		@AuthUser() user: User
+	) {
+		let game = await this.gameService.startCallSet(data, user);
+		await this.pubsub.publish(data.gameId, game);
+		game = await this.gameService.callSet(data, user);
+		await this.pubsub.publish(data.gameId, game);
 		return true;
 	}
 

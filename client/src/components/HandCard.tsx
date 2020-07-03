@@ -2,9 +2,7 @@ import {
 	IonCard,
 	IonCardContent,
 	IonCardHeader,
-	IonCardTitle,
-	IonCol,
-	IonRow
+	IonCardTitle
 } from "@ionic/react";
 import React from "react";
 import Club from "../assets/club.png";
@@ -63,33 +61,25 @@ export const HandCard = ({ player }: HandCardProps) => {
 	};
 
 	return (
-		<IonRow>
-			<IonCol>
-				<IonCard className="game-play-card">
-					<IonCardHeader>
-						<IonCardTitle>MY HAND</IonCardTitle>
-					</IonCardHeader>
-					<IonCardContent>
-						<div className="game-cards-wrapper">
-							{getSortedHand(player.hand).map((gameCard) => (
-								<div className="game-card" key={gameCard.getCardString()}>
-									<img
-										src={getSuitIcon(gameCard)}
-										alt=""
-										className="card-suit"
-									/>
-									<div
-										className="card-rank"
-										style={{ color: getCardColor(gameCard) }}
-									>
-										{getRank(gameCard)}
-									</div>
-								</div>
-							))}
+		<IonCard className="game-play-card">
+			<IonCardHeader>
+				<IonCardTitle>MY HAND</IonCardTitle>
+			</IonCardHeader>
+			<IonCardContent>
+				<div className="game-cards-wrapper">
+					{getSortedHand(player.hand).map((gameCard) => (
+						<div className="game-card" key={gameCard.getCardString()}>
+							<img src={getSuitIcon(gameCard)} alt="" className="card-suit" />
+							<div
+								className="card-rank"
+								style={{ color: getCardColor(gameCard) }}
+							>
+								{getRank(gameCard)}
+							</div>
 						</div>
-					</IonCardContent>
-				</IonCard>
-			</IonCol>
-		</IonRow>
+					))}
+				</div>
+			</IonCardContent>
+		</IonCard>
 	);
 };

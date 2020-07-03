@@ -1,13 +1,14 @@
 import {
+	IonCol,
 	IonContent,
 	IonGrid,
 	IonLoading,
 	IonPage,
+	IonRow,
 	IonToast
 } from "@ionic/react";
-import React, { Fragment, useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Redirect, useParams } from "react-router";
-import { AskCard } from "../components/AskCard";
 import { CreateTeams } from "../components/CreateTeams";
 import { ErrorMsg } from "../components/ErrorMsg";
 import { GameDescription } from "../components/GameDescription";
@@ -16,13 +17,13 @@ import { HandCard } from "../components/HandCard";
 import { PlayersCard } from "../components/PlayersCard";
 import { PreviousMoves } from "../components/PreviousMoves";
 import { TeamsCard } from "../components/TeamsCard";
+import { TurnSegment } from "../components/TurnSegment";
 import {
-	GameStatus,
 	GetGameQuery,
 	useGameSubscription,
 	useGetGameQuery
 } from "../generated";
-import { UserContext } from "../utils/context";
+import { GameContext, UserContext } from "../utils/context";
 
 export const GamePage = () => {
 	const [toastContent, setToastContent] = useState<string>();
@@ -53,39 +54,39 @@ export const GamePage = () => {
 		return <Redirect to="/game" />;
 	}
 
-	const { status, players, teams, currentMove, lastMove } = game;
+	const { status, players, currentMove } = game;
 
 	return (
 		<IonPage>
 			<IonContent>
-				<IonGrid className="game-play-container">
-					<GameDescription
-						game={game}
-						displayToast={() => setToastContent("Code copied to clipboard!")}
-					/>
-					{(status === GameStatus.NotStarted ||
-						status === GameStatus.PlayersReady) && (
-						<PlayersCard players={players} />
-					)}
-					{status === GameStatus.PlayersReady && _id === game.createdBy._id && (
-						<CreateTeams />
-					)}
-					{status === GameStatus.TeamsCreated && (
-						<TeamsCard teams={teams} players={players} />
-					)}
-					{status === GameStatus.InProgress && (
-						<Fragment>
-							{game.currentMove?.turn === _id && <AskCard game={game} />}
-							<PreviousMoves currentMove={currentMove} lastMove={lastMove} />
-							{game.currentMove?.askedFrom === _id && (
-								<GiveOrDecline game={game} />
-							)}
-							<HandCard
-								player={players.find((player) => _id === player._id)!}
-							/>
-						</Fragment>
-					)}
-				</IonGrid>
+				<GameContext.Provider value={game}>
+					<IonGrid className="game-play-container">
+						<GameDescription
+							displayToast={() => setToastContent("Code copied to clipboard!")}
+						/>
+						{(status === "NOT_STARTED" || status === "PLAYERS_READY") && (
+							<PlayersCard />
+						)}
+						{status === "PLAYERS_READY" && _id === game.createdBy._id && (
+							<CreateTeams />
+						)}
+						{status === "TEAMS_CREATED" && <TeamsCard />}
+						{status === "IN_PROGRESS" && (
+							<IonRow>
+								<IonCol size="12" sizeLg="6">
+									<PreviousMoves />
+									{currentMove?.turn === _id && <TurnSegment />}
+									{currentMove?.askedFrom === _id && <GiveOrDecline />}
+								</IonCol>
+								<IonCol size="12" sizeLg="6">
+									<HandCard
+										player={players.find((plyr) => _id === plyr._id)!}
+									/>
+								</IonCol>
+							</IonRow>
+						)}
+					</IonGrid>
+				</GameContext.Provider>
 				<IonToast
 					isOpen={!!toastContent}
 					duration={2500}

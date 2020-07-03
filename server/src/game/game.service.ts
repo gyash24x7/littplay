@@ -12,6 +12,7 @@ import { User } from "../user/user.type";
 import { Deck } from "../utils/deck";
 import {
 	AskCardInput,
+	CallSetInput,
 	CreateTeamsInput,
 	DeclineCardInput,
 	GiveCardInput,
@@ -62,11 +63,7 @@ export class GameService {
 	async joinGame({ code, user }: JoinGameDto) {
 		let game = await this.getGameByCode(code);
 
-		if (
-			!game.players.find(
-				({ _id }) => user._id.toHexString() === _id.toHexString()
-			)
-		) {
+		if (!game.players.find(({ _id }) => user._id.equals(_id))) {
 			if (game.players.length === game.playerCount) {
 				throw new BadRequestException("Game Capacity Full!");
 			}
@@ -99,7 +96,11 @@ export class GameService {
 		);
 
 		const game = await this.updateGameById(_id, {
-			$set: { teams, players, status: GameStatus.TEAMS_CREATED }
+			$set: {
+				teams: teams.map((name) => ({ name, score: 0 })),
+				players,
+				status: GameStatus.TEAMS_CREATED
+			}
 		});
 		return game;
 	}
@@ -133,18 +134,79 @@ export class GameService {
 		return game;
 	}
 
-	// async callSet({ callData, gameId }: CallSetInput, user: User) {
-	// 	let { players, currentMove } = await this.getGameById(gameId);
-	// 	const callSetData: Record<string, string[]> = JSON.parse(callData);
+	async startCallSet({ set, gameId, callData }: CallSetInput, user: User) {
+		const { currentMove } = await this.getGameById(gameId);
+		const game = await this.updateGameById(gameId, {
+			$set: {
+				lastMove: currentMove,
+				currentMove: {
+					type: MoveType.CALL,
+					description: `${user.name} is calling the set ${set}`,
+					callSetData: callData
+				}
+			}
+		});
+		return game;
+	}
 
-	// 	for (const userId in callSetData) {
-	// 		if (callSetData.hasOwnProperty(userId)) {
-	// 			const cards = callSetData[userId];
-	// 			const player = players.find(({ _id }) => _id.toHexString() === userId)!;
-	// 			player.hand.filter;
-	// 		}
-	// 	}
-	// }
+	async callSet({ callData, gameId, set }: CallSetInput, user: User) {
+		let { players, currentMove, teams } = await this.getGameById(gameId);
+		let callSetData: Record<string, string[]> = JSON.parse(callData);
+		let callCards = Object.keys(callSetData).flatMap(
+			(userId) => callSetData[userId]
+		);
+
+		const mePlayer = players.find(({ _id }) => _id.equals(user._id))!;
+		let myTeamPlayers = players.filter(({ team }) => team === mePlayer.team);
+
+		let flag = 0;
+		myTeamPlayers.forEach(({ _id, hand }) => {
+			callSetData[_id.toHexString()] = callSetData[_id.toHexString()].filter(
+				(card) => !hand.includes(card)
+			);
+
+			if (callSetData[_id.toHexString()].length !== 0) flag = 1;
+		});
+
+		players.forEach(({ hand }, i) => {
+			callCards.forEach((card) => {
+				const idx = hand.indexOf(card);
+				if (idx >= 0) hand = hand.slice(0, idx).concat(hand.slice(idx + 1));
+			});
+
+			players[i].hand = hand;
+		});
+
+		return this.updateGameById(gameId, {
+			$set: {
+				lastMove: currentMove,
+				players,
+				teams: teams.map(({ name, score }) => {
+					if (flag === 0) {
+						if (name === mePlayer.team) return { name, score: score + 1 };
+						else return { name, score };
+					} else {
+						if (name !== mePlayer.team) return { name, score: score + 1 };
+						else return { name, score };
+					}
+				}),
+				currentMove:
+					flag === 0
+						? {
+								description: `${user.name} called ${set} correctly.`,
+								type: MoveType.TURN,
+								turn: user._id.toHexString()
+						  }
+						: {
+								description: `${user.name} called ${set} incorrectly.`,
+								type: MoveType.TURN,
+								turn: players
+									.find(({ team }) => team !== mePlayer.team)
+									?._id.toHexString()
+						  }
+			}
+		});
+	}
 
 	async declineCard({ gameId, cardDeclined }: DeclineCardInput, user: User) {
 		let game = await this.getGameById(gameId);
@@ -163,17 +225,15 @@ export class GameService {
 
 	async giveCard({ cardToGive, gameId, giveTo }: GiveCardInput, user: User) {
 		let { players, currentMove } = await this.getGameById(gameId);
-		let takingPlayer = players.find(({ _id }) => _id.toHexString() === giveTo)!;
+		let takingPlayer = players.find(({ _id }) => _id.equals(giveTo))!;
 		takingPlayer.hand.push(cardToGive);
 
-		let givingPlayer = players.find(
-			({ _id }) => _id.toHexString() === user._id.toHexString()
-		)!;
+		let givingPlayer = players.find(({ _id }) => _id.equals(user._id))!;
 		givingPlayer.hand = givingPlayer.hand.filter((card) => card !== cardToGive);
 
 		players = players.map((player) => {
-			if (player._id === givingPlayer._id) return givingPlayer;
-			if (player._id === takingPlayer?._id) return takingPlayer;
+			if (player._id.equals(givingPlayer._id)) return givingPlayer;
+			if (player._id.equals(takingPlayer?._id)) return takingPlayer;
 			return player;
 		});
 
@@ -194,7 +254,7 @@ export class GameService {
 
 	async askCard({ gameId, askedFor, askedFrom }: AskCardInput, user: User) {
 		let { players, currentMove } = await this.getGameById(gameId);
-		const player = players.find(({ _id }) => _id.toHexString() === askedFrom);
+		const player = players.find(({ _id }) => _id.equals(askedFrom));
 
 		let game = await this.updateGameById(gameId, {
 			$set: {

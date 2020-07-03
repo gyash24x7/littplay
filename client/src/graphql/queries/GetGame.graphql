@@ -1,7 +1,10 @@
 query GetGame($gameId: String!) {
 	getGame(gameId: $gameId) {
 		_id
-		teams
+		teams {
+			name
+			score
+		}
 		status
 		code
 		createdBy {
@@ -20,11 +23,7 @@ query GetGame($gameId: String!) {
 		}
 		lastMove {
 			type
-			turn
 			description
-			askedFrom
-			askedFor
-			askedBy
 		}
 		currentMove {
 			type

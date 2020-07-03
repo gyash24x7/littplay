@@ -1,4 +1,8 @@
 import React from "react";
-import { User } from "../generated";
+import { GetGameQuery, User } from "../generated";
 
 export const UserContext = React.createContext<User | undefined>(undefined);
+
+export const GameContext = React.createContext<
+	GetGameQuery["getGame"] | undefined
+>(undefined);

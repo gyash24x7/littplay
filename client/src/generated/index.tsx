@@ -18,6 +18,12 @@ export type AskCardInput = {
   askedFor: Scalars['String'];
 };
 
+export type CallSetInput = {
+  set: Scalars['String'];
+  callData: Scalars['String'];
+  gameId: Scalars['String'];
+};
+
 export type CreateTeamsInput = {
   gameId: Scalars['String'];
   teams: Array<Scalars['String']>;
@@ -41,7 +47,7 @@ export type Game = {
   players: Array<Player>;
   status: GameStatus;
   playerCount: Scalars['Int'];
-  teams: Array<Scalars['String']>;
+  teams: Array<Team>;
   lastMove?: Maybe<Move>;
   currentMove?: Maybe<Move>;
 };
@@ -72,6 +78,7 @@ export type Move = {
   askedFrom?: Maybe<Scalars['String']>;
   askedBy?: Maybe<Scalars['String']>;
   askedFor?: Maybe<Scalars['String']>;
+  callSetData?: Maybe<Scalars['String']>;
 };
 
 export enum MoveType {
@@ -88,6 +95,7 @@ export type Mutation = {
   askCard: Scalars['Boolean'];
   giveCard: Scalars['Boolean'];
   declineCard: Scalars['Boolean'];
+  callSet: Scalars['Boolean'];
   login: Scalars['String'];
   createUser: Scalars['String'];
 };
@@ -120,6 +128,11 @@ export type MutationGiveCardArgs = {
 
 export type MutationDeclineCardArgs = {
   data: DeclineCardInput;
+};
+
+
+export type MutationCallSetArgs = {
+  data: CallSetInput;
 };
 
 
@@ -160,6 +173,11 @@ export type SubscriptionGameArgs = {
   gameId: Scalars['String'];
 };
 
+export type Team = {
+  name: Scalars['String'];
+  score: Scalars['Int'];
+};
+
 export type User = {
   _id: Scalars['ID'];
   name: Scalars['String'];
@@ -175,6 +193,15 @@ export type AskCardMutationVariables = Exact<{
 
 
 export type AskCardMutation = { askCard: boolean };
+
+export type CallSetMutationVariables = Exact<{
+  gameId: Scalars['String'];
+  set: Scalars['String'];
+  callData: Scalars['String'];
+}>;
+
+
+export type CallSetMutation = { callSet: boolean };
 
 export type CreateGameMutationVariables = Exact<{ [key: string]: never; }>;
 
@@ -242,7 +269,7 @@ export type GetGameQueryVariables = Exact<{
 }>;
 
 
-export type GetGameQuery = { getGame: { _id: string, teams: Array<string>, status: GameStatus, code: string, playerCount: number, createdBy: { _id: string, name: string, avatar: string, email: string }, players: Array<{ _id: string, team: string, hand: Array<string>, name: string, avatar: string }>, lastMove?: Maybe<{ type: MoveType, turn?: Maybe<string>, description: string, askedFrom?: Maybe<string>, askedFor?: Maybe<string>, askedBy?: Maybe<string> }>, currentMove?: Maybe<{ type: MoveType, turn?: Maybe<string>, description: string, askedFrom?: Maybe<string>, askedFor?: Maybe<string>, askedBy?: Maybe<string> }> } };
+export type GetGameQuery = { getGame: { _id: string, status: GameStatus, code: string, playerCount: number, teams: Array<{ name: string, score: number }>, createdBy: { _id: string, name: string, avatar: string, email: string }, players: Array<{ _id: string, team: string, hand: Array<string>, name: string, avatar: string }>, lastMove?: Maybe<{ type: MoveType, description: string }>, currentMove?: Maybe<{ type: MoveType, turn?: Maybe<string>, description: string, askedFrom?: Maybe<string>, askedFor?: Maybe<string>, askedBy?: Maybe<string> }> } };
 
 export type MeQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -254,7 +281,7 @@ export type GameSubscriptionVariables = Exact<{
 }>;
 
 
-export type GameSubscription = { game: { _id: string, teams: Array<string>, status: GameStatus, code: string, playerCount: number, createdBy: { _id: string, name: string, avatar: string, email: string }, players: Array<{ _id: string, team: string, hand: Array<string>, name: string, avatar: string }>, lastMove?: Maybe<{ type: MoveType, turn?: Maybe<string>, description: string, askedFrom?: Maybe<string>, askedFor?: Maybe<string>, askedBy?: Maybe<string> }>, currentMove?: Maybe<{ type: MoveType, turn?: Maybe<string>, description: string, askedFrom?: Maybe<string>, askedFor?: Maybe<string>, askedBy?: Maybe<string> }> } };
+export type GameSubscription = { game: { _id: string, status: GameStatus, code: string, playerCount: number, teams: Array<{ name: string, score: number }>, createdBy: { _id: string, name: string, avatar: string, email: string }, players: Array<{ _id: string, team: string, hand: Array<string>, name: string, avatar: string }>, lastMove?: Maybe<{ type: MoveType, description: string }>, currentMove?: Maybe<{ type: MoveType, turn?: Maybe<string>, description: string, askedFrom?: Maybe<string>, askedFor?: Maybe<string>, askedBy?: Maybe<string> }> } };
 
 
 export const AskCardDocument = gql`
@@ -269,6 +296,18 @@ export function useAskCardMutation(baseOptions?: ApolloReactHooks.MutationHookOp
 export type AskCardMutationHookResult = ReturnType<typeof useAskCardMutation>;
 export type AskCardMutationResult = ApolloReactCommon.MutationResult<AskCardMutation>;
 export type AskCardMutationOptions = ApolloReactCommon.BaseMutationOptions<AskCardMutation, AskCardMutationVariables>;
+export const CallSetDocument = gql`
+    mutation CallSet($gameId: String!, $set: String!, $callData: String!) {
+  callSet(data: {gameId: $gameId, set: $set, callData: $callData})
+}
+    `;
+export type CallSetMutationFn = ApolloReactCommon.MutationFunction<CallSetMutation, CallSetMutationVariables>;
+export function useCallSetMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<CallSetMutation, CallSetMutationVariables>) {
+        return ApolloReactHooks.useMutation<CallSetMutation, CallSetMutationVariables>(CallSetDocument, baseOptions);
+      }
+export type CallSetMutationHookResult = ReturnType<typeof useCallSetMutation>;
+export type CallSetMutationResult = ApolloReactCommon.MutationResult<CallSetMutation>;
+export type CallSetMutationOptions = ApolloReactCommon.BaseMutationOptions<CallSetMutation, CallSetMutationVariables>;
 export const CreateGameDocument = gql`
     mutation CreateGame {
   createGame
@@ -369,7 +408,10 @@ export const GetGameDocument = gql`
     query GetGame($gameId: String!) {
   getGame(gameId: $gameId) {
     _id
-    teams
+    teams {
+      name
+      score
+    }
     status
     code
     createdBy {
@@ -388,11 +430,7 @@ export const GetGameDocument = gql`
     }
     lastMove {
       type
-      turn
       description
-      askedFrom
-      askedFor
-      askedBy
     }
     currentMove {
       type
@@ -443,7 +481,10 @@ export const GameDocument = gql`
     subscription Game($gameId: String!) {
   game(gameId: $gameId) {
     _id
-    teams
+    teams {
+      name
+      score
+    }
     status
     code
     createdBy {
@@ -462,11 +503,7 @@ export const GameDocument = gql`
     }
     lastMove {
       type
-      turn
       description
-      askedFrom
-      askedFor
-      askedBy
     }
     currentMove {
       type

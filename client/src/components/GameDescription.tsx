@@ -14,16 +14,16 @@ import {
 	isPlatform
 } from "@ionic/react";
 import React, { useContext } from "react";
-import { GameStatus, GetGameQuery, useStartGameMutation } from "../generated";
-import { UserContext } from "../utils/context";
+import { GameStatus, useStartGameMutation } from "../generated";
+import { GameContext, UserContext } from "../utils/context";
 import { ErrorMsg } from "./ErrorMsg";
 
 interface StartGameProps {
-	game: GetGameQuery["getGame"];
 	displayToast: () => void;
 }
 
-export const GameDescription = ({ game, displayToast }: StartGameProps) => {
+export const GameDescription = ({ displayToast }: StartGameProps) => {
+	const game = useContext(GameContext)!;
 	const [startGame, { loading, error }] = useStartGameMutation({
 		variables: { gameId: game._id }
 	});
@@ -57,6 +57,15 @@ export const GameDescription = ({ game, displayToast }: StartGameProps) => {
 								<IonCardSubtitle className="montserrat">
 									Share the code with other players
 								</IonCardSubtitle>
+								<div className="user-container">
+									<IonAvatar slot="start">
+										<img src={user.avatar} alt="" />
+									</IonAvatar>
+									<div className="user-details">
+										<IonCardTitle>{user.name}</IonCardTitle>
+										<IonCardSubtitle>{user.email}</IonCardSubtitle>
+									</div>
+								</div>
 							</IonCol>
 							{game.status === GameStatus.NotStarted && (
 								<IonCol sizeXl="3" sizeSm="4" size="12">
@@ -84,12 +93,12 @@ export const GameDescription = ({ game, displayToast }: StartGameProps) => {
 								<IonCol sizeMd="8" size="12">
 									<IonRow>
 										{game.teams.map((team) => (
-											<IonCol className="team-score-card" key={team}>
-												<IonTitle className="montserrat">{team}</IonTitle>
+											<IonCol className="team-score-card" key={team.name}>
+												<IonTitle className="montserrat">{team.name}</IonTitle>
 												<br />
 												<div className="avatar-group">
 													{game.players
-														.filter((player) => player.team === team)
+														.filter((player) => player.team === team.name)
 														.map(({ avatar, _id }) => (
 															<IonAvatar key={_id}>
 																<img src={avatar} alt="" />
@@ -97,7 +106,7 @@ export const GameDescription = ({ game, displayToast }: StartGameProps) => {
 														))}
 												</div>
 												<br />
-												<IonText className="game-score">0</IonText>
+												<IonText className="game-score">{team.score}</IonText>
 											</IonCol>
 										))}
 									</IonRow>
