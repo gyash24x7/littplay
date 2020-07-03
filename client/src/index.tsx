@@ -5,7 +5,7 @@ import ReactDOM from "react-dom";
 import App from "./App";
 import * as serviceWorker from "./serviceWorker";
 
-setupConfig({ mode: "ios" });
+setupConfig({ mode: "md" });
 
 ReactDOM.render(<App />, document.getElementById("root"));
 defineCustomElements(window);

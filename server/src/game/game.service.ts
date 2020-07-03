@@ -166,7 +166,9 @@ export class GameService {
 		let takingPlayer = players.find(({ _id }) => _id.toHexString() === giveTo)!;
 		takingPlayer.hand.push(cardToGive);
 
-		let givingPlayer = players.find(({ _id }) => _id === user._id)!;
+		let givingPlayer = players.find(
+			({ _id }) => _id.toHexString() === user._id.toHexString()
+		)!;
 		givingPlayer.hand = givingPlayer.hand.filter((card) => card !== cardToGive);
 
 		players = players.map((player) => {

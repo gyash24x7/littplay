@@ -56,8 +56,8 @@ export const HandCard = ({ player }: HandCardProps) => {
 
 	const getSortedHand = (hand: string[]) => {
 		const sortedHand: GameCard[] = [];
-		SORTED_DECK.forEach((cardString) => {
-			if (hand.includes(cardString)) sortedHand.push(new GameCard(cardString));
+		SORTED_DECK.forEach((gameCard) => {
+			if (hand.includes(gameCard.getCardString())) sortedHand.push(gameCard);
 		});
 		return sortedHand;
 	};

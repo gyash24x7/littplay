@@ -29,6 +29,11 @@ export type CreateUserInput = {
   password: Scalars['String'];
 };
 
+export type DeclineCardInput = {
+  cardDeclined: Scalars['String'];
+  gameId: Scalars['String'];
+};
+
 export type Game = {
   _id: Scalars['ID'];
   code: Scalars['String'];
@@ -48,6 +53,12 @@ export enum GameStatus {
   InProgress = 'IN_PROGRESS',
   Completed = 'COMPLETED'
 }
+
+export type GiveCardInput = {
+  gameId: Scalars['String'];
+  cardToGive: Scalars['String'];
+  giveTo: Scalars['String'];
+};
 
 export type LoginInput = {
   email: Scalars['String'];
@@ -75,6 +86,8 @@ export type Mutation = {
   createTeams: Scalars['Boolean'];
   startGame: Scalars['Boolean'];
   askCard: Scalars['Boolean'];
+  giveCard: Scalars['Boolean'];
+  declineCard: Scalars['Boolean'];
   login: Scalars['String'];
   createUser: Scalars['String'];
 };
@@ -97,6 +110,16 @@ export type MutationStartGameArgs = {
 
 export type MutationAskCardArgs = {
   data: AskCardInput;
+};
+
+
+export type MutationGiveCardArgs = {
+  data: GiveCardInput;
+};
+
+
+export type MutationDeclineCardArgs = {
+  data: DeclineCardInput;
 };
 
 
@@ -174,6 +197,23 @@ export type CreateUserMutationVariables = Exact<{
 
 
 export type CreateUserMutation = { createUser: string };
+
+export type DeclineCardMutationVariables = Exact<{
+  gameId: Scalars['String'];
+  cardDeclined: Scalars['String'];
+}>;
+
+
+export type DeclineCardMutation = { declineCard: boolean };
+
+export type GiveCardMutationVariables = Exact<{
+  gameId: Scalars['String'];
+  cardToGive: Scalars['String'];
+  giveTo: Scalars['String'];
+}>;
+
+
+export type GiveCardMutation = { giveCard: boolean };
 
 export type JoinGameMutationVariables = Exact<{
   code: Scalars['String'];
@@ -265,6 +305,30 @@ export function useCreateUserMutation(baseOptions?: ApolloReactHooks.MutationHoo
 export type CreateUserMutationHookResult = ReturnType<typeof useCreateUserMutation>;
 export type CreateUserMutationResult = ApolloReactCommon.MutationResult<CreateUserMutation>;
 export type CreateUserMutationOptions = ApolloReactCommon.BaseMutationOptions<CreateUserMutation, CreateUserMutationVariables>;
+export const DeclineCardDocument = gql`
+    mutation DeclineCard($gameId: String!, $cardDeclined: String!) {
+  declineCard(data: {gameId: $gameId, cardDeclined: $cardDeclined})
+}
+    `;
+export type DeclineCardMutationFn = ApolloReactCommon.MutationFunction<DeclineCardMutation, DeclineCardMutationVariables>;
+export function useDeclineCardMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<DeclineCardMutation, DeclineCardMutationVariables>) {
+        return ApolloReactHooks.useMutation<DeclineCardMutation, DeclineCardMutationVariables>(DeclineCardDocument, baseOptions);
+      }
+export type DeclineCardMutationHookResult = ReturnType<typeof useDeclineCardMutation>;
+export type DeclineCardMutationResult = ApolloReactCommon.MutationResult<DeclineCardMutation>;
+export type DeclineCardMutationOptions = ApolloReactCommon.BaseMutationOptions<DeclineCardMutation, DeclineCardMutationVariables>;
+export const GiveCardDocument = gql`
+    mutation GiveCard($gameId: String!, $cardToGive: String!, $giveTo: String!) {
+  giveCard(data: {gameId: $gameId, cardToGive: $cardToGive, giveTo: $giveTo})
+}
+    `;
+export type GiveCardMutationFn = ApolloReactCommon.MutationFunction<GiveCardMutation, GiveCardMutationVariables>;
+export function useGiveCardMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<GiveCardMutation, GiveCardMutationVariables>) {
+        return ApolloReactHooks.useMutation<GiveCardMutation, GiveCardMutationVariables>(GiveCardDocument, baseOptions);
+      }
+export type GiveCardMutationHookResult = ReturnType<typeof useGiveCardMutation>;
+export type GiveCardMutationResult = ApolloReactCommon.MutationResult<GiveCardMutation>;
+export type GiveCardMutationOptions = ApolloReactCommon.BaseMutationOptions<GiveCardMutation, GiveCardMutationVariables>;
 export const JoinGameDocument = gql`
     mutation JoinGame($code: String!) {
   joinGame(code: $code)

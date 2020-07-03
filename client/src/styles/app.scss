@@ -242,22 +242,17 @@
 	margin: 5px 10px;
 	box-shadow: unset;
 	border-radius: 5px;
+
+	.subtitle {
+		color: #000 !important;
+		margin-bottom: 5px;
+		font-family: "montserrat-bold";
+	}
 }
 
 .moves-container {
 	display: flex;
 	justify-content: center;
-}
-
-.modal-container {
-	background: #14141499;
-	position: fixed;
-	z-index: 5;
-	display: flex;
-	top: 56px;
-	bottom: 0;
-	left: 0;
-	right: 0;
-	justify-content: center;
 	align-items: center;
+	flex-direction: column;
 }

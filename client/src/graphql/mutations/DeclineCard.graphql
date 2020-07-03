@@ -1,0 +1,3 @@
+mutation DeclineCard($gameId: String!, $cardDeclined: String!) {
+	declineCard(data: { gameId: $gameId, cardDeclined: $cardDeclined })
+}

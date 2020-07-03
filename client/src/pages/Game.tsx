@@ -11,6 +11,7 @@ import { AskCard } from "../components/AskCard";
 import { CreateTeams } from "../components/CreateTeams";
 import { ErrorMsg } from "../components/ErrorMsg";
 import { GameDescription } from "../components/GameDescription";
+import { GiveOrDecline } from "../components/GiveOrDecline";
 import { HandCard } from "../components/HandCard";
 import { PlayersCard } from "../components/PlayersCard";
 import { PreviousMoves } from "../components/PreviousMoves";
@@ -76,6 +77,9 @@ export const GamePage = () => {
 						<Fragment>
 							{game.currentMove?.turn === _id && <AskCard game={game} />}
 							<PreviousMoves currentMove={currentMove} lastMove={lastMove} />
+							{game.currentMove?.askedFrom === _id && (
+								<GiveOrDecline game={game} />
+							)}
 							<HandCard
 								player={players.find((player) => _id === player._id)!}
 							/>

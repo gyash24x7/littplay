@@ -12,7 +12,7 @@ import {
 import React, { useContext, useState } from "react";
 import { GetGameQuery, useAskCardMutation } from "../generated";
 import { UserContext } from "../utils/context";
-import { GameCard, getHandRecord } from "../utils/deck";
+import { GameCard, getAskableCardMap } from "../utils/deck";
 import { ErrorMsg } from "./ErrorMsg";
 
 interface AskCardProps {
@@ -32,24 +32,26 @@ export const AskCard = ({ game }: AskCardProps) => {
 	const mePlayer = game.players.find((player) => player._id === _id)!;
 
 	const hand = mePlayer.hand.map((cardString) => new GameCard(cardString));
-	const handRecord = getHandRecord(hand);
+	const askableCardMap = getAskableCardMap(hand);
 
 	const selectActionSheetOptions = (type: "SET" | "PLAYER" | "CARD") => () => {
 		let btns: ActionSheetButton[] = [];
 
 		switch (type) {
 			case "CARD":
-				btns = Array.from(handRecord[selectedSet]).map((card) => ({
+				btns = Array.from(askableCardMap[selectedSet]).map((card) => ({
 					text: card,
 					handler: () => setSelectedCard(card)
 				}));
 				break;
 
 			case "SET":
-				btns = Object.keys(handRecord).map((set) => ({
-					text: set,
-					handler: () => setSelectedSet(set)
-				}));
+				btns = Object.keys(askableCardMap)
+					.filter((set) => askableCardMap[set].length !== 0)
+					.map((set) => ({
+						text: set,
+						handler: () => setSelectedSet(set)
+					}));
 				break;
 
 			case "PLAYER":
@@ -114,7 +116,11 @@ export const AskCard = ({ game }: AskCardProps) => {
 						</IonRow>
 						<IonRow style={{ justifyContent: "center" }}>
 							<IonCol sizeSm="6" sizeMd="4">
-								<IonButton onClick={() => askCard()} className="app-button">
+								<IonButton
+									onClick={() => askCard()}
+									className="app-button"
+									disabled={!selectedCard || !selectedSet || !selectedPlayer}
+								>
 									ASK
 								</IonButton>
 							</IonCol>
@@ -126,7 +132,7 @@ export const AskCard = ({ game }: AskCardProps) => {
 					onDidDismiss={() => setActionSheetButtons([])}
 					isOpen={actionSheetButtons.length !== 0}
 					buttons={actionSheetButtons}
-				></IonActionSheet>
+				/>
 			</IonCol>
 		</IonRow>
 	);

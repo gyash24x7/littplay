@@ -28,15 +28,12 @@ export class Deck {
 	cards: GameCard[] = [];
 
 	constructor() {
-		this.cards = shuffle(
-			RANKS.flatMap((rank) =>
-				SUITS.map((suit) => new GameCard(rank + " OF " + suit))
-			)
-		);
+		this.cards = shuffle(SORTED_DECK);
 	}
 
 	removeCardsOfRank(rank: string) {
 		this.cards = this.cards.filter((card) => card.rank !== rank);
+		return this;
 	}
 
 	generateHands(handCount: number) {
@@ -56,6 +53,7 @@ export const RANKS = [
 	"FOUR",
 	"FIVE",
 	"SIX",
+	"SEVEN",
 	"EIGHT",
 	"NINE",
 	"TEN",
@@ -66,32 +64,32 @@ export const RANKS = [
 
 export const SORTED_DECK = SUITS.flatMap((suit) =>
 	RANKS.map((rank) => new GameCard(rank + " OF " + suit))
-).map((card) => card.getCardString());
+);
 
-export const SETS = [
-	"SMALL HEARTS",
-	"SMALL CLUBS",
-	"SMALL SPADES",
-	"SMALL DIAMONDS",
-	"BIG DIAMONDS",
-	"BIG CLUBS",
-	"BIG SPADES",
-	"BIG HEARTS"
-];
+export const getCardMap = (cards: GameCard[]) => {
+	let cardRecord: Record<string, string[]> = {};
 
-export const getHandRecord = (hand: GameCard[]) => {
-	const handRecord: Record<string, Set<string>> = {};
-
-	hand.forEach((card) => {
-		if (!handRecord[card.set]) {
-			handRecord[card.set] = new Set<string>();
+	cards.forEach((gameCard) => {
+		if (!cardRecord[gameCard.set]) {
+			cardRecord[gameCard.set] = [];
 		}
-
-		SORTED_DECK.map((card) => new GameCard(card))
-			.filter(({ rank, set }) => rank !== card.rank && set === card.set)
-			.map((card) => card.getCardString())
-			.forEach((cardString) => handRecord[card.set].add(cardString));
+		cardRecord[gameCard.set] = cards
+			.filter(({ set }) => set === gameCard.set)
+			.map((card) => card.getCardString());
 	});
 
-	return handRecord;
+	return cardRecord;
+};
+
+export const getAskableCardMap = (hand: GameCard[]) => {
+	let ownCardMapping = getCardMap(hand);
+	let allCardMapping = getCardMap(new Deck().removeCardsOfRank("SEVEN").cards);
+
+	Object.keys(ownCardMapping).forEach((set) => {
+		ownCardMapping[set] = allCardMapping[set].filter(
+			(card) => !ownCardMapping[set].includes(card)
+		);
+	});
+
+	return ownCardMapping;
 };

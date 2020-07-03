@@ -33,7 +33,7 @@ export const GameDescription = ({ game, displayToast }: StartGameProps) => {
 	const copyCode = () => {
 		if (isPlatform("desktop")) {
 			navigator.permissions.query({ name: "clipboard" }).then((result) => {
-				if (result.state == "granted" || result.state == "prompt") {
+				if (result.state === "granted" || result.state === "prompt") {
 					navigator.clipboard?.writeText(game.code).then(displayToast);
 				}
 			});

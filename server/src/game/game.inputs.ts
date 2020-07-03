@@ -21,18 +21,20 @@ export class JoinGameDto {
 export class AskCardInput {
 	@Field() @IsNotEmpty() @IsMongoId() gameId: string;
 	@Field() @IsNotEmpty() @IsMongoId() askedFrom: string;
-	@Field() @IsNotEmpty() @IsMongoId() askedFor: string;
+	@Field() @IsNotEmpty() askedFor: string;
 }
 
+@InputType()
 export class GiveCardInput {
-	gameId: string;
-	cardToGive: string;
-	giveTo: string;
+	@Field() @IsNotEmpty() @IsMongoId() gameId: string;
+	@Field() @IsNotEmpty() cardToGive: string;
+	@Field() @IsNotEmpty() @IsMongoId() giveTo: string;
 }
 
+@InputType()
 export class DeclineCardInput {
-	cardDeclined: string;
-	gameId: string;
+	@Field() @IsNotEmpty() cardDeclined: string;
+	@Field() @IsNotEmpty() @IsMongoId() gameId: string;
 }
 
 export class CallSetInput {

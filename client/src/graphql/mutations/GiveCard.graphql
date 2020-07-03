@@ -1,0 +1,3 @@
+mutation GiveCard($gameId: String!, $cardToGive: String!, $giveTo: String!) {
+	giveCard(data: { gameId: $gameId, cardToGive: $cardToGive, giveTo: $giveTo })
+}

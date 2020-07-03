@@ -1,10 +1,15 @@
-import { Inject, UseGuards } from "@nestjs/common";
+import { Inject, UseGuards, ValidationPipe } from "@nestjs/common";
 import { Args, Mutation, Query, Resolver, Subscription } from "@nestjs/graphql";
 import { PubSub } from "apollo-server-fastify";
 import { AuthUser } from "../user/auth-user.decorator";
 import { GqlAuthGuard } from "../user/gql-auth.guard";
 import { User } from "../user/user.type";
-import { AskCardInput, CreateTeamsInput } from "./game.inputs";
+import {
+	AskCardInput,
+	CreateTeamsInput,
+	DeclineCardInput,
+	GiveCardInput
+} from "./game.inputs";
 import { GameService } from "./game.service";
 import { Game } from "./game.type";
 
@@ -37,7 +42,7 @@ export class GameResolver {
 
 	@Mutation(() => Boolean)
 	@UseGuards(GqlAuthGuard)
-	async createTeams(@Args("data") data: CreateTeamsInput) {
+	async createTeams(@Args("data", ValidationPipe) data: CreateTeamsInput) {
 		const game = await this.gameService.createTeams(data);
 		await this.pubsub.publish(game._id.toHexString(), game);
 		return true;
@@ -53,8 +58,33 @@ export class GameResolver {
 
 	@Mutation(() => Boolean)
 	@UseGuards(GqlAuthGuard)
-	async askCard(@Args("data") data: AskCardInput, @AuthUser() user: User) {
+	async askCard(
+		@Args("data", ValidationPipe) data: AskCardInput,
+		@AuthUser() user: User
+	) {
 		const game = await this.gameService.askCard(data, user);
+		await this.pubsub.publish(game._id.toHexString(), game);
+		return true;
+	}
+
+	@Mutation(() => Boolean)
+	@UseGuards(GqlAuthGuard)
+	async giveCard(
+		@Args("data", ValidationPipe) data: GiveCardInput,
+		@AuthUser() user: User
+	) {
+		const game = await this.gameService.giveCard(data, user);
+		await this.pubsub.publish(game._id.toHexString(), game);
+		return true;
+	}
+
+	@Mutation(() => Boolean)
+	@UseGuards(GqlAuthGuard)
+	async declineCard(
+		@Args("data", ValidationPipe) data: DeclineCardInput,
+		@AuthUser() user: User
+	) {
+		const game = await this.gameService.declineCard(data, user);
 		await this.pubsub.publish(game._id.toHexString(), game);
 		return true;
 	}

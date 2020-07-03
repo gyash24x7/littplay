@@ -18,7 +18,7 @@ export const PreviousMoves = ({
 				<IonCard className="game-play-card">
 					<IonCardContent className="moves-container">
 						<Banner content={currentMove?.description} color="danger" />
-						<Banner content={lastMove?.description} color="success" />
+						<Banner content={lastMove?.description} color="success" isLast />
 					</IonCardContent>
 				</IonCard>
 			</IonCol>
