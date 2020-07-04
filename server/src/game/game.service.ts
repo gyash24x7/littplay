@@ -89,12 +89,13 @@ export class GameService {
 			);
 		}
 
+		let teamNames = teams;
 		teams = shuffle([...teams, ...teams, ...teams]);
 		players = players.map((player, i) => ({ ...player, team: teams[i] }));
 
 		const game = await this.updateGameById(_id, {
 			$set: {
-				teams: teams.map((name) => ({ name, score: 0 })),
+				teams: teamNames.map((name) => ({ name, score: 0 })),
 				players,
 				status: GameStatus.TEAMS_CREATED
 			}

@@ -67,7 +67,7 @@ export const AskCard = () => {
 							))}
 					</IonSelect>
 				</IonItem>
-				{selectedSet && (
+				{selectedPlayer && (
 					<IonItem>
 						<IonLabel className="app-select-label" color="dark">
 							Select Set
