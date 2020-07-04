@@ -27,11 +27,9 @@ export const SignUpPage = () => {
 	const [createUser, { loading }] = useCreateUserMutation({
 		onCompleted(data) {
 			localStorage.setItem("authToken", data.createUser);
-			window.location.pathname = "/";
+			window.location.pathname = "/game";
 		},
-		onError(error) {
-			setErrorMsg(error.message);
-		}
+		onError: (error) => setErrorMsg(error.message)
 	});
 
 	const handleInput = (field: string) => (e: any) => {

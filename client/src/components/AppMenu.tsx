@@ -24,7 +24,9 @@ export const AppMenu = () => {
 	};
 
 	const handleLogout = () => {
+		const mode = localStorage.getItem("mode");
 		localStorage.clear();
+		localStorage.setItem("mode", mode || "light");
 		window.location.pathname = "/login";
 	};
 

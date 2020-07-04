@@ -63,6 +63,9 @@ export const CallSet = () => {
 		onError(err) {
 			console.log(err);
 			setErrorMsg(err.message);
+		},
+		onCompleted() {
+			setSelectedSet("");
 		}
 	});
 

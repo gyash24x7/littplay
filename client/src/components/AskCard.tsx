@@ -42,26 +42,55 @@ export const AskCard = () => {
 			<IonList>
 				<IonItem>
 					<IonLabel className="app-select-label" color="dark">
-						Select Set
+						Select Player
 					</IonLabel>
 					<IonSelect
 						className="app-select"
-						color="dark"
-						onIonChange={(e) => setSelectedSet(e.detail.value)}
-						value={selectedSet}
+						onIonChange={(e) => setSelectedPlayer(e.detail.value)}
+						value={selectedPlayer}
 						interfaceOptions={{
-							header: "Select Set",
+							header: "Select Player",
 							cssClass: "select-alert"
 						}}
+						disabled={
+							game.players.filter(
+								({ team, hand }) => team !== mePlayer.team && hand.length
+							).length === 0
+						}
 					>
-						{Object.keys(askableCardMap).map((set) => (
-							<IonSelectOption value={set} key={set}>
-								{set}
-							</IonSelectOption>
-						))}
+						{game.players
+							.filter(({ team, hand }) => team !== mePlayer.team && hand.length)
+							.map(({ _id, name, hand }) => (
+								<IonSelectOption value={_id} key={_id}>
+									{name} ({hand.length} cards left)
+								</IonSelectOption>
+							))}
 					</IonSelect>
 				</IonItem>
 				{selectedSet && (
+					<IonItem>
+						<IonLabel className="app-select-label" color="dark">
+							Select Set
+						</IonLabel>
+						<IonSelect
+							className="app-select"
+							color="dark"
+							onIonChange={(e) => setSelectedSet(e.detail.value)}
+							value={selectedSet}
+							interfaceOptions={{
+								header: "Select Set",
+								cssClass: "select-alert"
+							}}
+						>
+							{Object.keys(askableCardMap).map((set) => (
+								<IonSelectOption value={set} key={set}>
+									{set}
+								</IonSelectOption>
+							))}
+						</IonSelect>
+					</IonItem>
+				)}
+				{selectedSet && selectedPlayer && (
 					<IonItem>
 						<IonLabel className="app-select-label" color="dark">
 							Select Card
@@ -80,32 +109,6 @@ export const AskCard = () => {
 									{card}
 								</IonSelectOption>
 							))}
-						</IonSelect>
-					</IonItem>
-				)}
-				{selectedSet && selectedCard && (
-					<IonItem>
-						<IonLabel className="app-select-label" color="dark">
-							Select Player
-						</IonLabel>
-						<IonSelect
-							className="app-select"
-							onIonChange={(e) => setSelectedPlayer(e.detail.value)}
-							value={selectedPlayer}
-							interfaceOptions={{
-								header: "Select Player",
-								cssClass: "select-alert"
-							}}
-						>
-							{game.players
-								.filter(
-									({ team, hand }) => team !== mePlayer.team && hand.length
-								)
-								.map(({ _id, name, hand }) => (
-									<IonSelectOption value={_id} key={_id}>
-										{name} ({hand.length} cards left)
-									</IonSelectOption>
-								))}
 						</IonSelect>
 					</IonItem>
 				)}

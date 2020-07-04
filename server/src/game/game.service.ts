@@ -18,7 +18,7 @@ import {
 	DeclineCardInput,
 	GiveCardInput
 } from "./game.inputs";
-import { Game, GameStatus, MoveType } from "./game.type";
+import { Game, GameStatus, MoveType, Player } from "./game.type";
 
 @Injectable()
 export class GameService {
@@ -131,22 +131,6 @@ export class GameService {
 		return game;
 	}
 
-	async startCallSet({ set, gameId, callData }: CallSetInput, user: User) {
-		const { currentMove, lastMove } = await this.getGameById(gameId);
-		const game = await this.updateGameById(gameId, {
-			$set: {
-				secondLastMove: lastMove,
-				lastMove: currentMove,
-				currentMove: {
-					type: MoveType.CALL,
-					description: `${user.name} is calling the set ${set}`,
-					callSetData: callData
-				}
-			}
-		});
-		return game;
-	}
-
 	async callSet({ callData, gameId, set }: CallSetInput, user: User) {
 		let game = await this.getGameById(gameId);
 		let callSetData: Record<string, string[]> = JSON.parse(callData);
@@ -227,6 +211,25 @@ export class GameService {
 		return game;
 	}
 
+	isGameCompleted(game: Game) {
+		let flag = 0;
+		game.players.forEach(({ hand }) => {
+			if (hand.length !== 0) {
+				flag = 1;
+			}
+		});
+
+		return flag === 0;
+	}
+
+	async markAsCompleted(gameId: ObjectId | string) {
+		const game = await this.updateGameById(gameId, {
+			$set: { status: GameStatus.COMPLETED }
+		});
+
+		return game;
+	}
+
 	async giveCard({ cardToGive, gameId, giveTo }: GiveCardInput, user: User) {
 		let { players, currentMove, lastMove } = await this.getGameById(gameId);
 		let takingPlayer = players.find(({ _id }) => _id.equals(giveTo))!;
@@ -274,6 +277,41 @@ export class GameService {
 				}
 			}
 		});
+		return game;
+	}
+
+	async transferChance(gameId: string, user: User) {
+		let game = await this.getGameById(gameId);
+		const myTeam: Player[] = [];
+		const oppositeTeam: Player[] = [];
+		const mePlayer = game.players.find(({ _id }) => _id.equals(user._id))!;
+
+		game.players.forEach((player) => {
+			if (player.hand.length !== 0) {
+				if (player.team === mePlayer.team) myTeam.push(player);
+				else oppositeTeam.push(player);
+			}
+		});
+
+		if (myTeam.length === 0 && oppositeTeam.length === 0) {
+			game = await this.markAsCompleted(game._id);
+			return game;
+		}
+
+		const nextPlayer = myTeam.length === 0 ? oppositeTeam[0] : myTeam[0];
+
+		game = await this.updateGameById(game._id, {
+			$set: {
+				secondLastMove: game.lastMove,
+				lastMove: game.currentMove,
+				currentMove: {
+					type: MoveType.TURN,
+					turn: nextPlayer._id.toHexString(),
+					description: `${user.name} is left with no cards. Chance Transferred to ${nextPlayer.name}`
+				}
+			}
+		});
+
 		return game;
 	}
 

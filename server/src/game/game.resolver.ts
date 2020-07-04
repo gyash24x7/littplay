@@ -96,10 +96,19 @@ export class GameResolver {
 		@Args("data", ValidationPipe) data: CallSetInput,
 		@AuthUser() user: User
 	) {
-		let game = await this.gameService.startCallSet(data, user);
+		let game = await this.gameService.callSet(data, user);
+		if (!this.gameService.isGameCompleted(game)) {
+			game = await this.gameService.markAsCompleted(game._id);
+		}
 		await this.pubsub.publish(data.gameId, game);
-		game = await this.gameService.callSet(data, user);
-		await this.pubsub.publish(data.gameId, game);
+		return true;
+	}
+
+	@Mutation(() => Boolean)
+	@UseGuards(GqlAuthGuard)
+	async transferChance(@Args("gameId") gameId: string, @AuthUser() user: User) {
+		const game = await this.gameService.transferChance(gameId, user);
+		await this.pubsub.publish(gameId, game);
 		return true;
 	}
 

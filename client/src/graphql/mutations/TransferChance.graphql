@@ -1,0 +1,3 @@
+mutation TransferChance($gameId: String!) {
+	transferChance(gameId: $gameId)
+}

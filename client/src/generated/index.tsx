@@ -101,6 +101,7 @@ export type Mutation = {
   giveCard: Scalars['Boolean'];
   declineCard: Scalars['Boolean'];
   callSet: Scalars['Boolean'];
+  transferChance: Scalars['Boolean'];
   login: Scalars['String'];
   createUser: Scalars['String'];
 };
@@ -138,6 +139,11 @@ export type MutationDeclineCardArgs = {
 
 export type MutationCallSetArgs = {
   data: CallSetInput;
+};
+
+
+export type MutationTransferChanceArgs = {
+  gameId: Scalars['String'];
 };
 
 
@@ -268,6 +274,13 @@ export type StartGameMutationVariables = Exact<{
 
 
 export type StartGameMutation = { startGame: boolean };
+
+export type TransferChanceMutationVariables = Exact<{
+  gameId: Scalars['String'];
+}>;
+
+
+export type TransferChanceMutation = { transferChance: boolean };
 
 export type GetGameQueryVariables = Exact<{
   gameId: Scalars['String'];
@@ -409,6 +422,18 @@ export function useStartGameMutation(baseOptions?: ApolloReactHooks.MutationHook
 export type StartGameMutationHookResult = ReturnType<typeof useStartGameMutation>;
 export type StartGameMutationResult = ApolloReactCommon.MutationResult<StartGameMutation>;
 export type StartGameMutationOptions = ApolloReactCommon.BaseMutationOptions<StartGameMutation, StartGameMutationVariables>;
+export const TransferChanceDocument = gql`
+    mutation TransferChance($gameId: String!) {
+  transferChance(gameId: $gameId)
+}
+    `;
+export type TransferChanceMutationFn = ApolloReactCommon.MutationFunction<TransferChanceMutation, TransferChanceMutationVariables>;
+export function useTransferChanceMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<TransferChanceMutation, TransferChanceMutationVariables>) {
+        return ApolloReactHooks.useMutation<TransferChanceMutation, TransferChanceMutationVariables>(TransferChanceDocument, baseOptions);
+      }
+export type TransferChanceMutationHookResult = ReturnType<typeof useTransferChanceMutation>;
+export type TransferChanceMutationResult = ApolloReactCommon.MutationResult<TransferChanceMutation>;
+export type TransferChanceMutationOptions = ApolloReactCommon.BaseMutationOptions<TransferChanceMutation, TransferChanceMutationVariables>;
 export const GetGameDocument = gql`
     query GetGame($gameId: String!) {
   getGame(gameId: $gameId) {

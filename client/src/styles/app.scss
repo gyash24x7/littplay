@@ -69,7 +69,6 @@
 
 .app-input {
 	text-align: center;
-	text-transform: uppercase;
 	font-family: "montserrat";
 }
 
@@ -140,7 +139,6 @@
 	flex: 1;
 	font-family: "montserrat";
 	text-align: center;
-	margin: 5px 10px;
 	box-shadow: unset;
 
 	.subtitle {
@@ -278,7 +276,7 @@
 	font-family: "montserrat";
 
 	.alert-wrapper {
-		min-width: 300px;
+		min-width: 400px;
 	}
 }
 

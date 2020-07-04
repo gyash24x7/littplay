@@ -25,11 +25,9 @@ export const LoginPage = () => {
 	const [login, { loading }] = useLoginMutation({
 		onCompleted(data) {
 			localStorage.setItem("authToken", data.login);
-			window.location.pathname = "/profile";
+			window.location.pathname = "/game";
 		},
-		onError(error) {
-			setErrorMsg(error.message);
-		}
+		onError: (error) => setErrorMsg(error.message)
 	});
 
 	const handleInput = (field: string) => (e: any) => {

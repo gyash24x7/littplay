@@ -9,6 +9,7 @@ import {
 } from "@ionic/react";
 import React, { useContext, useEffect, useState } from "react";
 import { Redirect, useParams } from "react-router";
+import { Banner } from "../components/Banner";
 import { CreateTeams } from "../components/CreateTeams";
 import { ErrorMsg } from "../components/ErrorMsg";
 import { GameDescription } from "../components/GameDescription";
@@ -17,6 +18,7 @@ import { HandCard } from "../components/HandCard";
 import { PlayersCard } from "../components/PlayersCard";
 import { PreviousMoves } from "../components/PreviousMoves";
 import { TeamsCard } from "../components/TeamsCard";
+import { TransferChance } from "../components/TransferChance";
 import { TurnSegment } from "../components/TurnSegment";
 import {
 	GetGameQuery,
@@ -32,6 +34,19 @@ export const GamePage = () => {
 	const { _id } = useContext(UserContext)!;
 
 	const { loading, error, data } = useGetGameQuery({ variables: { gameId } });
+
+	const getGameCompletionDescription = () => {
+		const { teams } = game!;
+		if (teams[0].score > teams[1].score) {
+			return `Team ${teams[0].name} won the game, Scoreline : ${teams[0].score}-${teams[1].score}`;
+		}
+
+		if (teams[1].score > teams[0].score) {
+			return `Team ${teams[1].name} won the game, Scoreline : ${teams[1].score}-${teams[0].score}`;
+		}
+
+		return `The Game tied at 4 - 4`;
+	};
 
 	useGameSubscription({
 		variables: { gameId },
@@ -55,6 +70,7 @@ export const GamePage = () => {
 	}
 
 	const { status, players, currentMove } = game;
+	const mePlayer = game.players.find((player) => player._id === _id)!;
 
 	return (
 		<IonPage>
@@ -75,12 +91,28 @@ export const GamePage = () => {
 							<IonRow>
 								<IonCol size="12" sizeLg="6">
 									<PreviousMoves />
-									{currentMove?.turn === _id && <TurnSegment />}
+									{currentMove?.turn === _id && mePlayer.hand.length !== 0 && (
+										<TurnSegment />
+									)}
 									{currentMove?.askedFrom === _id && <GiveOrDecline />}
 								</IonCol>
 								<IonCol size="12" sizeLg="6">
 									<HandCard
 										player={players.find((plyr) => _id === plyr._id)!}
+									/>
+									{currentMove?.turn === _id && mePlayer.hand.length === 0 && (
+										<TransferChance />
+									)}
+								</IonCol>
+							</IonRow>
+						)}
+						{status === "COMPLETED" && (
+							<IonRow>
+								<IonCol>
+									<Banner
+										color="success"
+										content={getGameCompletionDescription()}
+										heading="Game Completed"
 									/>
 								</IonCol>
 							</IonRow>
