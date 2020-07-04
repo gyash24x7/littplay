@@ -25,6 +25,10 @@ subscription Game($gameId: String!) {
 			type
 			description
 		}
+		secondLastMove {
+			type
+			description
+		}
 		currentMove {
 			type
 			turn

@@ -48,6 +48,7 @@ export type Game = {
   status: GameStatus;
   playerCount: Scalars['Int'];
   teams: Array<Team>;
+  secondLastMove?: Maybe<Move>;
   lastMove?: Maybe<Move>;
   currentMove?: Maybe<Move>;
 };
@@ -83,8 +84,12 @@ export type Move = {
 
 export enum MoveType {
   Ask = 'ASK',
+  Declined = 'DECLINED',
+  Given = 'GIVEN',
   Turn = 'TURN',
-  Call = 'CALL'
+  Call = 'CALL',
+  CallSuccess = 'CALL_SUCCESS',
+  CallFail = 'CALL_FAIL'
 }
 
 export type Mutation = {
@@ -269,7 +274,7 @@ export type GetGameQueryVariables = Exact<{
 }>;
 
 
-export type GetGameQuery = { getGame: { _id: string, status: GameStatus, code: string, playerCount: number, teams: Array<{ name: string, score: number }>, createdBy: { _id: string, name: string, avatar: string, email: string }, players: Array<{ _id: string, team: string, hand: Array<string>, name: string, avatar: string }>, lastMove?: Maybe<{ type: MoveType, description: string }>, currentMove?: Maybe<{ type: MoveType, turn?: Maybe<string>, description: string, askedFrom?: Maybe<string>, askedFor?: Maybe<string>, askedBy?: Maybe<string> }> } };
+export type GetGameQuery = { getGame: { _id: string, status: GameStatus, code: string, playerCount: number, teams: Array<{ name: string, score: number }>, createdBy: { _id: string, name: string, avatar: string, email: string }, players: Array<{ _id: string, team: string, hand: Array<string>, name: string, avatar: string }>, lastMove?: Maybe<{ type: MoveType, description: string }>, secondLastMove?: Maybe<{ type: MoveType, description: string }>, currentMove?: Maybe<{ type: MoveType, turn?: Maybe<string>, description: string, askedFrom?: Maybe<string>, askedFor?: Maybe<string>, askedBy?: Maybe<string> }> } };
 
 export type MeQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -281,7 +286,7 @@ export type GameSubscriptionVariables = Exact<{
 }>;
 
 
-export type GameSubscription = { game: { _id: string, status: GameStatus, code: string, playerCount: number, teams: Array<{ name: string, score: number }>, createdBy: { _id: string, name: string, avatar: string, email: string }, players: Array<{ _id: string, team: string, hand: Array<string>, name: string, avatar: string }>, lastMove?: Maybe<{ type: MoveType, description: string }>, currentMove?: Maybe<{ type: MoveType, turn?: Maybe<string>, description: string, askedFrom?: Maybe<string>, askedFor?: Maybe<string>, askedBy?: Maybe<string> }> } };
+export type GameSubscription = { game: { _id: string, status: GameStatus, code: string, playerCount: number, teams: Array<{ name: string, score: number }>, createdBy: { _id: string, name: string, avatar: string, email: string }, players: Array<{ _id: string, team: string, hand: Array<string>, name: string, avatar: string }>, lastMove?: Maybe<{ type: MoveType, description: string }>, secondLastMove?: Maybe<{ type: MoveType, description: string }>, currentMove?: Maybe<{ type: MoveType, turn?: Maybe<string>, description: string, askedFrom?: Maybe<string>, askedFor?: Maybe<string>, askedBy?: Maybe<string> }> } };
 
 
 export const AskCardDocument = gql`
@@ -432,6 +437,10 @@ export const GetGameDocument = gql`
       type
       description
     }
+    secondLastMove {
+      type
+      description
+    }
     currentMove {
       type
       turn
@@ -502,6 +511,10 @@ export const GameDocument = gql`
       avatar
     }
     lastMove {
+      type
+      description
+    }
+    secondLastMove {
       type
       description
     }

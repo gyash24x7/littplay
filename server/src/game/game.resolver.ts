@@ -36,7 +36,7 @@ export class GameResolver {
 	@Mutation(() => String)
 	@UseGuards(GqlAuthGuard)
 	async joinGame(@Args("code") code: string, @AuthUser() user: User) {
-		const game = await this.gameService.joinGame({ code, user });
+		const game = await this.gameService.joinGame(code, user);
 		await this.pubsub.publish(game._id.toHexString(), game);
 		return game._id.toHexString();
 	}

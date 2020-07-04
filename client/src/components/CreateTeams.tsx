@@ -37,6 +37,17 @@ export const CreateTeams = () => {
 		return;
 	};
 
+	const handleInput = (field: "teamA" | "teamB") => (e: any) => {
+		switch (field) {
+			case "teamA":
+				setTeamA(e.target.value || "");
+				break;
+			case "teamB":
+				setTeamB(e.target.value || "");
+				break;
+		}
+	};
+
 	const handleSubmit = () => {
 		const errorMsg = validateFields();
 		if (!errorMsg) createTeams();
@@ -60,7 +71,7 @@ export const CreateTeams = () => {
 											className="app-input"
 											placeholder="Team A Name"
 											value={teamA}
-											onInput={(e: any) => setTeamA(e.target.value)}
+											onInput={handleInput("teamA")}
 										/>
 									</IonItem>
 								</IonCol>
@@ -70,7 +81,7 @@ export const CreateTeams = () => {
 											className="app-input"
 											placeholder="Team B Name"
 											value={teamB}
-											onInput={(e: any) => setTeamB(e.target.value)}
+											onInput={handleInput("teamB")}
 										/>
 									</IonItem>
 								</IonCol>

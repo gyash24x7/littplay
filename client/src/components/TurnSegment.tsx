@@ -17,9 +17,14 @@ export const TurnSegment = () => {
 				<IonSegment
 					onIonChange={(e) => setActiveSegment(e.detail.value!)}
 					value={activeSegment}
+					color="dark"
 				>
-					<IonSegmentButton value="ASK">ASK CARD</IonSegmentButton>
-					<IonSegmentButton value="CALL">CALL SET</IonSegmentButton>
+					<IonSegmentButton className="montserrat-bold" value="ASK">
+						ASK CARD
+					</IonSegmentButton>
+					<IonSegmentButton className="montserrat-bold" value="CALL">
+						CALL SET
+					</IonSegmentButton>
 				</IonSegment>
 				<br />
 				{activeSegment === "ASK" && <AskCard />}

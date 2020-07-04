@@ -70,13 +70,14 @@ export const CallSet = () => {
 		<IonList>
 			<IonLoading isOpen={loading} />
 			<IonItem>
-				<IonLabel>Select Set</IonLabel>
+				<IonLabel className="app-select-label" color="dark">
+					Select Set
+				</IonLabel>
 				<IonSelect
 					value={selectedSet}
 					onIonChange={handSetSelect}
-					interfaceOptions={{ header: "Select Set" }}
-					interface="action-sheet"
-					color="primary"
+					interfaceOptions={{ header: "Select Set", cssClass: "select-alert" }}
+					className="app-select"
 				>
 					{Object.keys(askableCardMap).map((set) => (
 						<IonSelectOption value={set} key={set}>
@@ -87,16 +88,21 @@ export const CallSet = () => {
 			</IonItem>
 			{selectedSet &&
 				teamMembers
-					.filter((member) => member._id !== _id)
+					.filter((member) => member._id !== _id && member.hand.length !== 0)
 					.map((member) => (
 						<IonItem key={member._id}>
-							<IonLabel>Cards with {member.name}</IonLabel>
+							<IonLabel className="app-select-label" color="dark">
+								Cards with {member.name}
+							</IonLabel>
 							<IonSelect
 								multiple
+								className="app-select"
 								value={teamCardMap[member._id]}
 								onIonChange={handlePlayerCardsSelect(member._id)}
-								interface="action-sheet"
-								interfaceOptions={{ header: `Cards with ${member.name}` }}
+								interfaceOptions={{
+									header: `Cards with ${member.name}`,
+									cssClass: "select-alert"
+								}}
 							>
 								{askableCardMap[selectedSet].map((card) => (
 									<IonSelectOption key={card} value={card}>
@@ -106,13 +112,11 @@ export const CallSet = () => {
 							</IonSelect>
 						</IonItem>
 					))}
-			<IonButton
-				disabled={Object.values(teamCardMap).flat().length !== 6}
-				className="app-button"
-				onClick={() => callSet()}
-			>
-				CALL SET
-			</IonButton>
+			{Object.values(teamCardMap).flat().length === 6 && (
+				<IonButton className="app-button" onClick={() => callSet()}>
+					CALL SET
+				</IonButton>
+			)}
 			{errorMsg && (
 				<IonItem>
 					<ErrorMsg message={errorMsg} />

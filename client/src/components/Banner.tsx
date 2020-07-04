@@ -7,18 +7,16 @@ import {
 import React from "react";
 
 interface BannerProps {
-	content?: string;
+	content: string;
 	color: "success" | "warning" | "danger";
-	isLast?: boolean;
+	heading: string;
 }
 
-export const Banner = ({ content, color, isLast }: BannerProps) => (
+export const Banner = ({ content, color, heading }: BannerProps) => (
 	<IonCard className="game-play-card" color={color}>
 		<IonCardContent>
 			<IonCardTitle>
-				<IonCardSubtitle className="subtitle">
-					{isLast ? "PREVIOUS" : "CURRENT"}&nbsp;MOVE
-				</IonCardSubtitle>
+				<IonCardSubtitle className="subtitle">{heading}</IonCardSubtitle>
 				<IonCardTitle>{content}</IonCardTitle>
 			</IonCardTitle>
 		</IonCardContent>

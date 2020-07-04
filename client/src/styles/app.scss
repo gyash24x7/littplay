@@ -14,6 +14,22 @@
 		url("../assets/fonts/montserrat-light.ttf") format("truetype");
 }
 
+.light {
+	.game-card {
+		background-color: transparent;
+	}
+
+	.game-play-container {
+		background-color: #eeeeee;
+	}
+}
+
+.dark {
+	.game-card {
+		background-color: #666;
+	}
+}
+
 .container {
 	display: flex;
 	flex-direction: column;
@@ -53,6 +69,7 @@
 
 .app-input {
 	text-align: center;
+	text-transform: uppercase;
 	font-family: "montserrat";
 }
 
@@ -169,7 +186,7 @@
 
 .game-play-container {
 	padding-top: 71px;
-	background-color: #edeeef;
+	min-height: 100%;
 }
 
 .players-wrapper {
@@ -255,4 +272,27 @@
 	.user-details {
 		margin-left: 15px;
 	}
+}
+
+.select-alert {
+	font-family: "montserrat";
+
+	.alert-wrapper {
+		min-width: 300px;
+	}
+}
+
+.app-select {
+	font-family: "montserrat";
+}
+
+.app-select-label {
+	font-family: "montserrat" !important;
+	text-transform: uppercase;
+}
+
+.dark-mode-label {
+	font-family: "montserrat-bold";
+	text-transform: uppercase;
+	padding-right: 20px;
 }

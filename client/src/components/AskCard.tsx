@@ -24,8 +24,8 @@ export const AskCard = () => {
 
 	const mePlayer = game.players.find((player) => player._id === _id)!;
 
-	const hand = mePlayer.hand.map((cardString) => new GameCard(cardString));
-	const askableCardMap = getAskableCardMap(hand);
+	const myHand = mePlayer.hand.map((cardString) => new GameCard(cardString));
+	const askableCardMap = getAskableCardMap(myHand);
 
 	const [askCard, { loading }] = useAskCardMutation({
 		variables: {
@@ -41,13 +41,18 @@ export const AskCard = () => {
 			<IonLoading isOpen={loading} />
 			<IonList>
 				<IonItem>
-					<IonLabel>Select Set</IonLabel>
+					<IonLabel className="app-select-label" color="dark">
+						Select Set
+					</IonLabel>
 					<IonSelect
 						className="app-select"
+						color="dark"
 						onIonChange={(e) => setSelectedSet(e.detail.value)}
 						value={selectedSet}
-						interface="action-sheet"
-						interfaceOptions={{ header: "SELECT SET" }}
+						interfaceOptions={{
+							header: "Select Set",
+							cssClass: "select-alert"
+						}}
 					>
 						{Object.keys(askableCardMap).map((set) => (
 							<IonSelectOption value={set} key={set}>
@@ -58,13 +63,17 @@ export const AskCard = () => {
 				</IonItem>
 				{selectedSet && (
 					<IonItem>
-						<IonLabel>Select Card</IonLabel>
+						<IonLabel className="app-select-label" color="dark">
+							Select Card
+						</IonLabel>
 						<IonSelect
 							className="app-select"
 							onIonChange={(e) => setSelectedCard(e.detail.value)}
 							value={selectedCard}
-							interface="action-sheet"
-							interfaceOptions={{ header: "SELECT SET" }}
+							interfaceOptions={{
+								header: "SELECT CARD",
+								cssClass: "select-alert"
+							}}
 						>
 							{askableCardMap[selectedSet].map((card) => (
 								<IonSelectOption value={card} key={card}>
@@ -76,19 +85,25 @@ export const AskCard = () => {
 				)}
 				{selectedSet && selectedCard && (
 					<IonItem>
-						<IonLabel>Select Player</IonLabel>
+						<IonLabel className="app-select-label" color="dark">
+							Select Player
+						</IonLabel>
 						<IonSelect
 							className="app-select"
 							onIonChange={(e) => setSelectedPlayer(e.detail.value)}
 							value={selectedPlayer}
-							interface="action-sheet"
-							interfaceOptions={{ header: "SELECT SET" }}
+							interfaceOptions={{
+								header: "Select Player",
+								cssClass: "select-alert"
+							}}
 						>
 							{game.players
-								.filter(({ team }) => team !== mePlayer.team)
-								.map(({ _id, name }) => (
+								.filter(
+									({ team, hand }) => team !== mePlayer.team && hand.length
+								)
+								.map(({ _id, name, hand }) => (
 									<IonSelectOption value={_id} key={_id}>
-										{name}
+										{name} ({hand.length} cards left)
 									</IonSelectOption>
 								))}
 						</IonSelect>

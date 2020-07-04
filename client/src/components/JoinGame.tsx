@@ -17,7 +17,8 @@ export const JoinGame = () => {
 
 	const [joinGame, { loading }] = useJoinGameMutation({
 		variables: { code },
-		onCompleted: ({ joinGame }) => history.push(`/game/${joinGame}`)
+		onCompleted: ({ joinGame }) => history.push(`/game/${joinGame}`),
+		onError: ({ message }) => setErrorMsg(message)
 	});
 
 	const validateData = () => {

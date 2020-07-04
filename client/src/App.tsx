@@ -11,20 +11,27 @@ import "@ionic/react/css/structure.css";
 import "@ionic/react/css/text-alignment.css";
 import "@ionic/react/css/text-transformation.css";
 import "@ionic/react/css/typography.css";
-import React from "react";
+import React, { useEffect } from "react";
 import { client } from "./graphql";
 import { AppRoutes } from "./routes";
 import "./styles/app.scss";
 import "./styles/variables.css";
 
-const App: React.FC = () => (
-	<IonApp>
-		<IonReactRouter>
-			<ApolloProvider client={client}>
-				<AppRoutes />
-			</ApolloProvider>
-		</IonReactRouter>
-	</IonApp>
-);
+const App: React.FC = () => {
+	useEffect(() => {
+		const mode = localStorage.getItem("mode") || "light";
+		document.body.classList.add(mode);
+	}, []);
+
+	return (
+		<IonApp>
+			<IonReactRouter>
+				<ApolloProvider client={client}>
+					<AppRoutes />
+				</ApolloProvider>
+			</IonReactRouter>
+		</IonApp>
+	);
+};
 
 export default App;

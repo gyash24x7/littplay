@@ -9,14 +9,14 @@ import {
 import cuid from "cuid";
 import { Db, ObjectId, UpdateQuery } from "mongodb";
 import { User } from "../user/user.type";
+import { shuffle } from "../utils";
 import { Deck } from "../utils/deck";
 import {
 	AskCardInput,
 	CallSetInput,
 	CreateTeamsInput,
 	DeclineCardInput,
-	GiveCardInput,
-	JoinGameDto
+	GiveCardInput
 } from "./game.inputs";
 import { Game, GameStatus, MoveType } from "./game.type";
 
@@ -60,7 +60,7 @@ export class GameService {
 		return game;
 	}
 
-	async joinGame({ code, user }: JoinGameDto) {
+	async joinGame(code: string, user: User) {
 		let game = await this.getGameByCode(code);
 
 		if (!game.players.find(({ _id }) => user._id.equals(_id))) {
@@ -89,11 +89,8 @@ export class GameService {
 			);
 		}
 
-		players = teams.flatMap((team, i) =>
-			players
-				.slice((i * playerCount) / 2, ((i + 1) * playerCount) / 2)
-				.map((player) => ({ ...player, team }))
-		);
+		teams = shuffle([...teams, ...teams, ...teams]);
+		players = players.map((player, i) => ({ ...player, team: teams[i] }));
 
 		const game = await this.updateGameById(_id, {
 			$set: {
@@ -135,9 +132,10 @@ export class GameService {
 	}
 
 	async startCallSet({ set, gameId, callData }: CallSetInput, user: User) {
-		const { currentMove } = await this.getGameById(gameId);
+		const { currentMove, lastMove } = await this.getGameById(gameId);
 		const game = await this.updateGameById(gameId, {
 			$set: {
+				secondLastMove: lastMove,
 				lastMove: currentMove,
 				currentMove: {
 					type: MoveType.CALL,
@@ -150,11 +148,13 @@ export class GameService {
 	}
 
 	async callSet({ callData, gameId, set }: CallSetInput, user: User) {
-		let { players, currentMove, teams } = await this.getGameById(gameId);
+		let game = await this.getGameById(gameId);
 		let callSetData: Record<string, string[]> = JSON.parse(callData);
 		let callCards = Object.keys(callSetData).flatMap(
 			(userId) => callSetData[userId]
 		);
+
+		const { players } = game;
 
 		const mePlayer = players.find(({ _id }) => _id.equals(user._id))!;
 		let myTeamPlayers = players.filter(({ team }) => team === mePlayer.team);
@@ -179,29 +179,32 @@ export class GameService {
 
 		return this.updateGameById(gameId, {
 			$set: {
-				lastMove: currentMove,
+				secondLastMove: game.lastMove,
+				lastMove: game.currentMove,
 				players,
-				teams: teams.map(({ name, score }) => {
-					if (flag === 0) {
-						if (name === mePlayer.team) return { name, score: score + 1 };
-						else return { name, score };
-					} else {
-						if (name !== mePlayer.team) return { name, score: score + 1 };
-						else return { name, score };
-					}
+				teams: game.teams.map(({ name, score }) => {
+					if (
+						(flag === 0 && name === mePlayer.team) ||
+						(flag !== 0 && name !== mePlayer.team)
+					)
+						return { name, score: score + 1 };
+					else return { name, score };
 				}),
 				currentMove:
 					flag === 0
 						? {
 								description: `${user.name} called ${set} correctly.`,
-								type: MoveType.TURN,
+								type: MoveType.CALL_SUCCESS,
 								turn: user._id.toHexString()
 						  }
 						: {
 								description: `${user.name} called ${set} incorrectly.`,
-								type: MoveType.TURN,
+								type: MoveType.CALL_FAIL,
 								turn: players
-									.find(({ team }) => team !== mePlayer.team)
+									.find(
+										({ team, hand }) =>
+											team !== mePlayer.team && hand.length !== 0
+									)
 									?._id.toHexString()
 						  }
 			}
@@ -212,10 +215,11 @@ export class GameService {
 		let game = await this.getGameById(gameId);
 		game = await this.updateGameById(gameId, {
 			$set: {
+				secondLastMove: game.lastMove,
 				lastMove: game.currentMove,
 				currentMove: {
 					description: `${user.name} declined ${cardDeclined}. Now it's ${user.name}'s turn`,
-					type: MoveType.TURN,
+					type: MoveType.DECLINED,
 					turn: user._id.toHexString()
 				}
 			}
@@ -224,7 +228,7 @@ export class GameService {
 	}
 
 	async giveCard({ cardToGive, gameId, giveTo }: GiveCardInput, user: User) {
-		let { players, currentMove } = await this.getGameById(gameId);
+		let { players, currentMove, lastMove } = await this.getGameById(gameId);
 		let takingPlayer = players.find(({ _id }) => _id.equals(giveTo))!;
 		takingPlayer.hand.push(cardToGive);
 
@@ -240,9 +244,10 @@ export class GameService {
 		let game = await this.updateGameById(gameId, {
 			$set: {
 				players,
+				secondLastMove: lastMove,
 				lastMove: currentMove,
 				currentMove: {
-					type: MoveType.TURN,
+					type: MoveType.GIVEN,
 					turn: giveTo,
 					description: `${user.name} gave ${cardToGive} to ${takingPlayer.name}. Now it's ${takingPlayer.name}'s turn`
 				}
@@ -253,11 +258,12 @@ export class GameService {
 	}
 
 	async askCard({ gameId, askedFor, askedFrom }: AskCardInput, user: User) {
-		let { players, currentMove } = await this.getGameById(gameId);
+		let { players, currentMove, lastMove } = await this.getGameById(gameId);
 		const player = players.find(({ _id }) => _id.equals(askedFrom));
 
 		let game = await this.updateGameById(gameId, {
 			$set: {
+				secondLastMove: lastMove,
 				lastMove: currentMove,
 				currentMove: {
 					description: `${user.name} asked ${player?.name} for ${askedFor}`,

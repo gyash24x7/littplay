@@ -13,7 +13,7 @@ import {
 	IonTitle,
 	isPlatform
 } from "@ionic/react";
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import { GameStatus, useStartGameMutation } from "../generated";
 import { GameContext, UserContext } from "../utils/context";
 import { ErrorMsg } from "./ErrorMsg";
@@ -24,11 +24,13 @@ interface StartGameProps {
 
 export const GameDescription = ({ displayToast }: StartGameProps) => {
 	const game = useContext(GameContext)!;
-	const [startGame, { loading, error }] = useStartGameMutation({
-		variables: { gameId: game._id }
-	});
-
 	const user = useContext(UserContext)!;
+
+	const [errorMsg, setErrorMsg] = useState<string>();
+	const [startGame, { loading }] = useStartGameMutation({
+		variables: { gameId: game._id },
+		onError: (err) => setErrorMsg(err.message)
+	});
 
 	const copyCode = () => {
 		if (isPlatform("desktop")) {
@@ -87,6 +89,7 @@ export const GameDescription = ({ displayToast }: StartGameProps) => {
 										>
 											Start Game
 										</IonButton>
+										{errorMsg && <ErrorMsg message={errorMsg} />}
 									</IonCol>
 								)}
 							{game.status === GameStatus.InProgress && (
@@ -113,7 +116,6 @@ export const GameDescription = ({ displayToast }: StartGameProps) => {
 								</IonCol>
 							)}
 						</IonRow>
-						{error && <ErrorMsg message={error.message} />}
 					</IonCardHeader>
 				</IonCard>
 			</IonCol>

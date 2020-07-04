@@ -2,6 +2,7 @@ import {
 	IonCard,
 	IonCardContent,
 	IonCardHeader,
+	IonCardSubtitle,
 	IonCardTitle
 } from "@ionic/react";
 import React from "react";
@@ -78,6 +79,9 @@ export const HandCard = ({ player }: HandCardProps) => {
 							</div>
 						</div>
 					))}
+					{player.hand.length === 0 && (
+						<IonCardSubtitle>NO CARDS LEFT</IonCardSubtitle>
+					)}
 				</div>
 			</IonCardContent>
 		</IonCard>

@@ -12,8 +12,12 @@ export enum GameStatus {
 
 export enum MoveType {
 	ASK = "ASK",
+	DECLINED = "DECLINED",
+	GIVEN = "GIVEN",
 	TURN = "TURN",
-	CALL = "CALL"
+	CALL = "CALL",
+	CALL_SUCCESS = "CALL_SUCCESS",
+	CALL_FAIL = "CALL_FAIL"
 }
 
 registerEnumType(GameStatus, { name: "GameStatus" });
@@ -53,6 +57,7 @@ export class Game {
 	@Field(() => GameStatus) status: GameStatus;
 	@Field(() => Int) playerCount: number;
 	@Field(() => [Team]) teams: Team[];
+	@Field(() => Move, { nullable: true }) secondLastMove?: Move;
 	@Field(() => Move, { nullable: true }) lastMove?: Move;
 	@Field(() => Move, { nullable: true }) currentMove?: Move;
 }
