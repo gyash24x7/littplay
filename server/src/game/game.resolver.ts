@@ -97,7 +97,7 @@ export class GameResolver {
 		@AuthUser() user: User
 	) {
 		let game = await this.gameService.callSet(data, user);
-		if (!this.gameService.isGameCompleted(game)) {
+		if (this.gameService.isGameCompleted(game)) {
 			game = await this.gameService.markAsCompleted(game._id);
 		}
 		await this.pubsub.publish(data.gameId, game);

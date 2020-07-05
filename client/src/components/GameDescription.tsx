@@ -10,8 +10,7 @@ import {
 	IonLoading,
 	IonRow,
 	IonText,
-	IonTitle,
-	isPlatform
+	IonTitle
 } from "@ionic/react";
 import React, { useContext, useState } from "react";
 import { GameStatus, useStartGameMutation } from "../generated";
@@ -33,14 +32,13 @@ export const GameDescription = ({ displayToast }: StartGameProps) => {
 	});
 
 	const copyCode = () => {
-		if (isPlatform("desktop")) {
-			navigator.permissions.query({ name: "clipboard" }).then((result) => {
-				if (result.state === "granted" || result.state === "prompt") {
-					navigator.clipboard?.writeText(game.code).then(displayToast);
-				}
-			});
+		if (navigator?.clipboard) {
+			navigator.clipboard.writeText(game.code).then(displayToast);
 		} else {
-			Clipboard.copy(game.code).then(displayToast);
+			console.log("No Navigator Clipboard");
+			Clipboard.copy(game.code)
+				.then(displayToast)
+				.catch(() => {});
 		}
 	};
 
