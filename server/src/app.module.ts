@@ -3,6 +3,7 @@ import { ConfigModule } from "@nestjs/config";
 import { GraphQLModule } from "@nestjs/graphql";
 import { ServeStaticModule } from "@nestjs/serve-static";
 import { join } from "path";
+import { AvatarModule } from "./avatar/avatar.module";
 import { DatabaseModule } from "./database/database.module";
 import { GameModule } from "./game/game.module";
 import { GameService } from "./game/game.service";
@@ -23,7 +24,8 @@ import { UserModule } from "./user/user.module";
 		}),
 		UserModule,
 		DatabaseModule,
-		GameModule
+		GameModule,
+		AvatarModule
 	],
 	providers: [GameService]
 })

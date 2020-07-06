@@ -10,6 +10,7 @@
 		"sourceMap": true,
 		"outDir": "./dist",
 		"baseUrl": "./",
+		"jsx": "react",
 		"incremental": true,
 		"lib": ["dom", "es6", "es2017", "esnext.asynciterable"],
 		"moduleResolution": "node",

@@ -32,7 +32,7 @@ export class UserService {
 	async createUser({ email, password: pwd, name }: CreateUserInput) {
 		const salt = await bcrypt.genSalt(16);
 		const password = await bcrypt.hash(pwd, salt);
-		const avatar = generateAvatar();
+		const avatar = generateAvatar().url;
 
 		let user = await this.db.collection<User>("users").findOne({ email });
 		if (user) throw new ConflictException("User Already Exists!");

@@ -5,13 +5,13 @@ export const generateAvatar = () => {
 		queryParams[option] = options[option][idx];
 	});
 
-	let baseUrl = "https://avataaars.io/?";
+	let baseUrl = "https://literature.gyuapstha.me/avatar/?";
 	Object.keys(queryParams).map((key) => {
 		baseUrl += `${key}=${queryParams[key]}&`;
 	});
 	baseUrl += "avatarStyle=Circle";
 
-	return baseUrl;
+	return { url: baseUrl, params: queryParams };
 };
 
 export function shuffle<T>(array: T[]) {
@@ -124,6 +124,15 @@ const options: Record<string, string[]> = {
 		"BeardLight",
 		"BeardMajestic",
 		"BeardMedium",
+		"Blank",
+		"Blank",
+		"Blank",
+		"Blank",
+		"Blank",
+		"Blank",
+		"Blank",
+		"Blank",
+		"Blank",
 		"Blank",
 		"MoustacheFancy",
 		"MoustacheMagnum"
