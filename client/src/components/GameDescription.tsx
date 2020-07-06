@@ -89,29 +89,28 @@ export const GameDescription = ({ displayToast }: StartGameProps) => {
 							{errorMsg && <ErrorMsg message={errorMsg} />}
 						</IonCol>
 					)}
-					{game.status === "IN_PROGRESS" ||
-						(game.status === "COMPLETED" && (
-							<IonCol sizeMd="8" size="12">
-								<IonRow>
-									{game.teams.map((team) => (
-										<IonCol className="team-score-card" key={team.name}>
-											<IonTitle className="montserrat">{team.name}</IonTitle>
-											<div className="flex-container">
-												{game.players
-													.filter((player) => player.team === team.name)
-													.map(({ _id, name, avatar }) => (
-														<div key={_id} className="group-avatar">
-															<img src={avatar} alt="" />
-															<div className="user-details">{name}</div>
-														</div>
-													))}
-											</div>
-											<IonText className="game-score">{team.score}</IonText>
-										</IonCol>
-									))}
-								</IonRow>
-							</IonCol>
-						))}
+					{(game.status === "IN_PROGRESS" || game.status === "COMPLETED") && (
+						<IonCol sizeMd="8" size="12">
+							<IonRow>
+								{game.teams.map((team) => (
+									<IonCol className="team-score-card" key={team.name}>
+										<IonTitle className="montserrat">{team.name}</IonTitle>
+										<div className="flex-container">
+											{game.players
+												.filter((player) => player.team === team.name)
+												.map(({ _id, name, avatar }) => (
+													<div key={_id} className="group-avatar">
+														<img src={avatar} alt="" />
+														<div className="user-details">{name}</div>
+													</div>
+												))}
+										</div>
+										<IonText className="game-score">{team.score}</IonText>
+									</IonCol>
+								))}
+							</IonRow>
+						</IonCol>
+					)}
 				</IonRow>
 			</IonCardHeader>
 		</IonCard>
