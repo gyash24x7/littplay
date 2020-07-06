@@ -1,4 +1,4 @@
-import React, { Fragment, useContext } from "react";
+import React, { useContext } from "react";
 import { MoveType } from "../generated";
 import { GameContext } from "../utils/context";
 import { Banner } from "./Banner";
@@ -17,7 +17,7 @@ export const PreviousMoves = () => {
 	const { currentMove, lastMove, secondLastMove } = useContext(GameContext)!;
 
 	return (
-		<Fragment>
+		<div className="flex-container">
 			{currentMove && (
 				<Banner
 					content={currentMove.description}
@@ -39,6 +39,6 @@ export const PreviousMoves = () => {
 					heading="SECOND LAST MOVE"
 				/>
 			)}
-		</Fragment>
+		</div>
 	);
 };

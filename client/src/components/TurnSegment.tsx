@@ -1,34 +1,51 @@
 import {
+	IonButton,
 	IonCard,
 	IonCardContent,
-	IonSegment,
-	IonSegmentButton
+	IonCol,
+	IonRow
 } from "@ionic/react";
 import React, { useState } from "react";
+import { AppModal } from "./AppModal";
 import { AskCard } from "./AskCard";
 import { CallSet } from "./CallSet";
 
 export const TurnSegment = () => {
-	const [activeSegment, setActiveSegment] = useState("ASK");
+	const [activeModal, setActiveModal] = useState<"ASK CARD" | "CALL SET">();
 
 	return (
 		<IonCard className="game-play-card">
 			<IonCardContent>
-				<IonSegment
-					onIonChange={(e) => setActiveSegment(e.detail.value!)}
-					value={activeSegment}
-					color="dark"
-				>
-					<IonSegmentButton className="montserrat-bold" value="ASK">
-						ASK CARD
-					</IonSegmentButton>
-					<IonSegmentButton className="montserrat-bold" value="CALL">
-						CALL SET
-					</IonSegmentButton>
-				</IonSegment>
-				<br />
-				{activeSegment === "ASK" && <AskCard />}
-				{activeSegment === "CALL" && <CallSet />}
+				<IonRow>
+					<IonCol>
+						<IonButton
+							className="app-button small"
+							onClick={() => setActiveModal("ASK CARD")}
+						>
+							ASK CARD
+						</IonButton>
+					</IonCol>
+					<IonCol>
+						<IonButton
+							className="app-button small"
+							onClick={() => setActiveModal("CALL SET")}
+						>
+							CALL SET
+						</IonButton>
+					</IonCol>
+				</IonRow>
+				{activeModal && (
+					<AppModal
+						header={activeModal}
+						onClose={() => setActiveModal(undefined)}
+					>
+						{activeModal === "ASK CARD" ? (
+							<AskCard />
+						) : (
+							<CallSet closeModal={() => setActiveModal(undefined)} />
+						)}
+					</AppModal>
+				)}
 			</IonCardContent>
 		</IonCard>
 	);

@@ -1,3 +1,8 @@
+import Club from "../assets/club.png";
+import Diamond from "../assets/diamond.png";
+import Heart from "../assets/heart.png";
+import Spade from "../assets/spade.png";
+
 export function shuffle<T>(array: T[]) {
 	let arr = [...array];
 	for (let i = arr.length - 1; i > 0; i--) {
@@ -27,8 +32,9 @@ export class GameCard {
 export class Deck {
 	cards: GameCard[] = [];
 
-	constructor() {
-		this.cards = shuffle(SORTED_DECK);
+	constructor(shuffled: boolean = true) {
+		if (shuffled) this.cards = shuffle(SORTED_DECK);
+		else this.cards = SORTED_DECK;
 	}
 
 	removeCardsOfRank(rank: string) {
@@ -83,7 +89,9 @@ export const getCardMap = (cards: GameCard[]) => {
 
 export const getAskableCardMap = (hand: GameCard[]) => {
 	let ownCardMapping = getCardMap(hand);
-	let allCardMapping = getCardMap(new Deck().removeCardsOfRank("SEVEN").cards);
+	let allCardMapping = getCardMap(
+		new Deck(false).removeCardsOfRank("SEVEN").cards
+	);
 
 	Object.keys(ownCardMapping).forEach((set) => {
 		ownCardMapping[set] = allCardMapping[set].filter(
@@ -92,4 +100,47 @@ export const getAskableCardMap = (hand: GameCard[]) => {
 	});
 
 	return ownCardMapping;
+};
+
+export const getCardColor = (card: GameCard) => {
+	if (card.suit === "HEARTS" || card.suit === "DIAMONDS") {
+		return "#DE350B";
+	} else return "#141414";
+};
+
+export const getSuitIcon = ({ suit }: GameCard) => {
+	switch (suit) {
+		case "SPADES":
+			return Spade;
+		case "CLUBS":
+			return Club;
+		case "HEARTS":
+			return Heart;
+		default:
+			return Diamond;
+	}
+};
+
+export const getRank = ({ rank }: GameCard) => {
+	const idx = RANKS.findIndex((RANK) => rank === RANK) + 1;
+	switch (idx) {
+		case 1:
+			return "A";
+		case 11:
+			return "J";
+		case 12:
+			return "Q";
+		case 13:
+			return "K";
+		default:
+			return idx.toString();
+	}
+};
+
+export const getSortedHand = (hand: string[]) => {
+	const sortedHand: GameCard[] = [];
+	SORTED_DECK.forEach((gameCard) => {
+		if (hand.includes(gameCard.getCardString())) sortedHand.push(gameCard);
+	});
+	return sortedHand;
 };

@@ -1,4 +1,5 @@
 import { Clipboard } from "@ionic-native/clipboard";
+import { isPlatform } from "@ionic/core";
 import {
 	IonAvatar,
 	IonButton,
@@ -13,7 +14,7 @@ import {
 	IonTitle
 } from "@ionic/react";
 import React, { useContext, useState } from "react";
-import { GameStatus, useStartGameMutation } from "../generated";
+import { useStartGameMutation } from "../generated";
 import { GameContext, UserContext } from "../utils/context";
 import { ErrorMsg } from "./ErrorMsg";
 
@@ -32,91 +33,87 @@ export const GameDescription = ({ displayToast }: StartGameProps) => {
 	});
 
 	const copyCode = () => {
-		if (navigator?.clipboard) {
+		if (
+			navigator?.clipboard &&
+			(isPlatform("desktop") || isPlatform("mobileweb"))
+		) {
 			navigator.clipboard.writeText(game.code).then(displayToast);
 		} else {
 			console.log("No Navigator Clipboard");
-			Clipboard.copy(game.code)
-				.then(displayToast)
-				.catch(() => {});
+			Clipboard.copy(game.code).then(displayToast);
 		}
 	};
 
 	return (
-		<IonRow>
-			<IonCol>
-				<IonCard className="game-play-card">
-					{loading && <IonLoading isOpen />}
-					<IonCardHeader>
-						<IonRow className="game-description-row">
-							<IonCol sizeSm="6" sizeMd="4">
-								<IonCardSubtitle className="card-subtitle">
-									GAME CODE
-								</IonCardSubtitle>
-								<IonCardTitle className="game-code">{game.code}</IonCardTitle>
-								<IonCardSubtitle className="montserrat">
-									Share the code with other players
-								</IonCardSubtitle>
-								<div className="user-container">
-									<IonAvatar slot="start">
-										<img src={user.avatar} alt="" />
-									</IonAvatar>
-									<div className="user-details">
-										<IonCardTitle>{user.name}</IonCardTitle>
-										<IonCardSubtitle>{user.email}</IonCardSubtitle>
-									</div>
-								</div>
+		<IonCard className="game-play-card">
+			{loading && <IonLoading isOpen />}
+			<IonCardHeader>
+				<IonRow className="game-description-row">
+					<IonCol sizeSm="6" sizeMd="4">
+						<IonCardSubtitle className="card-subtitle">
+							GAME CODE
+						</IonCardSubtitle>
+						<IonCardTitle className="game-code">{game.code}</IonCardTitle>
+						<IonCardSubtitle className="montserrat">
+							Share the code with other players
+						</IonCardSubtitle>
+						<div className="user-container">
+							<IonAvatar slot="start">
+								<img src={user.avatar} alt="" />
+							</IonAvatar>
+							<div className="user-details">
+								<IonCardTitle>{user.name}</IonCardTitle>
+								<IonCardSubtitle>{user.email}</IonCardSubtitle>
+							</div>
+						</div>
+					</IonCol>
+					{game.status === "NOT_STARTED" && (
+						<IonCol sizeXl="3" sizeSm="4" size="12">
+							<IonButton
+								color="dark"
+								className="app-button small"
+								onClick={copyCode}
+							>
+								Copy Code
+							</IonButton>
+						</IonCol>
+					)}
+					{game.status === "TEAMS_CREATED" && game.createdBy._id === user._id && (
+						<IonCol sizeXl="3" sizeSm="4" size="12">
+							<IonButton
+								className="app-button small"
+								onClick={() => startGame()}
+							>
+								Start Game
+							</IonButton>
+							{errorMsg && <ErrorMsg message={errorMsg} />}
+						</IonCol>
+					)}
+					{game.status === "IN_PROGRESS" ||
+						(game.status === "COMPLETED" && (
+							<IonCol sizeMd="8" size="12">
+								<IonRow>
+									{game.teams.map((team) => (
+										<IonCol className="team-score-card" key={team.name}>
+											<IonTitle className="montserrat">{team.name}</IonTitle>
+											<div className="flex-container">
+												{game.players
+													.filter((player) => player.team === team.name)
+													.map(({ _id, name, avatar }) => (
+														<div key={_id} className="group-avatar">
+															<img src={avatar} alt="" />
+															<div className="user-details">{name}</div>
+														</div>
+													))}
+											</div>
+											<IonText className="game-score">{team.score}</IonText>
+										</IonCol>
+									))}
+								</IonRow>
 							</IonCol>
-							{game.status === GameStatus.NotStarted && (
-								<IonCol sizeXl="3" sizeSm="4" size="12">
-									<IonButton
-										color="dark"
-										className="app-button small"
-										onClick={copyCode}
-									>
-										Copy Code
-									</IonButton>
-								</IonCol>
-							)}
-							{game.status === GameStatus.TeamsCreated &&
-								game.createdBy._id === user._id && (
-									<IonCol sizeXl="3" sizeSm="4" size="12">
-										<IonButton
-											className="app-button small"
-											onClick={() => startGame()}
-										>
-											Start Game
-										</IonButton>
-										{errorMsg && <ErrorMsg message={errorMsg} />}
-									</IonCol>
-								)}
-							{game.status === GameStatus.InProgress && (
-								<IonCol sizeMd="8" size="12">
-									<IonRow>
-										{game.teams.map((team) => (
-											<IonCol className="team-score-card" key={team.name}>
-												<IonTitle className="montserrat">{team.name}</IonTitle>
-												<br />
-												<div className="avatar-group">
-													{game.players
-														.filter((player) => player.team === team.name)
-														.map(({ avatar, _id }) => (
-															<IonAvatar key={_id}>
-																<img src={avatar} alt="" />
-															</IonAvatar>
-														))}
-												</div>
-												<br />
-												<IonText className="game-score">{team.score}</IonText>
-											</IonCol>
-										))}
-									</IonRow>
-								</IonCol>
-							)}
-						</IonRow>
-					</IonCardHeader>
-				</IonCard>
-			</IonCol>
-		</IonRow>
+						))}
+				</IonRow>
+			</IonCardHeader>
+		</IonCard>
 	);
 };

@@ -1,6 +1,7 @@
 import {
 	IonCard,
 	IonCardContent,
+	IonCardHeader,
 	IonCardSubtitle,
 	IonCardTitle
 } from "@ionic/react";
@@ -13,12 +14,12 @@ interface BannerProps {
 }
 
 export const Banner = ({ content, color, heading }: BannerProps) => (
-	<IonCard className="game-play-card" color={color}>
-		<IonCardContent>
-			<IonCardTitle>
-				<IonCardSubtitle className="subtitle">{heading}</IonCardSubtitle>
-				<IonCardTitle>{content}</IonCardTitle>
-			</IonCardTitle>
+	<IonCard className="game-play-card banner" color={color}>
+		<IonCardHeader className="banner-header">
+			<IonCardSubtitle className="subtitle">{heading}</IonCardSubtitle>
+		</IonCardHeader>
+		<IonCardContent className="banner-content">
+			<IonCardTitle>{content}</IonCardTitle>
 		</IonCardContent>
 	</IonCard>
 );

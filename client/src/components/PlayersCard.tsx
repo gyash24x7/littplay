@@ -13,44 +13,30 @@ import { GameContext } from "../utils/context";
 export const PlayersCard = () => {
 	const { players } = useContext(GameContext)!;
 	return (
-		<IonRow>
-			<IonCol>
-				<IonCard className="game-play-card">
-					<IonCardHeader>
-						<IonCardTitle>PLAYERS</IonCardTitle>
-					</IonCardHeader>
-					<IonCardContent>
-						<IonRow style={{ justifyContent: "center" }}>
-							<IonCol
-								sizeLg="4"
-								sizeMd="8"
-								size="12"
-								className="players-wrapper"
-							>
-								{players.slice(0, 3).map(({ _id, avatar, name }) => (
-									<div className="player-icon" key={_id}>
-										<img src={avatar} alt="" className="user-avatar" />
-										<IonText>{name}</IonText>
-									</div>
-								))}
-							</IonCol>
-							<IonCol
-								sizeLg="4"
-								sizeMd="8"
-								size="12"
-								className="players-wrapper"
-							>
-								{players.slice(3).map(({ _id, avatar, name }) => (
-									<div className="player-icon" key={_id}>
-										<img src={avatar} alt="" className="user-avatar" />
-										<IonText>{name}</IonText>
-									</div>
-								))}
-							</IonCol>
-						</IonRow>
-					</IonCardContent>
-				</IonCard>
-			</IonCol>
-		</IonRow>
+		<IonCard className="game-play-card">
+			<IonCardHeader>
+				<IonCardTitle>PLAYERS</IonCardTitle>
+			</IonCardHeader>
+			<IonCardContent>
+				<IonRow style={{ justifyContent: "center" }}>
+					<IonCol sizeLg="4" sizeMd="8" size="12" className="players-wrapper">
+						{players.slice(0, 3).map(({ _id, avatar, name }) => (
+							<div className="player-icon" key={_id}>
+								<img src={avatar} alt="" className="user-avatar" />
+								<IonText>{name}</IonText>
+							</div>
+						))}
+					</IonCol>
+					<IonCol sizeLg="4" sizeMd="8" size="12" className="players-wrapper">
+						{players.slice(3).map(({ _id, avatar, name }) => (
+							<div className="player-icon" key={_id}>
+								<img src={avatar} alt="" className="user-avatar" />
+								<IonText>{name}</IonText>
+							</div>
+						))}
+					</IonCol>
+				</IonRow>
+			</IonCardContent>
+		</IonCard>
 	);
 };

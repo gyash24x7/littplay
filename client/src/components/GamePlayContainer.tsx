@@ -1,5 +1,5 @@
-import { IonCol, IonGrid, IonRow, IonToast } from "@ionic/react";
-import React, { useContext, useState } from "react";
+import { IonToast } from "@ionic/react";
+import React, { Fragment, useContext, useState } from "react";
 import { GameContext, UserContext } from "../utils/context";
 import { Banner } from "./Banner";
 import { CreateTeams } from "./CreateTeams";
@@ -34,7 +34,7 @@ export const GamePlayContainer = () => {
 	};
 
 	return (
-		<IonGrid className="game-play-container">
+		<div className="game-play-container">
 			<GameDescription
 				displayToast={() => setToastContent("Code copied to clipboard!")}
 			/>
@@ -44,32 +44,27 @@ export const GamePlayContainer = () => {
 			{status === "PLAYERS_READY" && _id === createdBy._id && <CreateTeams />}
 			{status === "TEAMS_CREATED" && <TeamsCard />}
 			{status === "IN_PROGRESS" && (
-				<IonRow>
-					<IonCol size="12" sizeLg="6">
-						<PreviousMoves />
-						{currentMove?.turn === _id && mePlayer.hand.length !== 0 && (
-							<TurnSegment />
-						)}
-						{currentMove?.askedFrom === _id && <GiveOrDecline />}
-					</IonCol>
-					<IonCol size="12" sizeLg="6">
-						<HandCard player={players.find((plyr) => _id === plyr._id)!} />
-						{currentMove?.turn === _id && mePlayer.hand.length === 0 && (
-							<TransferChance />
-						)}
-					</IonCol>
-				</IonRow>
+				<Fragment>
+					<PreviousMoves />
+					{currentMove?.turn === _id && mePlayer.hand.length !== 0 && (
+						<TurnSegment />
+					)}
+					{currentMove?.askedFrom === _id && <GiveOrDecline />}
+
+					<HandCard player={players.find((plyr) => _id === plyr._id)!} />
+					{currentMove?.turn === _id && mePlayer.hand.length === 0 && (
+						<TransferChance />
+					)}
+				</Fragment>
 			)}
 			{status === "COMPLETED" && (
-				<IonRow>
-					<IonCol>
-						<Banner
-							color="success"
-							content={getGameCompletionDescription()}
-							heading="Game Completed"
-						/>
-					</IonCol>
-				</IonRow>
+				<div className="flex-container">
+					<Banner
+						color="success"
+						content={getGameCompletionDescription()}
+						heading="GAME COMPLETED"
+					/>
+				</div>
 			)}
 			<IonToast
 				isOpen={!!toastContent}
@@ -77,6 +72,6 @@ export const GamePlayContainer = () => {
 				onDidDismiss={() => setToastContent(undefined)}
 				message={toastContent}
 			/>
-		</IonGrid>
+		</div>
 	);
 };

@@ -6,7 +6,7 @@ import {
 	IonRefresher,
 	IonRefresherContent
 } from "@ionic/react";
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Redirect, useParams } from "react-router";
 import { ErrorMsg } from "../components/ErrorMsg";
 import { GamePlayContainer } from "../components/GamePlayContainer";
@@ -34,12 +34,13 @@ export const GamePage = () => {
 		onCompleted: ({ getGame }) => setGame(getGame)
 	});
 
-	useGameSubscription({
-		variables: { gameId },
-		onSubscriptionData({ subscriptionData: { data } }) {
-			if (data?.game) setGame(game);
-		}
+	const { data } = useGameSubscription({
+		variables: { gameId }
 	});
+
+	useEffect(() => {
+		if (data?.game) setGame(data.game);
+	}, [data]);
 
 	return (
 		<IonPage>
