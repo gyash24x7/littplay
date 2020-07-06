@@ -4697,10 +4697,10 @@ range-parser@~1.2.0:
   resolved "https://registry.yarnpkg.com/range-parser/-/range-parser-1.2.1.tgz#3cf37023d199e1c24d1a55b84800c2f3e6468031"
   integrity sha512-Hrgsx+orqoygnmhFbKaHE6c296J+HTAQXoxEF6gNupROmmGJRoyzfG3ccAveqCBrwr/2yxQ5BVd/GTl5agOwSg==
 
-react-dom@16.1.1:
-  version "16.1.1"
-  resolved "https://registry.yarnpkg.com/react-dom/-/react-dom-16.1.1.tgz#b2e331b6d752faf1a2d31399969399a41d8d45f8"
-  integrity sha512-q06jiwST8SEPAMIEkAsu7BgynEZtqF87VrTc70XsW7nxVhWEu2Y4MF5UfxxHQO/mNtQHQWP0YcFxmwm9oMrMaQ==
+react-dom@16.1.2:
+  version "16.1.2"
+  resolved "https://registry.yarnpkg.com/react-dom/-/react-dom-16.1.2.tgz#c4011fa5183fcbdf34344472935ef920d8dc7179"
+  integrity sha512-e2iKeys/pJcIzszO+9EYxnTus6JI3pftzhXGG8K9B9co2SljknimfuY1/VlAG9nDBipDAc8jkIuuhlz+EiGL+g==
   dependencies:
     fbjs "^0.8.16"
     loose-envify "^1.1.0"
