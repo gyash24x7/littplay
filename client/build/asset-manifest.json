@@ -14,9 +14,9 @@
     "static/js/5.34bd240e.chunk.js.map": "/static/js/5.34bd240e.chunk.js.map",
     "static/js/6.02e52152.chunk.js": "/static/js/6.02e52152.chunk.js",
     "static/js/6.02e52152.chunk.js.map": "/static/js/6.02e52152.chunk.js.map",
-    "main.css": "/static/css/main.5c2e0aaf.chunk.css",
-    "main.js": "/static/js/main.4fa0e87e.chunk.js",
-    "main.js.map": "/static/js/main.4fa0e87e.chunk.js.map",
+    "main.css": "/static/css/main.69858df6.chunk.css",
+    "main.js": "/static/js/main.1f4946c1.chunk.js",
+    "main.js.map": "/static/js/main.1f4946c1.chunk.js.map",
     "polyfills-css-shim.js": "/static/js/polyfills-css-shim.22a8088c.chunk.js",
     "polyfills-css-shim.js.map": "/static/js/polyfills-css-shim.22a8088c.chunk.js.map",
     "runtime-main.js": "/static/js/runtime-main.f26ac66f.js",
@@ -209,10 +209,10 @@
     "static/js/102.3def3cb6.chunk.js": "/static/js/102.3def3cb6.chunk.js",
     "static/js/102.3def3cb6.chunk.js.map": "/static/js/102.3def3cb6.chunk.js.map",
     "index.html": "/index.html",
-    "precache-manifest.fc4e2ab3264af0ff44d71423ca05a773.js": "/precache-manifest.fc4e2ab3264af0ff44d71423ca05a773.js",
+    "precache-manifest.9c2464a74e4cc26c5ee8d0f2e641a353.js": "/precache-manifest.9c2464a74e4cc26c5ee8d0f2e641a353.js",
     "service-worker.js": "/service-worker.js",
     "static/css/12.1693c8db.chunk.css.map": "/static/css/12.1693c8db.chunk.css.map",
-    "static/css/main.5c2e0aaf.chunk.css.map": "/static/css/main.5c2e0aaf.chunk.css.map",
+    "static/css/main.69858df6.chunk.css.map": "/static/css/main.69858df6.chunk.css.map",
     "static/js/100.aa90045b.chunk.js.LICENSE.txt": "/static/js/100.aa90045b.chunk.js.LICENSE.txt",
     "static/js/102.3def3cb6.chunk.js.LICENSE.txt": "/static/js/102.3def3cb6.chunk.js.LICENSE.txt",
     "static/js/12.b09e6ee0.chunk.js.LICENSE.txt": "/static/js/12.b09e6ee0.chunk.js.LICENSE.txt",
@@ -221,7 +221,7 @@
     "static/js/98.b7b5b71a.chunk.js.LICENSE.txt": "/static/js/98.b7b5b71a.chunk.js.LICENSE.txt",
     "static/js/stencil-polyfills-dom.ba3ed337.chunk.js.LICENSE.txt": "/static/js/stencil-polyfills-dom.ba3ed337.chunk.js.LICENSE.txt",
     "static/media/club.png": "/static/media/club.37174b2f.png",
-    "static/media/icon.png": "/static/media/icon.ce1399ca.png",
+    "static/media/icon.png": "/static/media/icon.f30737a0.png",
     "static/media/app.scss": "/static/media/montserrat-regular.c641dbee.ttf",
     "static/media/spade.png": "/static/media/spade.95ba7d82.png"
   },
@@ -229,7 +229,7 @@
     "static/js/runtime-main.f26ac66f.js",
     "static/css/12.1693c8db.chunk.css",
     "static/js/12.b09e6ee0.chunk.js",
-    "static/css/main.5c2e0aaf.chunk.css",
-    "static/js/main.4fa0e87e.chunk.js"
+    "static/css/main.69858df6.chunk.css",
+    "static/js/main.1f4946c1.chunk.js"
   ]
 }

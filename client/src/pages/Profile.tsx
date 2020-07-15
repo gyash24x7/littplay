@@ -1,4 +1,4 @@
-import { IonContent, IonGrid, IonLabel, IonPage, IonText } from "@ionic/react";
+import { IonContent, IonGrid, IonPage, IonText } from "@ionic/react";
 import React, { useContext, useState } from "react";
 import { AppModal } from "../components/AppModal";
 import { ChangeAvatar } from "../components/ChangeAvatar";
@@ -19,9 +19,9 @@ export const ProfilePage = () => {
 					/>
 					<IonText className="user-name">{user.name}</IonText>
 					<IonText>{user.email}</IonText>
-					<IonLabel className="avatar-change-label">
+					<IonText className="avatar-change-label" color="medium">
 						Click on Avatar to modify
-					</IonLabel>
+					</IonText>
 				</IonGrid>
 				{isVisible && (
 					<AppModal header="Select Avatar" onClose={() => setIsVisible(false)}>
