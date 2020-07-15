@@ -16,5 +16,6 @@ export const AppRoutes = () => {
 			</UserContext.Provider>
 		);
 
+	console.log("here");
 	return <PublicRoutes />;
 };

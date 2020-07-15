@@ -48,10 +48,10 @@ export const ChangeAvatar = ({ currentAvatar, close }: ChangeAvatarProps) => {
 					color="danger"
 					onClick={() => setNewAvatar(currentAvatar)}
 				>
-					Discard Changes
+					Discard
 				</IonButton>
 				<IonButton className="app-button small" onClick={() => updateAvatar()}>
-					Save Changes
+					Save
 				</IonButton>
 			</div>
 			{errorMsg && <ErrorMsg message={errorMsg} />}

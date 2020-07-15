@@ -13,14 +13,20 @@ async function bootstrap() {
 		new FastifyAdapter()
 	);
 
-	let host = "localhost";
+	let host =
+		process.env.NODE_ENV !== "production" ? "192.168.43.59" : "localhost";
 
 	app.use(helmet());
 	const logger = new Logger("Bootstrap");
-	if (process.env.NODE_ENV !== "production") {
-		app.enableCors({ origin: "http://192.168.43.59:3000", credentials: true });
-		host = "192.168.43.59";
-	}
+	app.enableCors({
+		origin: [
+			"http://192.168.43.59:3000",
+			"http://192.168.43.59:8100",
+			"http://localhost"
+		],
+		credentials: true
+	});
+
 	logger.log(process.env.NODE_ENV);
 
 	await app.listen(8000, host);
