@@ -104,6 +104,7 @@ export type Mutation = {
   transferChance: Scalars['Boolean'];
   login: Scalars['String'];
   createUser: Scalars['String'];
+  updateAvatar: Scalars['Boolean'];
 };
 
 
@@ -154,6 +155,11 @@ export type MutationLoginArgs = {
 
 export type MutationCreateUserArgs = {
   data: CreateUserInput;
+};
+
+
+export type MutationUpdateAvatarArgs = {
+  avatar: Scalars['String'];
 };
 
 export type Player = {
@@ -281,6 +287,13 @@ export type TransferChanceMutationVariables = Exact<{
 
 
 export type TransferChanceMutation = { transferChance: boolean };
+
+export type UpdateAvatarMutationVariables = Exact<{
+  avatar: Scalars['String'];
+}>;
+
+
+export type UpdateAvatarMutation = { updateAvatar: boolean };
 
 export type GetGameQueryVariables = Exact<{
   gameId: Scalars['String'];
@@ -434,6 +447,18 @@ export function useTransferChanceMutation(baseOptions?: ApolloReactHooks.Mutatio
 export type TransferChanceMutationHookResult = ReturnType<typeof useTransferChanceMutation>;
 export type TransferChanceMutationResult = ApolloReactCommon.MutationResult<TransferChanceMutation>;
 export type TransferChanceMutationOptions = ApolloReactCommon.BaseMutationOptions<TransferChanceMutation, TransferChanceMutationVariables>;
+export const UpdateAvatarDocument = gql`
+    mutation UpdateAvatar($avatar: String!) {
+  updateAvatar(avatar: $avatar)
+}
+    `;
+export type UpdateAvatarMutationFn = ApolloReactCommon.MutationFunction<UpdateAvatarMutation, UpdateAvatarMutationVariables>;
+export function useUpdateAvatarMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<UpdateAvatarMutation, UpdateAvatarMutationVariables>) {
+        return ApolloReactHooks.useMutation<UpdateAvatarMutation, UpdateAvatarMutationVariables>(UpdateAvatarDocument, baseOptions);
+      }
+export type UpdateAvatarMutationHookResult = ReturnType<typeof useUpdateAvatarMutation>;
+export type UpdateAvatarMutationResult = ApolloReactCommon.MutationResult<UpdateAvatarMutation>;
+export type UpdateAvatarMutationOptions = ApolloReactCommon.BaseMutationOptions<UpdateAvatarMutation, UpdateAvatarMutationVariables>;
 export const GetGameDocument = gql`
     query GetGame($gameId: String!) {
   getGame(gameId: $gameId) {

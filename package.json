@@ -8,8 +8,7 @@
 	"private": true,
 	"workspaces": [
 		"./client",
-		"./server",
-		"./app"
+		"./server"
 	],
 	"scripts": {
 		"dev:client": "yarn workspace client dev",

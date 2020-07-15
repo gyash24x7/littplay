@@ -5,7 +5,11 @@ export const generateAvatar = () => {
 		queryParams[option] = options[option][idx];
 	});
 
-	let baseUrl = "https://literature.gyuapstha.me/avatar/?";
+	let baseUrl =
+		process.env.NODE_ENV === "production"
+			? "https://literature.gyuapstha.me/avatar?"
+			: "http://192.168.43.59:8000/avatar?";
+
 	Object.keys(queryParams).map((key) => {
 		baseUrl += `${key}=${queryParams[key]}&`;
 	});

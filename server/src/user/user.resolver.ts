@@ -31,4 +31,10 @@ export class UserResolver {
 	me(@AuthUser() user: User) {
 		return user;
 	}
+
+	@Mutation(() => Boolean)
+	@UseGuards(GqlAuthGuard)
+	async updateAvatar(@Args("avatar") avatar: string, @AuthUser() user: User) {
+		return this.userService.updateUserAvatar(avatar, user);
+	}
 }

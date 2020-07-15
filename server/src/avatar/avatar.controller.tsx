@@ -13,13 +13,9 @@ export class AvatarController {
 	}
 
 	@Get("/random")
-	@Header("Content-Type", "image/svg+xml")
+	@Header("Content-Type", "application/json")
 	async getRandomAvatar(@Res() res: any) {
-		const { params } = generateAvatar();
-		res.send(
-			ReactDOMServer.renderToString(
-				<Avataaars {...params} avatarStyle="Circle" />
-			)
-		);
+		const { url } = generateAvatar();
+		res.send({ url });
 	}
 }

@@ -48,4 +48,16 @@ export class UserService {
 		this.logger.log(`User Created: ${insertedId}`);
 		return this.db.collection<User>("users").findOne({ _id: insertedId });
 	}
+
+	async updateUserAvatar(avatar: string, user: User) {
+		const { modifiedCount } = await this.db
+			.collection<User>("users")
+			.updateOne({ _id: user._id }, { $set: { avatar } }, { upsert: false })
+			.catch((err) => {
+				this.logger.error(err);
+				throw new InternalServerErrorException();
+			});
+
+		return modifiedCount === 1;
+	}
 }
