@@ -1634,6 +1634,13 @@
   dependencies:
     "@types/cordova" latest
 
+"@ionic-native/vibration@^5.27.0":
+  version "5.27.0"
+  resolved "https://registry.yarnpkg.com/@ionic-native/vibration/-/vibration-5.27.0.tgz#a0ee73241cd3b5aa18d460276bd8e8f8ae2c7fba"
+  integrity sha512-Yx6iZuDhehdPwY6aOTHHWUtsVk0c2ElmUblzL0Sj6uAMHZUvqfZDWJRVDx9JhpHaI8Dj/YqjDyj/Bzx30pILag==
+  dependencies:
+    "@types/cordova" latest
+
 "@ionic/core@5.2.2", "@ionic/core@^5.2.2":
   version "5.2.2"
   resolved "https://registry.yarnpkg.com/@ionic/core/-/core-5.2.2.tgz#f382b0df85158d98b4a64013d6bb52899b85bbea"
@@ -1646,11 +1653,6 @@
   version "1.5.2"
   resolved "https://registry.yarnpkg.com/@ionic/pwa-elements/-/pwa-elements-1.5.2.tgz#fa09df335edac62b48f350c38b12647310f1b967"
   integrity sha512-OMa+el4XjnAx22P6S8CN2GGEfDgMkuwOxE5x5Cd/6ZDfcZKRuP//l4+JLF4YBvfvyPPHvaQLI+Ies7H2OTmAuA==
-
-"@ionic/react-hooks@^0.0.8":
-  version "0.0.8"
-  resolved "https://registry.yarnpkg.com/@ionic/react-hooks/-/react-hooks-0.0.8.tgz#3d036aaeffbb7b136ac411c896e907fb59bdbf92"
-  integrity sha512-0U9hoPByJxd4/Sdx/uad2sDYCgQmQdG0nt+UNEzkk6IF4TjNVAQPcFQ6nJIc2oiUAMjaxzoLKmG8ziamuyfZaQ==
 
 "@ionic/react-router@^5.2.2":
   version "5.2.2"
@@ -3919,6 +3921,11 @@ cordova-clipboard@^1.3.0:
   version "1.3.0"
   resolved "https://registry.yarnpkg.com/cordova-clipboard/-/cordova-clipboard-1.3.0.tgz#0911da4cbdea5df2e3a769f5b3aab00e0be0e679"
   integrity sha512-IGk4LZm/DJ0Xk/jgakHm4wa+A/lrRP3QfzMAHDG7oWLJS4ISOpfI32Wez4ndnENItRslGyBVyJyKD83CxELCAw==
+
+cordova-plugin-vibration@^3.1.1:
+  version "3.1.1"
+  resolved "https://registry.yarnpkg.com/cordova-plugin-vibration/-/cordova-plugin-vibration-3.1.1.tgz#38fcdd9a7675cfb44d86339c1b2cb129017e9e00"
+  integrity sha512-qgv67Rueo4Pydfant3TwnXeFiN9dl+6lKMM6h5jYg9XewiGAGOr8vfWsTvQssC3m3xMKGS1ap3xPNH+BzZ4RMA==
 
 core-js-compat@^3.6.2:
   version "3.6.5"

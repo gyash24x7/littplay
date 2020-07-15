@@ -1,4 +1,5 @@
-import { RefresherEventDetail } from "@ionic/core";
+import { Vibration } from "@ionic-native/vibration";
+import { isPlatform, RefresherEventDetail } from "@ionic/core";
 import {
 	IonContent,
 	IonLoading,
@@ -39,8 +40,18 @@ export const GamePage = () => {
 	});
 
 	useEffect(() => {
-		if (data?.game) setGame(data.game);
-	}, [data]);
+		if (data?.game) {
+			if (
+				data.game.currentMove?.turn === _id ||
+				data.game.currentMove?.askedFrom === _id
+			) {
+				if (isPlatform("android") || isPlatform("ios")) {
+					Vibration.vibrate(1000);
+				}
+			}
+			setGame(data.game);
+		}
+	}, [data, _id]);
 
 	return (
 		<IonPage>

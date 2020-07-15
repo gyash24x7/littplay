@@ -98,10 +98,11 @@ export const GameDescription = ({ displayToast }: StartGameProps) => {
 										<div className="flex-container">
 											{game.players
 												.filter((player) => player.team === team.name)
-												.map(({ _id, name, avatar }) => (
+												.map(({ _id, name, avatar, hand }) => (
 													<div key={_id} className="group-avatar">
 														<img src={avatar} alt="" />
 														<div className="user-details">{name}</div>
+														{hand.length > 0 ? hand.length : "No"} Cards Left
 													</div>
 												))}
 										</div>
