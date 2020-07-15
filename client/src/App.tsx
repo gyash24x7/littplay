@@ -11,23 +11,38 @@ import "@ionic/react/css/structure.css";
 import "@ionic/react/css/text-alignment.css";
 import "@ionic/react/css/text-transformation.css";
 import "@ionic/react/css/typography.css";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { client } from "./graphql";
 import { AppRoutes } from "./routes";
 import "./styles/app.scss";
 import "./styles/variables.css";
+import { ThemeContext } from "./utils/context";
 
 const App: React.FC = () => {
+	const [isDark, setIsDark] = useState(false);
+
 	useEffect(() => {
-		const mode = localStorage.getItem("mode") || "light";
-		document.body.classList.add(mode);
+		const mode = localStorage.getItem("mode");
+		if (mode) {
+			if (mode === "dark") setIsDark(true);
+		} else if (matchMedia("(prefers-color-scheme:dark)").matches) {
+			setIsDark(true);
+		}
 	}, []);
+
+	useEffect(() => {
+		document.body.classList.remove(isDark ? "light" : "dark");
+		document.body.classList.add(isDark ? "dark" : "light");
+		localStorage.setItem("mode", isDark ? "dark" : "light");
+	}, [isDark]);
 
 	return (
 		<IonApp>
 			<IonReactRouter>
 				<ApolloProvider client={client}>
-					<AppRoutes />
+					<ThemeContext.Provider value={{ isDark, setIsDark }}>
+						<AppRoutes />
+					</ThemeContext.Provider>
 				</ApolloProvider>
 			</IonReactRouter>
 		</IonApp>

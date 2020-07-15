@@ -1,25 +1,18 @@
-import { ToggleChangeEventDetail } from "@ionic/core";
 import {
 	IonButtons,
 	IonHeader,
-	IonLabel,
 	IonMenuButton,
 	IonTitle,
-	IonToggle,
 	IonToolbar
 } from "@ionic/react";
-import React from "react";
+import React, { useContext } from "react";
+import Moon from "../assets/moon.svg";
+import Sun from "../assets/sun.svg";
+import { ThemeContext } from "../utils/context";
 
 export const AppHeader = () => {
-	const handleModeSwitch = (e: CustomEvent<ToggleChangeEventDetail>) => {
-		if (e.detail.checked) {
-			document.body.classList.replace("light", "dark");
-			localStorage.setItem("mode", "dark");
-		} else {
-			document.body.classList.replace("dark", "light");
-			localStorage.setItem("mode", "light");
-		}
-	};
+	const { isDark, setIsDark } = useContext(ThemeContext);
+	const toggleDarkMode = () => setIsDark(!isDark);
 
 	return (
 		<IonHeader>
@@ -28,12 +21,12 @@ export const AppHeader = () => {
 					<IonMenuButton menu="appMenu" />
 				</IonButtons>
 				<IonButtons slot="end">
-					<IonToggle
-						onIonChange={handleModeSwitch}
-						color="dark"
-						checked={localStorage.getItem("mode") === "dark"}
+					<img
+						src={isDark ? Sun : Moon}
+						alt=""
+						onClick={toggleDarkMode}
+						className="dark-mode-toggle"
 					/>
-					<IonLabel className="dark-mode-label">Dark Mode</IonLabel>
 				</IonButtons>
 				<IonTitle className="montserrat-bold">LITERATURE</IonTitle>
 			</IonToolbar>
