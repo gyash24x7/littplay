@@ -8,8 +8,8 @@ const [WS_URL, HTTP_URL] =
 	process.env.NODE_ENV !== "production"
 		? [`ws://192.168.43.59:8000/graphql`, `http://192.168.43.59:8000/graphql`]
 		: [
-				`wss://literature.gyuapstha.me/graphql`,
-				`https://literature.gyuapstha.me/graphql`
+				`wss://literature.yashgupta.dev/graphql`,
+				`https://literature.yashgupta.dev/graphql`
 		  ];
 
 const wsLink = new WebSocketLink({

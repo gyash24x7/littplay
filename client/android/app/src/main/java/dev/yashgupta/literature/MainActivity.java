@@ -1,4 +1,4 @@
-package me.gyuapstha.literature;
+package dev.yashgupta.literature;
 
 import android.os.Bundle;
 

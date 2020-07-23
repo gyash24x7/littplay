@@ -10,7 +10,7 @@ interface ChangeAvatarProps {
 
 const reqUrl =
 	process.env.NODE_ENV === "production"
-		? "https://literature.gyuapstha.me/avatar/random"
+		? "https://literature.yashgupta.dev/avatar/random"
 		: "http://192.168.43.59:8000/avatar/random";
 
 export const ChangeAvatar = ({ currentAvatar, close }: ChangeAvatarProps) => {

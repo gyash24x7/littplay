@@ -7,7 +7,7 @@ export const generateAvatar = () => {
 
 	let baseUrl =
 		process.env.NODE_ENV === "production"
-			? "https://literature.gyuapstha.me/avatar?"
+			? "https://literature.yashgupta.dev/avatar?"
 			: "http://192.168.43.59:8000/avatar?";
 
 	Object.keys(queryParams).map((key) => {
