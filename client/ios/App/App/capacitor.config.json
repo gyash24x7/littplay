@@ -1,0 +1,13 @@
+{
+	"appId": "dev.yashgupta.literature",
+	"appName": "Literature",
+	"bundledWebRuntime": false,
+	"npmClient": "yarn",
+	"webDir": "build",
+	"plugins": {
+		"SplashScreen": {
+			"launchShowDuration": 0
+		}
+	},
+	"cordova": {}
+}
