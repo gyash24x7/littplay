@@ -30,7 +30,7 @@
 		"cuid": "^2.1.8",
 		"fastify-static": "^2.7.0",
 		"graphql": "14.6.0",
-		"helmet": "^3.23.3",
+		"helmet": "^4.0.0",
 		"mongodb": "^3.5.9",
 		"passport": "^0.4.1",
 		"passport-jwt": "^4.0.0",
