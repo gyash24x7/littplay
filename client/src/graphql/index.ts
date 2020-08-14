@@ -1,6 +1,7 @@
-import { ApolloClient, HttpLink, InMemoryCache, split } from "@apollo/client";
+import { ApolloClient, InMemoryCache, split } from "@apollo/client";
+import { HttpLink } from "@apollo/client/link/http";
+import { WebSocketLink } from "@apollo/client/link/ws";
 import { getMainDefinition } from "@apollo/client/utilities";
-import { WebSocketLink } from "@apollo/link-ws";
 
 const token = localStorage.getItem("authToken");
 

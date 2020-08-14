@@ -15,7 +15,7 @@ import { UserModule } from "./user/user.module";
 		GraphQLModule.forRoot({
 			autoSchemaFile: true,
 			installSubscriptionHandlers: true,
-			context: ({ req }) => ({ req }),
+			context: ({ request }) => ({ req: request }),
 			playground: process.env.NODE_ENV !== "production",
 			introspection: process.env.NODE_ENV !== "production"
 		}),
