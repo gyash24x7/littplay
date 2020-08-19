@@ -14,9 +14,11 @@ The team players ask the opposite team players for a particular card, provided t
 
 This repo is a monorepo created using yarn workspaces. The client directory is an **Ionic React** project handling all the client side of the code. It contains the android and ios counterparts of the ionic project. The server directory is a **NestJS** Project handling all the server side code. It also serves the client static build for the web version of the game.
 
+
 ## Tech Stack
 
-### NestJS, MongoDB, GraphQL, React, Ionic
+#### NestJS, MongoDB, GraphQL, React, Ionic
+
 
 ## Commands
 
@@ -41,16 +43,20 @@ This repo is a monorepo created using yarn workspaces. The client directory is a
 #### Build production build of server
 `yarn build:server`
 
-#### Open iOS project in xcode : 
+#### Open iOS project in xcode
 
 Copy JS Bundle:  `ionic cap copy ios`
+
 Copy Capacitor Plugins: `ionic cap sync ios`
+
 Open Project: `ionic cap open ios`
 
 #### Open Android project in Android Studio : 
 
 Copy JS Bundle:  `ionic cap copy android`
+
 Copy Capacitor Plugins: `ionic cap sync android`
+
 Open Project: `ionic cap open android`
 
 ##### You can build and test android and ios projects separately using respective IDEs
