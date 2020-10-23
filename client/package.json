@@ -26,7 +26,7 @@
 		"react-dom": "^16.13.1",
 		"react-router": "^5.2.0",
 		"react-router-dom": "^5.2.0",
-		"react-scripts": "3.4.3",
+		"react-scripts": "3.4.4",
 		"rxjs": "^6.6.2",
 		"subscriptions-transport-ws": "^0.9.17",
 		"typescript": "3.9.7"
