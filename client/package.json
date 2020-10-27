@@ -29,7 +29,7 @@
 		"react-scripts": "3.4.3",
 		"rxjs": "^6.6.2",
 		"subscriptions-transport-ws": "^0.9.17",
-		"typescript": "3.9.7"
+		"typescript": "4.0.5"
 	},
 	"scripts": {
 		"start": "react-scripts start",
