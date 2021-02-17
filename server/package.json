@@ -25,7 +25,7 @@
 		"apollo-server-fastify": "^2.16.1",
 		"avataaars": "^1.2.1",
 		"bcryptjs": "^2.4.3",
-		"class-transformer": "^0.3.1",
+		"class-transformer": "^0.4.0",
 		"class-validator": "^0.12.2",
 		"cuid": "^2.1.8",
 		"fastify-static": "^3.2.0",
